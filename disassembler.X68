@@ -1137,6 +1137,7 @@ ORI_EA
     
         ;and off mode
         ANDI #56, D5
+        ASR.L #3, D5
         ;and off data
         ANDI #7, D6
     
@@ -1153,8 +1154,11 @@ MOVE_EA
     
         ;and off mode
         ANDI #448, D5
+        ASR.L #6, D5
         ;and off data
         ANDI #3584, D6
+        ASR.L #8, D6
+        ASR.L #1, D6
         JSR EA_DECODER
     
         MOVE COMMA, (A3)+
@@ -1165,6 +1169,7 @@ MOVE_EA
     
         ;and off mode
         ANDI #56, D5
+        ASR.L #3, D5
         ;and off data
         ANDI #7, D6
         JSR EA_DECODER
@@ -1174,10 +1179,10 @@ MOVE_EA
 MOVEM_EA
     ;check if we're reading from or writing to memory.
     MOVE.W D0, D5
-    AND #1024, D5
+    ANDI #1024, D5
     CMP #0, D5
     BEQ MOVEM_EA_TO_MEM
-    CMP #1, D5
+    CMP #1024, D5
     BEQ MOVEM_EA_TO_MEM
     
     ;Error-handling return
@@ -1195,7 +1200,7 @@ MOVEQ_EA
     ;set mode to immediate
     MOVE #7, D0
     ;and off data
-    ANDI #255, D6
+    ANDI #255, D7
     JSR EA_DECODER
     
     MOVE COMMA, (A3)+
@@ -1207,6 +1212,8 @@ MOVEQ_EA
     CLR.L D5
     ;and off data
     ANDI #3584, D6
+    ASR.L #8, D6
+    ASR.L #1, D6
     JSR EA_DECODER
     
     RTS
@@ -1217,8 +1224,11 @@ LEA_EA
     
     ;and off mode
     ANDI #448, D5
+    ASR.L #6, D5
     ;and off data
     ANDI #3584, D6
+    ASR.L #8, D6
+    ASR.L #1, D6
     JSR EA_DECODER
     
     MOVE COMMA, (A3)+
@@ -1229,6 +1239,7 @@ LEA_EA
     
     ;and off mode
     ANDI #56, D5
+    ASR.L #3, D5
     ;and off data
     ANDI #7, D6
     JSR EA_DECODER
@@ -1245,7 +1256,7 @@ BSR_EA
     CLR.L D6
     
     MOVE D0, D7
-    AND #255, D7
+    ANDI #255, D7
     CMP #$FF, D7
     BEQ BSR_EA_32
 
@@ -1267,8 +1278,11 @@ DIVS_EA
     
     ;and off mode
     ANDI #448, D5
+    ASR.L #6, D5
     ;and off data
     ANDI #3584, D6
+    ASR.L #8, D6
+    ASR.L #1, D6
     JSR EA_DECODER
     
     MOVE COMMA, (A3)+
@@ -1279,6 +1293,7 @@ DIVS_EA
     
     ;and off mode
     ANDI #56, D5
+    ASR.L #3, D5
     ;and off data
     ANDI #7, D6
     JSR EA_DECODER
@@ -1318,6 +1333,8 @@ SUBQ_EA
     CLR.L D5
     ;and off data for immediate
     ANDI #3584, D7
+    ASR.L #8, D6
+    ASR.L #1, D6
     JSR EA_DECODER
     
     MOVE COMMA, (A3)+
@@ -1327,6 +1344,7 @@ SUBQ_EA
     
     ;and off mode
     ANDI #56, D5
+    ASR.L #3, D5
     ;and off data
     ANDI #7, D6
     JSR EA_DECODER
@@ -1353,6 +1371,8 @@ CMP_EA
     CLR.L D5
     ;and off data
     ANDI #3584, D6
+    ASR.L #8, D6
+    ASR.L #1, D6
     JSR EA_DECODER
 
     RTS
@@ -1363,6 +1383,7 @@ MULU_EA
     
     ;Get mode
     ANDI #56, D5
+    ASR.L #3, D5
     ;and off data
     ANDI #7, D6
     JSR EA_DECODER
@@ -1376,6 +1397,8 @@ MULU_EA
     CLR.L D5
     ;and off data for immediate
     ANDI #3584, D7
+    ASR.L #8, D6
+    ASR.L #1, D6
     JSR EA_DECODER
     
     MOVE.L D0, D5
@@ -1392,8 +1415,11 @@ ADDA_EA
     
     ;and off mode
     ANDI #448, D5
+    ASR.L #8, D5
     ;and off data
     ANDI #3584, D6
+    ASR.L #8, D6
+    ASR.L #1, D6
     JSR EA_DECODER
     
     MOVE COMMA, (A3)+
@@ -1404,6 +1430,7 @@ ADDA_EA
     
     ;and off mode
     ANDI #56, D5
+    ASR.L #3, D5
     ;and off data
     ANDI #7, D6
     JSR EA_DECODER
@@ -1417,7 +1444,8 @@ ASL_EA
 ASR_EA
     ;Check bit 5 to see if its a register or count.
     MOVE D0, D5
-    AND #32, D5
+    ANDI #32, D5
+    ASR.L #5, D5
     CMP #0, D5
     BEQ ASR_EA_NUM
     CMP #1, D5
@@ -1429,6 +1457,7 @@ ASR_EA
 ASR_EA_NUM
     ;Set to immediate data;
     MOVE #7, D5
+    ;Missing something here.
     JSR EA_DECODER
     
     MOVE COMMA, (A3)+
@@ -1444,6 +1473,8 @@ ASR_EA_REG
     CLR.L D5
     MOVE D0, D6
     AND #3584, D6
+    ASR.L #8, D6
+    ASR.L #1, D6
     JSR EA_DECODER  
     
     MOVE COMMA, (A3)+
@@ -1871,6 +1902,7 @@ DECREMENT           DC.B    '-'
 POUND               DC.B    '#'
 PERCENTAGE          DC.B    '%'
         END    START        ; last line of source
+
 
 
 
