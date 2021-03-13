@@ -173,9 +173,7 @@ OP_START:
         MOVEM.L  D2/A6, -(SP)    ; D2 (Screen line), A6 Ending Address
         
         JSR     OP_DATA_CLR
-        ; LEA     A3, buffer    ; Loads the message in 
-        
-      
+
         LEA      OP_JMP_TABLE, A0
         CLR.L    D0
         CLR.L    D1
@@ -185,7 +183,7 @@ OP_START:
         MOVE.L   (A5)+,D7
         
         ; Back it up 32 bits 
-        SUB.L    #32, A5
+        SUB.L    #$4, A5
         
         MOVE.L   D0,D1          ; Move word instruct to D1
         MOVE.B   #right12, D2   
@@ -204,6 +202,7 @@ OP_MOVECALC:
         
         CMP.B   #1, D4       ; Move 16 bits of data
         BEQ     OP_MOVE16
+        
         RTS                 ; Move 0 bits of data
         
 OP_MOVE32:                  ; #2
@@ -760,7 +759,7 @@ OP_NOP_RTS_RTE:
         CMP.B   #1, D1       NOP --> 0001 
         BEQ     OP_NOP
 
-        CMP.B   #2, D1       NOP --> 0001 
+        CMP.B   #2, D1       STOP --> 0001 
         BEQ     OP_STOP
         
         CMP.B   #3, D1      RTE --> 0011 
@@ -775,27 +774,27 @@ OP_NOP:
         MOVE.B  #'N', (A3)+
         MOVE.B  #'O', (A3)+
         MOVE.B  #'P', (A3)+
-        
         ; Loop back into OP Decode
         JMP     OP_FINISH
+        
 OP_STOP: 
-        MOVE.B  #'S', (A3)+
-        MOVE.B  #'T', (A3)+
-        MOVE.B  #'O', (A3)+
-        MOVE.B  #'P', (A3)+     
-
+        ;MOVE.B  #'S', (A3)+
+        ;MOVE.B  #'T', (A3)+
+        ;MOVE.B  #'O', (A3)+
+        ;MOVE.B  #'P', (A3)+     
+        JMP     OP_UNSUPPORTED
         JMP     OP_FINISH   
+        
 OP_RTE: 
         MOVE.B  #'R', (A3)+
         MOVE.B  #'T', (A3)+
-        MOVE.B  #'E', (A3)+
-        
+        MOVE.B  #'E', (A3)+  
         JMP     OP_FINISH
+        
 OP_RTS: 
         MOVE.B  #'R', (A3)+
         MOVE.B  #'T', (A3)+
         MOVE.B  #'S', (A3)+
-        
         JMP     OP_FINISH
         
 ;---------------------------------------------------
@@ -1137,7 +1136,6 @@ ORI_EA
     
         ;and off mode
         ANDI #56, D5
-        ASR.L #3, D5
         ;and off data
         ANDI #7, D6
     
@@ -1154,11 +1152,8 @@ MOVE_EA
     
         ;and off mode
         ANDI #448, D5
-        ASR.L #6, D5
         ;and off data
         ANDI #3584, D6
-        ASR.L #8, D6
-        ASR.L #1, D6
         JSR EA_DECODER
     
         MOVE COMMA, (A3)+
@@ -1169,7 +1164,6 @@ MOVE_EA
     
         ;and off mode
         ANDI #56, D5
-        ASR.L #3, D5
         ;and off data
         ANDI #7, D6
         JSR EA_DECODER
@@ -1179,10 +1173,10 @@ MOVE_EA
 MOVEM_EA
     ;check if we're reading from or writing to memory.
     MOVE.W D0, D5
-    ANDI #1024, D5
+    AND #1024, D5
     CMP #0, D5
     BEQ MOVEM_EA_TO_MEM
-    CMP #1024, D5
+    CMP #1, D5
     BEQ MOVEM_EA_TO_MEM
     
     ;Error-handling return
@@ -1200,7 +1194,7 @@ MOVEQ_EA
     ;set mode to immediate
     MOVE #7, D0
     ;and off data
-    ANDI #255, D7
+    ANDI #255, D6
     JSR EA_DECODER
     
     MOVE COMMA, (A3)+
@@ -1212,8 +1206,6 @@ MOVEQ_EA
     CLR.L D5
     ;and off data
     ANDI #3584, D6
-    ASR.L #8, D6
-    ASR.L #1, D6
     JSR EA_DECODER
     
     RTS
@@ -1224,11 +1216,8 @@ LEA_EA
     
     ;and off mode
     ANDI #448, D5
-    ASR.L #6, D5
     ;and off data
     ANDI #3584, D6
-    ASR.L #8, D6
-    ASR.L #1, D6
     JSR EA_DECODER
     
     MOVE COMMA, (A3)+
@@ -1239,7 +1228,6 @@ LEA_EA
     
     ;and off mode
     ANDI #56, D5
-    ASR.L #3, D5
     ;and off data
     ANDI #7, D6
     JSR EA_DECODER
@@ -1256,7 +1244,7 @@ BSR_EA
     CLR.L D6
     
     MOVE D0, D7
-    ANDI #255, D7
+    AND #255, D7
     CMP #$FF, D7
     BEQ BSR_EA_32
 
@@ -1278,11 +1266,8 @@ DIVS_EA
     
     ;and off mode
     ANDI #448, D5
-    ASR.L #6, D5
     ;and off data
     ANDI #3584, D6
-    ASR.L #8, D6
-    ASR.L #1, D6
     JSR EA_DECODER
     
     MOVE COMMA, (A3)+
@@ -1293,7 +1278,6 @@ DIVS_EA
     
     ;and off mode
     ANDI #56, D5
-    ASR.L #3, D5
     ;and off data
     ANDI #7, D6
     JSR EA_DECODER
@@ -1333,8 +1317,6 @@ SUBQ_EA
     CLR.L D5
     ;and off data for immediate
     ANDI #3584, D7
-    ASR.L #8, D6
-    ASR.L #1, D6
     JSR EA_DECODER
     
     MOVE COMMA, (A3)+
@@ -1344,7 +1326,6 @@ SUBQ_EA
     
     ;and off mode
     ANDI #56, D5
-    ASR.L #3, D5
     ;and off data
     ANDI #7, D6
     JSR EA_DECODER
@@ -1371,8 +1352,6 @@ CMP_EA
     CLR.L D5
     ;and off data
     ANDI #3584, D6
-    ASR.L #8, D6
-    ASR.L #1, D6
     JSR EA_DECODER
 
     RTS
@@ -1383,7 +1362,6 @@ MULU_EA
     
     ;Get mode
     ANDI #56, D5
-    ASR.L #3, D5
     ;and off data
     ANDI #7, D6
     JSR EA_DECODER
@@ -1397,8 +1375,6 @@ MULU_EA
     CLR.L D5
     ;and off data for immediate
     ANDI #3584, D7
-    ASR.L #8, D6
-    ASR.L #1, D6
     JSR EA_DECODER
     
     MOVE.L D0, D5
@@ -1415,11 +1391,8 @@ ADDA_EA
     
     ;and off mode
     ANDI #448, D5
-    ASR.L #8, D5
     ;and off data
     ANDI #3584, D6
-    ASR.L #8, D6
-    ASR.L #1, D6
     JSR EA_DECODER
     
     MOVE COMMA, (A3)+
@@ -1430,7 +1403,6 @@ ADDA_EA
     
     ;and off mode
     ANDI #56, D5
-    ASR.L #3, D5
     ;and off data
     ANDI #7, D6
     JSR EA_DECODER
@@ -1444,8 +1416,7 @@ ASL_EA
 ASR_EA
     ;Check bit 5 to see if its a register or count.
     MOVE D0, D5
-    ANDI #32, D5
-    ASR.L #5, D5
+    AND #32, D5
     CMP #0, D5
     BEQ ASR_EA_NUM
     CMP #1, D5
@@ -1457,7 +1428,6 @@ ASR_EA
 ASR_EA_NUM
     ;Set to immediate data;
     MOVE #7, D5
-    ;Missing something here.
     JSR EA_DECODER
     
     MOVE COMMA, (A3)+
@@ -1473,8 +1443,6 @@ ASR_EA_REG
     CLR.L D5
     MOVE D0, D6
     AND #3584, D6
-    ASR.L #8, D6
-    ASR.L #1, D6
     JSR EA_DECODER  
     
     MOVE COMMA, (A3)+
@@ -1871,13 +1839,13 @@ START_MESS              DC.B    'Enter a start address',CR,LF,0
 REPEAT_MESS             DC.B    'Enter Y to disassemble another program, N to quit',CR,LF,0
 INVALID_MESS            DC.B    'Wrong Input, Try again', CR,LF,0
 END_MESS                DC.B    'Enter the end address',CR,LF,0
-ATOI_MESS_ERROR         DC.B    'Invalid inputs for HEX values, Please try again',CR,LF,LF,0
-START_ADDR_ERROR        DC.B    'Invalid start address, Please try again',CR,LF,LF,0
-END_ADDR_ERROR          DC.B    'Invalid end address, Please try again',CR,LF,LF,0
+ATOI_MESS_ERROR         DC.B    'Invalid inputs for HEX values, Please try again',CR,LF,0
+START_ADDR_ERROR        DC.B    'Invalid start address, Please try again',CR,LF,0
+END_ADDR_ERROR          DC.B    'Invalid end address, Please try again',CR,LF,0
 buffer                  DS.B    bufferSize
 MAX_SCREEN_OUTPUT       DC.B    'Press enter any key to continue the program',CR,LF,0
 DECODE_OP_ERROR         DC.B    'Error in reading the instruction. Invalid Op code readings', CR, LF,0
-DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
+DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings',CR,LF,0
 REG_D0              DC.B    'D0'
 REG_D1              DC.B    'D1'
 REG_D2              DC.B    'D2'
