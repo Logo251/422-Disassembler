@@ -185,7 +185,7 @@ OP_START:
         MOVE.L   (A5)+,D7
         
         ; Back it up 32 bits 
-        SUB.L    #32, A5
+        SUB.L    #$4, A5
         
         MOVE.L   D0,D1          ; Move word instruct to D1
         MOVE.B   #right12, D2   
@@ -207,11 +207,11 @@ OP_MOVECALC:
         RTS                 ; Move 0 bits of data
         
 OP_MOVE32:                  ; #2
-        ADD.L   #32, A5
+        ADD.L   #$4, A5
         RTS
         
 OP_MOVE16:                  ; #1
-        ADD.L   #16, A5
+        ADD.L   #$2, A5
         RTS
          
 ;-------------------------------------------
@@ -748,8 +748,8 @@ OP_NOP_RTS_RTE:
         MOVE.B  #right4, D2         
         LSR.W   D2,D1               ; D1 = 2nd nibble
         
-        CMP.W   #$E70, D1
-        BEQ     OP_ERROR
+        CMP.W   #$0E7, D1
+        BNE     OP_ERROR
         
         CLR.L   D1
         MOVE.L  D0,D1               ; Current instruct word
@@ -779,12 +779,13 @@ OP_NOP:
         ; Loop back into OP Decode
         JMP     OP_FINISH
 OP_STOP: 
-        MOVE.B  #'S', (A3)+
-        MOVE.B  #'T', (A3)+
-        MOVE.B  #'O', (A3)+
-        MOVE.B  #'P', (A3)+     
+        ;MOVE.B  #'S', (A3)+
+        ;MOVE.B  #'T', (A3)+
+        ;MOVE.B  #'O', (A3)+
+        ;MOVE.B  #'P', (A3)+     
 
-        JMP     OP_FINISH   
+        JMP     OP_UNSUPPORTED
+        ; JMP     OP_FINISH   
 OP_RTE: 
         MOVE.B  #'R', (A3)+
         MOVE.B  #'T', (A3)+
@@ -1902,6 +1903,7 @@ DECREMENT           DC.B    '-'
 POUND               DC.B    '#'
 PERCENTAGE          DC.B    '%'
         END    START        ; last line of source
+
 
 
 
