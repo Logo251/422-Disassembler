@@ -195,7 +195,7 @@ OP_START:
         MOVE.L   (A5)+,D7
         
         ; Back it up 32 bits 
-        SUB.L    #$4, A5
+        SUB.L    #$4, A3
         
         MOVE.L   D0,D1          ; Move word instruct to D1
         MOVE.B   #right12, D2   
@@ -217,11 +217,11 @@ OP_MOVECALC:
         RTS                 ; Move 0 bits of data
         
 OP_MOVE32:                  ; #2
-        ADD.L   #$4, A5
+        ADD.L   #32, A5
         RTS
         
 OP_MOVE16:                  ; #1
-        ADD.L   #$2, A5
+        ADD.L   #16, A5
         RTS
          
 ;-------------------------------------------
@@ -778,8 +778,8 @@ OP_NOP_RTS_RTE:
         MOVE.B  #right4, D2         
         LSR.W   D2,D1               ; D1 = 2nd nibble
         
-        CMP.W   #$0E7, D1
-        BNE     OP_ERROR
+        CMP.W   #$E70, D1
+        BEQ     OP_ERROR
         
         CLR.L   D1
         MOVE.L  D0,D1               ; Current instruct word
@@ -809,13 +809,12 @@ OP_NOP:
         ; Loop back into OP Decode
         JMP     OP_FINISH
 OP_STOP: 
-        ;MOVE.B  #'S', (A3)+
-        ;MOVE.B  #'T', (A3)+
-        ;MOVE.B  #'O', (A3)+
-        ;MOVE.B  #'P', (A3)+     
+        MOVE.B  #'S', (A3)+
+        MOVE.B  #'T', (A3)+
+        MOVE.B  #'O', (A3)+
+        MOVE.B  #'P', (A3)+     
 
-        JMP     OP_UNSUPPORTED
-        ; JMP     OP_FINISH   
+        JMP     OP_FINISH   
 OP_RTE: 
         MOVE.B  #'R', (A3)+
         MOVE.B  #'T', (A3)+
@@ -1182,6 +1181,19 @@ MOVEA_EA
 MOVE_EA
         MOVE.L D0, D5
         MOVE.L D0, D6
+        
+        ;and off mode
+        ANDI #56, D5
+        ASR.L #3, D5
+        ;and off data
+        ANDI #7, D6
+        JSR EA_DECODER
+    
+        MOVE.B #',', (A3)+
+    
+        ; Grab the other mode
+        MOVE.L D0, D5
+        MOVE.L D0, D6
     
         ;and off mode
         ANDI #448, D5
@@ -1190,19 +1202,6 @@ MOVE_EA
         ANDI #3584, D6
         ASR.L #8, D6
         ASR.L #1, D6
-        JSR EA_DECODER
-    
-        MOVE COMMA, (A3)+
-    
-        ; Grab the other mode
-        MOVE.L D0, D5
-        MOVE.L D0, D6
-    
-        ;and off mode
-        ANDI #56, D5
-        ASR.L #3, D5
-        ;and off data
-        ANDI #7, D6
         JSR EA_DECODER
     
         RTS
@@ -1234,7 +1233,7 @@ MOVEQ_EA
     ANDI #255, D7
     JSR EA_DECODER
     
-    MOVE COMMA, (A3)+
+    MOVE.B #',', (A3)+
 
     MOVE.L D0, D5
     MOVE.L D0, D6
@@ -1262,7 +1261,7 @@ LEA_EA
     ASR.L #1, D6
     JSR EA_DECODER
     
-    MOVE COMMA, (A3)+
+    MOVE.B #',', (A3)+
     
     ; Grab the other mode
     MOVE.L D0, D5
@@ -1316,7 +1315,7 @@ DIVS_EA
     ASR.L #1, D6
     JSR EA_DECODER
     
-    MOVE COMMA, (A3)+
+    MOVE.B #',', (A3)+
     
     ; Grab the other mode
     MOVE.L D0, D5
@@ -1342,7 +1341,7 @@ SUB_EA
     JSR EA_DECODER
     MOVE.L D0, D6
     
-    MOVE COMMA, (A3)+
+    MOVE.B #',', (A3)+
     
     ;sub only works on data registers, so we set mode to data
     CLR.L D5
@@ -1368,7 +1367,7 @@ SUBQ_EA
     ASR.L #1, D6
     JSR EA_DECODER
     
-    MOVE COMMA, (A3)+
+    MOVE.B #',', (A3)+
     
     MOVE.L D0, D5
     MOVE.L D0, D6
@@ -1392,7 +1391,7 @@ CMP_EA
     ANDI #7, D6
     JSR EA_DECODER
             
-    MOVE COMMA, (A3)+
+    MOVE.B #',', (A3)+
     
     ;Do other part of the EA
     MOVE.L D0, D5
@@ -1419,7 +1418,7 @@ MULU_EA
     ANDI #7, D6
     JSR EA_DECODER
    
-    MOVE COMMA, (A3)+
+    MOVE.B #',', (A3)+
     
     MOVE.L D0, D5
     MOVE.L D0, D6
@@ -1453,7 +1452,7 @@ ADDA_EA
     ASR.L #1, D6
     JSR EA_DECODER
     
-    MOVE COMMA, (A3)+
+    MOVE.B #',', (A3)+
     
     ; Grab the other mode
     MOVE.L D0, D5
@@ -1491,7 +1490,7 @@ ASR_EA_NUM
     ;Missing something here.
     JSR EA_DECODER
     
-    MOVE COMMA, (A3)+
+    MOVE.B #',', (A3)+
     
     ;Set to data register
     CLR.L D5
@@ -1508,7 +1507,7 @@ ASR_EA_REG
     ASR.L #1, D6
     JSR EA_DECODER  
     
-    MOVE COMMA, (A3)+
+    MOVE.B #',', (A3)+
     
     ;Set to data register
     CLR.L D5
@@ -1518,6 +1517,8 @@ ASR_EA_REG
 
 
 EA_DECODER:
+    ;Add space.
+    MOVE.B #' ', (A3)+
     ;Jump to the Mode given.
     LEA EAJUMPTABLE, A0
     MULU #6, D5
@@ -1619,7 +1620,7 @@ MODE2
     RTS
 
 MODE3
-    MOVE OPEN_PARENTHESIS, (A3)+
+    MOVE.B #'(', (A3)+
 
     CMP #0, D6
     BEQ APPEND_A0
@@ -1645,13 +1646,13 @@ MODE3
     CMP #7, D6
     BEQ APPEND_A7
     
-    MOVE CLOSE_PARENTHESIS, (A3)+
+    MOVE.B ')', (A3)+
     
     ;Return
     RTS
 
 MODE4
-    MOVE OPEN_PARENTHESIS, (A3)+
+    MOVE.B ')', (A3)+
 
     CMP #0, D6
     BEQ APPEND_A0
@@ -1677,8 +1678,8 @@ MODE4
     CMP #7, D6
     BEQ APPEND_A7
     
-    MOVE CLOSE_PARENTHESIS, (A3)+
-    MOVE INCREMENT, (A3)+
+    MOVE.B #')', (A3)+
+    MOVE.B #'+', (A3)+
     
     ;Return
     RTS
@@ -1704,85 +1705,101 @@ MODE7
     RTS
 
 MODE_7_SHORT
-    MOVE PERCENTAGE, (A3)+
+    MOVE.B #'%', (A3)+
     ROR #8, D7
     MOVE #16, D5
     
     RTS
     
 MODE_7_LONG
-    MOVE PERCENTAGE, (A3)+
+    MOVE.B #'%', (A3)+
     MOVE #32, D5
     RTS
 
 MODE_7_IMM
-    MOVE POUND,(A3)+
+    MOVE.B #'#',(A3)+
     MOVE #16, D5
     
     RTS
 
 APPEND_D0
-    MOVE REG_D0, (A3)+
+    MOVE.B  #'D', (A3)+
+    MOVE.B  #'0', (A3)+
     RTS
 
 APPEND_D1
-    MOVE REG_D1, (A3)+
+    MOVE.B  #'D', (A3)+
+    MOVE.B  #'1', (A3)+
     RTS
 
 APPEND_D2
-    MOVE REG_D1, (A3)+
+    MOVE.B  #'D', (A3)+
+    MOVE.B  #'2', (A3)+
     RTS
 
 APPEND_D3
-    MOVE REG_D2, (A3)+
+    MOVE.B  #'D', (A3)+
+    MOVE.B  #'3', (A3)+
     RTS
 
 APPEND_D4
-    MOVE REG_D3, (A3)+
+    MOVE.B  #'D', (A3)+
+    MOVE.B  #'4', (A3)+
     RTS
 
 APPEND_D5
-    MOVE REG_D4, (A3)+
+    MOVE.B  #'D', (A3)+
+    MOVE.B  #'5', (A3)+
     RTS
 
 APPEND_D6
-    MOVE REG_D5, (A3)+
+    MOVE.B  #'D', (A3)+
+    MOVE.B  #'6', (A3)+
     RTS
 
 APPEND_D7
-    MOVE REG_D6, (A3)+
+    MOVE.B  #'D', (A3)+
+    MOVE.B  #'7', (A3)+
     RTS
     
 APPEND_A0
-    MOVE REG_A0, (A3)+
+    MOVE.B  #'A', (A3)+
+    MOVE.B  #'0', (A3)+
     RTS
 
 APPEND_A1
-    MOVE REG_A1, (A3)+
+    MOVE.B  #'A', (A3)+
+    MOVE.B  #'1', (A3)+
     RTS
 
 APPEND_A2
-    MOVE REG_A2, (A3)+
+    MOVE.B  #'A', (A3)+
+    MOVE.B  #'2', (A3)+
     RTS
 
 APPEND_A3
-    MOVE REG_A3, (A3)+
+    MOVE.B  #'A', (A3)+
+    MOVE.B  #'3', (A3)+
     RTS
 
 APPEND_A4
-    MOVE REG_A4, (A3)+
+    MOVE.B  #'A', (A3)+
+    MOVE.B  #'4', (A3)+
     RTS
 
 APPEND_A5
-    MOVE REG_A5, (A3)+
+    MOVE.B  #'A', (A3)+
+    MOVE.B  #'5', (A3)+
     RTS
 
 APPEND_A6
-    MOVE REG_A6, (A3)+
+    MOVE.B  #'A', (A3)+
+    MOVE.B  #'6', (A3)+
     RTS
     
 APPEND_A7
-    MOVE REG_A7, (A3)+
+    MOVE.B  #'A', (A3)+
+    MOVE.B  #'7', (A3)+
     RTS
 
 ITOA:                       ; Converts hex string into int 
@@ -1909,58 +1926,7 @@ buffer                  DS.B    bufferSize
 MAX_SCREEN_OUTPUT       DC.B    'Press enter any key to continue the program',CR,LF,0
 DECODE_OP_ERROR         DC.B    'Error in reading the instruction. Invalid Op code readings', CR, LF,0
 DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
-REG_D0              DC.B    'D0'
-REG_D1              DC.B    'D1'
-REG_D2              DC.B    'D2'
-REG_D3              DC.B    'D3'
-REG_D4              DC.B    'D4'
-REG_D5              DC.B    'D5'
-REG_D6              DC.B    'D6'
-REG_D7              DC.B    'D7'
-REG_A0              DC.B    'A0'
-REG_A1              DC.B    'A1'
-REG_A2              DC.B    'A2'
-REG_A3              DC.B    'A3'
-REG_A4              DC.B    'A4'
-REG_A5              DC.B    'A5'
-REG_A6              DC.B    'A6'
-REG_A7              DC.B    'A7'
-COMMA               DC.B    ','
-OPEN_PARENTHESIS    DC.B    '('
-CLOSE_PARENTHESIS   DC.B    ')'
-INCREMENT           DC.B    '+'
-DECREMENT           DC.B    '-'
-POUND               DC.B    '#'
-PERCENTAGE          DC.B    '%'
         END    START        ; last line of source
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
