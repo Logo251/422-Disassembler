@@ -1151,14 +1151,12 @@ MOVEA_EA
 MOVE_EA
         MOVE.L D0, D5
         MOVE.L D0, D6
-    
+        
         ;and off mode
-        ANDI #448, D5
-        ASR.L #6, D5
+        ANDI #56, D5
+        ASR.L #3, D5
         ;and off data
-        ANDI #3584, D6
-        ASR.L #8, D6
-        ASR.L #1, D6
+        ANDI #7, D6
         JSR EA_DECODER
     
         MOVE.B #',', (A3)+
@@ -1168,10 +1166,12 @@ MOVE_EA
         MOVE.L D0, D6
     
         ;and off mode
-        ANDI #56, D5
-        ASR.L #3, D5
+        ANDI #448, D5
+        ASR.L #6, D5
         ;and off data
-        ANDI #7, D6
+        ANDI #3584, D6
+        ASR.L #8, D6
+        ASR.L #1, D6
         JSR EA_DECODER
     
         RTS
@@ -1487,6 +1487,8 @@ ASR_EA_REG
 
 
 EA_DECODER:
+    ;Add space.
+    MOVE.B #' ', (A3)+
     ;Jump to the Mode given.
     LEA EAJUMPTABLE, A0
     MULU #6, D5
@@ -1895,34 +1897,6 @@ MAX_SCREEN_OUTPUT       DC.B    'Press enter any key to continue the program',CR
 DECODE_OP_ERROR         DC.B    'Error in reading the instruction. Invalid Op code readings', CR, LF,0
 DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
         END    START        ; last line of source
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
