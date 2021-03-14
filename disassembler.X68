@@ -55,6 +55,7 @@ RESTART_PROGRAM:
         MOVEQ   #0,D0
         MOVEQ   #0,D2
         JSR     CLEAR_SCREEN
+        
 START_ADDR:
         MOVEQ   #0,D2
         ; Prompt a start address
@@ -195,7 +196,7 @@ OP_START:
         MOVE.L   (A5)+,D7
         
         ; Back it up 32 bits 
-        SUB.L    #$4, A3
+        SUB.L    #$4, A5
         
         MOVE.L   D0,D1          ; Move word instruct to D1
         MOVE.B   #right12, D2   
@@ -217,11 +218,11 @@ OP_MOVECALC:
         RTS                 ; Move 0 bits of data
         
 OP_MOVE32:                  ; #2
-        ADD.L   #32, A5
+        ADD.L   #$4, A5
         RTS
         
 OP_MOVE16:                  ; #1
-        ADD.L   #16, A5
+        ADD.L   #$2, A5
         RTS
          
 ;-------------------------------------------
@@ -1927,6 +1928,7 @@ MAX_SCREEN_OUTPUT       DC.B    'Press enter any key to continue the program',CR
 DECODE_OP_ERROR         DC.B    'Error in reading the instruction. Invalid Op code readings', CR, LF,0
 DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
         END    START        ; last line of source
+
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
