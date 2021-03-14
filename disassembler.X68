@@ -43,15 +43,20 @@ WELCOME:
 ;   User Interface 
 ; ----------------------------------------------------------------------------  
 USER_INPUT:
+        JMP     START_ADDR
+        
 RESTART_PROGRAM: 
         MOVEQ   #0,D1
         MOVEA.L #$0, A1
+        MOVEA.L #$0, A3
         MOVEA.L #$0, A5
         MOVEA.L #$0, A6
         MOVEQ   #0,D3       
         MOVEQ   #0,D0
-        
+        MOVEQ   #0,D2
+        JSR     CLEAR_SCREEN
 START_ADDR:
+        MOVEQ   #0,D2
         ; Prompt a start address
         LEA     START_MESS, A1
         MOVE.B  #task14,D0
@@ -74,7 +79,7 @@ START_ADDR:
         BCS     ERROR_START_ADDR
         ROL.L   #1, D3
         MOVEA.L D3,A5           ; A5 = start address
-                
+        ADDQ    #2,D2        
 END_ADDR:         
         ; Prompt end address
         MOVEQ   #0,D3       ; Reset D3 Register
@@ -107,7 +112,8 @@ END_ADDR:
         CMP.L   D3, A5 
         BGE     ERROR_END_ADDR
         MOVEA.L D3,A6       ; A6 = end address
-        
+        ADDQ    #2,D2
+        JMP     DECODE_LOOP
       
 ; ----------------------------------------------------------------------------
 ;   OP Code Start
@@ -132,8 +138,8 @@ DECODE_LOOP:
         ; Check if the screen filled
         ADDQ.B  #1,D2           ; Adds one to the total # of lines on the screen 
         CMP.B   #linesOnScreen, D2  ; Check if it exceds the max 
-        BGE     DECODE_PAUSE
-       
+        BEQ     DECODE_PAUSE
+
         BRA     DECODE_LOOP
         
 DECODE_PAUSE:   
@@ -152,23 +158,27 @@ DECODE_PAUSE:
         
 CLEAR_SCREEN: 
         ; Clear output for the screen 
-        MOVE.B  #30, D0
+        CLR.L   D4
+        MOVE.B  #30, D4
         JSR     CLEAR_SCREEN_LOOP
         RTS
         
 CLEAR_SCREEN_LOOP: 
         LEA     BLANK,  A1
-        MOVE.B  #task14, D0     ; Display the input that it exceeds 
+        MOVE.B  #task13, D0     ; Display the input that it exceeds 
         TRAP    #15 
         
         ; Subtract 1 until it reaches 0 
-        SUBI    #1,D0
-        CMP.B   #1, D0
-        BGT     CLEAR_SCREEN_LOOP
+        SUBI.B  #1,D4
+        CMP.B   #0, D4
+        BEQ     CLEAR_SCREEN_DONE
         
+        JMP     CLEAR_SCREEN_LOOP
+CLEAR_SCREEN_DONE: 
         CLR.L   D0
-        RTS
-        
+        CLR.L   D4
+        RTS    
+   
 OP_START: 
         MOVEM.L  D2/A6, -(SP)    ; D2 (Screen line), A6 Ending Address
         
@@ -229,6 +239,7 @@ OP_DATA_CLR:
         RTS
         
 OP_DATA_CLR_LOOP:
+        MOVEA.L $0, A3
         MOVE.B  #0,(A3)+
         SUBI    #1,D3
         BGT     OP_DATA_CLR_LOOP
@@ -238,7 +249,7 @@ REPEAT_PROGRAM:
         ; Output text to continue 
         LEA     REPEAT_MESS, A1
         MOVE.B  #task14,D0
-        TRAP    #15           Display  Error Message
+        TRAP    #15           Display  message asking to repeat 
         
         CLR.L   D1
         ; Ask for input 
@@ -271,6 +282,7 @@ REPEAT_PROGRAM:
 RESTART_PROGRAM_START: 
         JSR     CLEAR_SCREEN
         JMP     RESTART_PROGRAM
+        
 END_PROGRAM: 
        JMP      DONE 
     
@@ -305,6 +317,7 @@ INDEX0000:
         LSR.W   D2,D1               ; D1 = 2nd nibble
         MULU    #6,D1               
         JMP      0(A0,D1)
+        
 ; ------------------------------------
 ;   OP MOVE.B 
 ; ------------------------------------
@@ -321,8 +334,9 @@ INDEX0001:
         ; Call MOVE EA 
         JSR     MOVEA_EA
         JMP     OP_FINISH
+        
 ; ------------------------------------
-;   OP MOVEA / MOVE WORD
+;   OP MOVEA / MOVE long
 ; ------------------------------------
 INDEX0010:
         CLR.L   D3
@@ -349,14 +363,15 @@ INDEX0010:
         ; Call MOVE EA
         JSR     MOVEA_EA
         JMP     OP_FINISH
+        
 ; ------------------------------------
-;   OP MOVEA / MOVE Long 
+;   OP MOVEA / MOVE word  
 ; ------------------------------------
 INDEX0011:
         CLR.L   D3
         CLR.L   D1
         CLR.L   D2
-        MOVE.B   #2, D3        ; long 
+        MOVE.B   #2, D3        ; word 
         
         MOVE.B  #'M', (A3)+
         MOVE.B  #'O', (A3)+
@@ -377,6 +392,7 @@ INDEX0011:
         ; Call MOVE EA
         JSR     MOVEA_EA
         JMP     OP_FINISH
+        
 ; ------------------------------------
 ;   OP  NOP, MOVEM, LEA 
 ; ------------------------------------ 
@@ -448,10 +464,7 @@ INDEX1000:
         ANDI.B  #1, D1
         BEQ     OP_DIVS           ; If last bit = 1 --> DIVS 
         BNE     OP_DIVU            ; If lat bit = 0 --> DIVU
-        
-        
-INDEX1010: 
-        JMP     OP_UNSUPPORTED
+                
 ; ------------------------------------
 ;   OP SUB --> DONE
 ; ------------------------------------ 
@@ -462,6 +475,13 @@ INDEX1001:
         MOVE.B  #'.', (A3)+   
 
         JMP     OP_SUB
+
+; ------------------------------------
+;   OP Code not supported 
+; ------------------------------------         
+INDEX1010: 
+        JMP     OP_UNSUPPORTED
+        
 ; ------------------------------------
 ;   OP CMP --> Forgot to do this one lol 
 ; ------------------------------------         
@@ -478,6 +498,7 @@ INDEX1011:
         LSR.W   D2,D1               ; D1 = 2nd nibble
         
         JMP     OP_CMP
+        
 ; ------------------------------------
 ;   OP MULU --> Done
 ; ------------------------------------ 
@@ -493,6 +514,7 @@ INDEX1100:
         ; Call EA for MULU
         JSR     MULU_EA
         JMP     OP_FINISH
+        
 ; ------------------------------------
 ;   OP ADD,ADDA     --> Needs a lot of work 
 ; ------------------------------------
@@ -506,6 +528,7 @@ INDEX1101:
         CMP.B   #$11, D1
         BEQ     OP_ADDA
         BNE     OP_ADD
+        
 ; ------------------------------------
 ;   OP ASL,ASR    --> Figure out Rotation 
 ; ------------------------------------ 
@@ -519,9 +542,16 @@ INDEX1110:
         MULU    #6,D1               
         JMP     0(A0,D1)
 
+; ------------------------------------
+;   OP Code not supported 
+; ------------------------------------         
 INDEX1111:
         JMP     OP_UNSUPPORTED
         
+
+; ------------------------------------
+;   JUMP Tables for OP codes 
+; ------------------------------------         
 OP_0000_TABLE: 
         JMP     OP_ORI              ; 0: ORI
         JMP     OP_UNSUPPORTED      ; 1: Not supported  
@@ -1866,7 +1896,7 @@ DONE:
 * Put variables and constants here
 CR      EQU     $0D
 LF      EQU     $0A
-BLANK                   DC.B    CR,LF,0
+BLANK                   DC.B    '',CR,LF,0
 WELCOME_MESS            DC.B    'Welcome to the disassembler program',CR,LF,0
 START_MESS              DC.B    'Enter a start address',CR,LF,0
 REPEAT_MESS             DC.B    'Enter Y to disassemble another program, N to quit',CR,LF,0
