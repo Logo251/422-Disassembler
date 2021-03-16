@@ -1571,6 +1571,8 @@ SUB_EA
         CLR.L D5
         ;and off data
         ANDI #3584, D6
+        ASR.L #8, D6
+        ASR.L #1, D6
         JSR EA_DECODER
 
         RTS
@@ -1668,12 +1670,10 @@ ADDA_EA
         MOVE.L D0, D6
     
         ;and off mode
-        ANDI #448, D5
-        ASR.L #8, D5
+        ANDI #56, D5
+        ASR.L #3, D5
         ;and off data
-        ANDI #3584, D6
-        ASR.L #8, D6
-        ASR.L #1, D6
+        ANDI #7, D6
         JSR EA_DECODER
     
         MOVE.B #',', (A3)+
@@ -1681,12 +1681,14 @@ ADDA_EA
         ; Grab the other mode
         MOVE.L D0, D5
         MOVE.L D0, D6
-    
+        
         ;and off mode
-        ANDI #56, D5
-        ASR.L #3, D5
+        ANDI #448, D5
+        ASR.L #8, D5
         ;and off data
-        ANDI #7, D6
+        ANDI #3584, D6
+        ASR.L #8, D6
+        ASR.L #1, D6
         JSR EA_DECODER
     
         RTS
@@ -2274,6 +2276,11 @@ DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
 
 
 
+
+*~Font name~Courier New~
+*~Font size~10~
+*~Tab type~1~
+*~Tab size~4~
 
 *~Font name~Courier New~
 *~Font size~10~
