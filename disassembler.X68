@@ -28,7 +28,7 @@ right3      EQU     3       ; Extract the scr mode
 
 nibble2     EQU     $0F00   ; Extract 2nd nibble
 nibble3     EQU     $00F0   ; Extract 3rd nibble
-destmode    EQU     $0E00   ; Extract the dest mode
+destmode    EQU     $01C0   ; Extract the dest mode
 srcmode     EQU     $0038   ; Extract the scr mode
 size        EQU     $00C0   ; Extract the size
 
@@ -104,7 +104,6 @@ END_ADDR:
         ROR.L   #1, D3
         BCS     ERROR_START_ADDR
         ROL.L   #1, D3
-        
         
         CMP.L   #$000FFFFFF, D3 
         BGE     ERROR_END_ADDR
@@ -297,8 +296,8 @@ OP_JMP_TABLE:
         JMP     INDEX0110        ; BRA, BSR
         JMP     INDEX0111        ; MOVEQ
         JMP     INDEX1000        ; DIVU
-        JMP     INDEX1010        ; Unsupported
         JMP     INDEX1001        ; SUB
+        JMP     INDEX1010
         JMP     INDEX1011        ; CMP 
         JMP     INDEX1100        ; MULU
         JMP     INDEX1101        ; ADD, ADDA
@@ -462,12 +461,12 @@ INDEX1000:
         MOVE.B  #right8, D2         
         LSR.W   D2,D1               ; D1 = 2nd nibble
 
-        ANDI.B  #1, D1
+        CMP.B  #1, D1
         BEQ     OP_DIVS           ; If last bit = 1 --> DIVS 
         BNE     OP_DIVU            ; If lat bit = 0 --> DIVU
                 
 ; ------------------------------------
-;   OP SUB --> DONE
+;   OP SUB --> Need to Implement
 ; ------------------------------------ 
 INDEX1001: 
         MOVE.B  #'S', (A3)+
@@ -507,14 +506,19 @@ INDEX1100:
         MOVE.B  #'M', (A3)+
         MOVE.B  #'U', (A3)+
         MOVE.B  #'L', (A3)+    
-        MOVE.B  #'U', (A3)+  
         
         CLR.L   D3
         MOVE.B   #$10, D3
-    
-        ; Call EA for MULU
-        JSR     MULU_EA
-        JMP     OP_FINISH
+
+        CLR.L   D1
+        MOVE.L  D0,D1               ; Current instruct word
+        ANDI.W  #$100,D1         ; Extract 2nd nibble
+        MOVE.B  #right8, D2         
+        LSR.W   D2,D1               ; 
+        
+        CMP.B   #1, D1
+        BEQ     OP_MULS  
+        BNE     OP_MULU
         
 ; ------------------------------------
 ;   OP ADD,ADDA     --> Needs a lot of work 
@@ -522,11 +526,11 @@ INDEX1100:
 INDEX1101:
         CLR.L   D1 
         MOVE.L  D0,D1               ; Current instruct word
-        ANDI.W  #$00C0,D1         ; Extract dest mode
+        ANDI.W  #size,D1         ; Extract dest mode
         MOVE.B  #right6, D2         
         LSR.W   D2,D1
     
-        CMP.B   #$11, D1
+        CMP.B   #3,D1
         BEQ     OP_ADDA
         BNE     OP_ADD
         
@@ -859,13 +863,13 @@ HELPER__ADDSUBQ_SIZE_CAL:
         CLR.L   D3
         MOVE.B   D1, D3  
 
-        CMP.B   #$11, D3
+        CMP.B   #2, D3
         BEQ     HELPER_ADDSUBQ_CONVERT_L
         
-        CMP.B   #$10, D3
+        CMP.B   #1, D3
         BEQ     HELPER_ADDSUBQ_CONVERT_W
         
-        CMP.B   #$0, D3   
+        CMP.B   #0, D3   
         BEQ     HELPER_ADDSUBQ_CONVERT_B
         
 HELPER_ADDSUBQ_CONVERT_L: 
@@ -910,13 +914,13 @@ HELPER_SUB_SIZE_CAL:
         CLR.L   D3
         MOVE.B   D1, D3  
 
-        CMP.B   #$11, D3
+        CMP.B   #2, D3
         BEQ     HELPER_SUB_CONVERT_L
         
-        CMP.B   #$10, D3
+        CMP.B   #1, D3
         BEQ     HELPER_SUB_CONVERT_W
         
-        CMP.B   #$0, D3   
+        CMP.B   #0, D3   
         BEQ     HELPER_SUB_CONVERT_B
         
 HELPER_SUB_CONVERT_L: 
@@ -970,7 +974,7 @@ OP_ADDA:
 HELPER_ADDA_L: 
         CLR.L   D3
         MOVE.B   #3, D3 
-        MOVE.B  #'L', (A3)+
+        MOVE.B   #'L', (A3)+
         
         ;CALL EA
         JSR     ADDA_EA
@@ -978,7 +982,7 @@ HELPER_ADDA_L:
         
 HELPER_ADDA_W: 
         CLR.L   D3
-        MOVE.B   #2, D3 
+        MOVE.B  #2, D3 
         MOVE.B  #'W', (A3)+
 
         ;CALL EA
@@ -1005,15 +1009,15 @@ HELPER_ADD_SIZE_CAL:
         CLR.L   D3
         MOVE.B   D1, D3  
 
-        CMP.B   #$11, D3
+        CMP.B   #2, D3
         BEQ     HELPER_ADD_CONVERT_L
         
-        CMP.B   #$10, D3
+        CMP.B   #1, D3
         BEQ     HELPER_ADD_CONVERT_W
         
-        CMP.B   #$0, D3   
+        CMP.B   #0, D3   
         BEQ     HELPER_ADD_CONVERT_B
-        
+                
 HELPER_ADD_CONVERT_L: 
         CLR.L   D3
         MOVE.B  #3, D3 
@@ -1062,6 +1066,27 @@ OP_BRA:
         ; Call BRA EA 
         JSR     BRA_EA
         JMP     OP_FINISH
+        
+;---------------------------------------------------
+; MULU  calling EA
+;------------------------------------------------- 
+OP_MULU: 
+        MOVE.B  #'U', (A3)+
+
+        ; Call EA
+        JSR     MULU_EA
+        JMP     OP_FINISH
+
+;---------------------------------------------------
+; MULS  calling EA
+;------------------------------------------------- 
+OP_MULS: 
+        MOVE.B  #'S', (A3)+
+
+        ; Call EA
+        JSR     MULU_EA
+        JMP     OP_FINISH        
+        
 ;---------------------------------------------------
 ; DIVS   calling EA
 ;------------------------------------------------- 
@@ -1928,6 +1953,7 @@ MAX_SCREEN_OUTPUT       DC.B    'Press enter any key to continue the program',CR
 DECODE_OP_ERROR         DC.B    'Error in reading the instruction. Invalid Op code readings', CR, LF,0
 DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
         END    START        ; last line of source
+
 
 *~Font name~Courier New~
 *~Font size~10~
