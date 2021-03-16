@@ -158,27 +158,12 @@ DECODE_PAUSE:
         
 CLEAR_SCREEN: 
         ; Clear output for the screen 
-        CLR.L   D4
-        MOVE.B  #30, D4
-        JSR     CLEAR_SCREEN_LOOP
-        RTS
-        
-CLEAR_SCREEN_LOOP: 
+        CLR.L   D2
         LEA     BLANK,  A1
         MOVE.B  #task13, D0     ; Display the input that it exceeds 
         TRAP    #15 
-        
-        ; Subtract 1 until it reaches 0 
-        SUBI.B  #1,D4
-        CMP.B   #0, D4
-        BEQ     CLEAR_SCREEN_DONE
-        
-        JMP     CLEAR_SCREEN_LOOP
-CLEAR_SCREEN_DONE: 
-        CLR.L   D0
-        CLR.L   D4
-        RTS    
-   
+        RTS
+           
 OP_START: 
         MOVEM.L  D2/A6, -(SP)    ; D2 (Screen line), A6 Ending Address
         
@@ -1953,6 +1938,7 @@ MAX_SCREEN_OUTPUT       DC.B    'Press enter any key to continue the program',CR
 DECODE_OP_ERROR         DC.B    'Error in reading the instruction. Invalid Op code readings', CR, LF,0
 DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
         END    START        ; last line of source
+
 
 
 *~Font name~Courier New~
