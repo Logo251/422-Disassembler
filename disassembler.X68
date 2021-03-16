@@ -194,7 +194,10 @@ OP_FINISH:
 OP_MOVECALC: 
         CMP.B   #4, D4      ; Move 32 bits of data
         BEQ     OP_MOVE32
-        
+
+        CMP.B   #1, D4      ; Move 32 bits of data
+        BEQ     OP_MOVE32
+       
         CMP.B   #2, D4       ; Move 16 bits of data
         BEQ     OP_MOVE16
         RTS                 ; Move 0 bits of data
@@ -324,7 +327,7 @@ INDEX0001:
 INDEX0010:
         CLR.L   D3
         CLR.L   D2
-        MOVE.B   #3, D3        ; Long  size
+        MOVE.B   #4, D3        ; Long  size
         
         MOVE.B  #'M', (A3)+
         MOVE.B  #'O', (A3)+
@@ -426,7 +429,7 @@ INDEX0110:
 ; ------------------------------------
 INDEX0111: 
         CLR.L   D3
-        MOVE.B   #3, D3        ; long 
+        MOVE.B   #4, D3        ; long 
         
         JSR     MOVEQ_EA
         JMP     OP_FINISH
@@ -436,7 +439,7 @@ INDEX0111:
 ; ---------------------------------------------------------
 INDEX1000: 
         CLR.L   D3
-        MOVE.B   #2, D3        ; long
+        MOVE.B   #2, D3        ; word
         
         CLR.L   D1
         MOVE.L  D0,D1               ; Current instruct word
@@ -491,7 +494,7 @@ INDEX1100:
         MOVE.B  #'L', (A3)+    
         
         CLR.L   D3
-        MOVE.B   #$10, D3
+        MOVE.B   #2, D3
 
         CLR.L   D1
         MOVE.L  D0,D1               ; Current instruct word
@@ -671,7 +674,7 @@ HELPER_ORIW:
         
 HELPER_ORIL:
         CLR.L   D3
-        MOVE.B   #3, D3
+        MOVE.B   #4, D3
         MOVE.B  #'L', (A3)+
     
         JSR     IMMEDIATE_EA     
@@ -706,7 +709,7 @@ OP_LEA:
     
         ; Long Size 
         CLR.L   D3
-        MOVE.B   #3, D3
+        MOVE.B   #4, D3
        
         ; Call EA for LEA 
         JSR     LEA_EA
@@ -765,7 +768,7 @@ MOVEM_W:
 MOVEM_L: 
         MOVE.B  #'L', (A3)+
         CLR.L   D3 
-        MOVE.B   #3,D3 
+        MOVE.B   #4,D3 
         
         ; CALL MOVEM EA 
         JSR     MOVEM_EA
@@ -873,7 +876,7 @@ HELPER__ADDSUBQ_SIZE_CAL:
         
 HELPER_ADDSUBQ_CONVERT_L: 
         CLR.L   D3
-        MOVE.B  #3, D3 
+        MOVE.B  #4, D3 
         MOVE.B  #'L', (A3)+   
         
         ; CALL EA 
@@ -924,7 +927,7 @@ HELPER_SUB_SIZE_CAL:
         
 HELPER_SUB_CONVERT_L: 
         CLR.L   D3
-        MOVE.B  #3, D3 
+        MOVE.B  #4, D3 
         MOVE.B  #'L', (A3)+   
 
         ; CALL EA  
@@ -972,7 +975,7 @@ OP_ADDA:
         ; EA Calculator 
 HELPER_ADDA_L: 
         CLR.L   D3
-        MOVE.B   #3, D3 
+        MOVE.B   #4, D3 
         MOVE.B   #'L', (A3)+
         
         ;CALL EA
@@ -1019,7 +1022,7 @@ HELPER_ADD_SIZE_CAL:
                 
 HELPER_ADD_CONVERT_L: 
         CLR.L   D3
-        MOVE.B  #3, D3 
+        MOVE.B  #4, D3 
         MOVE.B  #'L', (A3)+   
 
         ; CALL EA  
@@ -1131,7 +1134,7 @@ HELPER_CMP_SIZE_CAL:
         
 HELPER_CMP_CONVERT_L: 
         CLR.L   D3
-        MOVE.B  #3, D3 
+        MOVE.B  #4, D3 
         MOVE.B  #'L', (A3)+   
         ; CALL EA   
         JSR     CMP_EA
@@ -1247,7 +1250,7 @@ OP_ROTATION_SIZE_W:
         
 OP_ROTATION_SIZE_L:
         CLR.L   D3
-        MOVE.B  #3, D3  
+        MOVE.B  #4, D3  
         MOVE.B  #'.', (A3)+
         MOVE.B  #'L', (A3)+
         
@@ -1290,27 +1293,26 @@ OP_ERROR:
 ;IMMEDIATE_EA for ORI,ANDI,SUBI,ADDI
     *D1 = # of ITOA Loop ITERATION
     *D3 = size of instruct
-    *D4 = Shift Data
+    *D0 = Shift Data
     *D5 = Mode
     *D6 = Register
     *D7 = current immediate data
-    *A5 = bits read 
 ;----------------------------------------------    
 IMMEDIATE_EA
         ; Extract dst mode and register
         JSR     MOVE_IMM_DATA
-        MOVE.B  D3, D4
-        MOVE.L D0, D5       ; Mode
+        
         MOVE.L D0, D6       ; Register    
-
+        
+        MOVE.B  D3, D0
         CLR.L   D6
         ANDI.W  #$7,D6
         
         CLR.L   D5
         MOVE.L  D0,D5               ; Current instruct word
         ANDI.W  #$38,D5              
-        MOVE.B  #$3, D4            
-        LSR.W   D4,D5               ; Extract the Mode      
+        MOVE.B  #$3, D0            
+        LSR.W   D0,D5               ; Extract the Mode      
          
         CMP.B   #1, D5          ; Check for valid dst 
         BEQ     DATA_ERROR    
@@ -2010,7 +2012,6 @@ ITOA:                       ; Converts hex string into int
         
 ITOA_LOOP:
         CLR.L   D0 
-        CLR.L   D4
         CLR.L   D6
         
         SUB.B   #1, D3  
