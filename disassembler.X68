@@ -1298,6 +1298,7 @@ OP_ERROR:
 ;----------------------------------------------    
 IMMEDIATE_EA
         ; Extract dst mode and register
+        JSR     MOVE_IMM_DATA
         MOVE.B  D3, D4
         MOVE.L D0, D5       ; Mode
         MOVE.L D0, D6       ; Register    
@@ -1324,10 +1325,35 @@ IMMEDIATE_EA
         ; Call ITOA 
         JSR     ITOA
         
-        JSR     EA_DECODER
+        MOVE.B  #',', (A3)+
+        MOVE.B  #' ', (A3)+
         
+        JSR     EA_DECODER
+        RTS
+        
+MOVE_IMM_DATA: 
+        CLR.L   D4
+        CMP.B   #2, D3
+        BEQ     SHIFT16
+        
+        CMP.B   #1, D3
+        BEQ     SHIFT24 
+        
+        MOVE.B  #4, D4
+        RTS
+        
+SHIFT16: 
+        LSR.L   #8,D7
+        LSR.L   #8,D7
+        MOVE.B  #2, D4
         RTS
 
+SHIFT24
+        LSR.L   #8,D7
+        LSR.L   #8,D7
+        MOVE.B  #4, D4  
+        RTS
+        
 MOVEA_EA
         ;This is the same as MOVE, just that first operand is for sure an address.
         JMP MOVE_EA
@@ -1680,14 +1706,14 @@ EA_DECODER:
         
     ;   This is a jump table that will jump to certain sub-functions based on what the mode is.
 EAJUMPTABLE
-        JMP MODE0       ; ea_immediate
-        JMP MODE1       ; ea_move
-        JMP MODE2       ; ea_lea
-        JMP MODE3       ; ea_dstonly
-        JMP MODE4       ; ea_ext
-        JMP MODE5       ; ea_trap
-        JMP MODE6       ; ea_quick
-        JMP MODE7       ; ea_branch
+        JMP MODE0       
+        JMP MODE1      
+        JMP MODE2       
+        JMP MODE3       
+        JMP MODE4       
+        JMP MODE5       
+        JMP MODE6       
+        JMP MODE7      
     
 MODE0
         ;Implement ITOA
@@ -1974,7 +2000,7 @@ DATA_ERROR:
     ;Iteration Byte = 2 ITOA Loops, Word = 4 ITOA Loops, Long = 8 Loops 
     *D3 = # of ITOA Loop ITERATION
     *D7 = immediate address 
-    *D4 = LSR Moving count
+    *D6 = LSR Moving count
     *D0 = Data that is shifted
 *-------------------------------------------------------------------   
 ITOA:                       ; Converts hex string into int 
@@ -1985,18 +2011,21 @@ ITOA:                       ; Converts hex string into int
 ITOA_LOOP:
         CLR.L   D0 
         CLR.L   D4
+        CLR.L   D6
         
         SUB.B   #1, D3  
         MOVE.L  D7, D0
-        MOVE.B  D3, D4
+        MOVE.B  D3, D6
 
-        MULU    #4, D4      ; The amount that we shift 
-        LSR.L   D4, D0       ; Shift D0 with iteration Loop * 4
+        MULU    #4, D6      ; The amount that we shift 
+        LSR.L   D6, D0       ; Shift D0 with iteration Loop * 4
         
         ANDI.L  #$F, D0          ; Last 4 bits in hex 
-        ADD.W   #48, D0        ; Convert into ASCII +30 
         
-        ; ADD to A3 
+        ; Convert Hex into ASCII 
+        JSR     ITOA_CONVERT
+        
+        ; ADD to A3 Counter 
         JSR     ITOA_ADD_CHAR                  
         ; Checks if counter is empty, ITOA is completed 
         CMP.B   #0,D3
@@ -2007,6 +2036,17 @@ ITOA_LOOP:
 ITOA_DONE:          
         RTS         ; Returns back to last JSR 
 
+ITOA_CONVERT: 
+        CMP.B       #9,D0
+        BLS         ITOA_CONVERT_N
+        
+        ADDI.W      #$37, D0
+        RTS 
+        
+ITOA_CONVERT_N
+        ADDI.W     #$30,D0
+        RTS
+        
 ITOA_ADD_CHAR: 
         CMP.B   #$30, D0
         BEQ     CHAR_0
@@ -2038,19 +2078,19 @@ ITOA_ADD_CHAR:
         CMP.B   #$39, D0
         BEQ     CHAR_9
         
-        CMP.B   #41, D0
+        CMP.B   #$41, D0
         BEQ     CHAR_A
         
         CMP.B   #$42, D0
         BEQ     CHAR_B        
         
-        CMP.B   #43, D0
+        CMP.B   #$43, D0
         BEQ     CHAR_C
         
         CMP.B   #$44, D0
         BEQ     CHAR_D
         
-        CMP.B   #45, D0
+        CMP.B   #$45, D0
         BEQ     CHAR_E
         
         CMP.B   #$46, D0
