@@ -192,10 +192,10 @@ OP_FINISH:
         RTS
 
 OP_MOVECALC: 
-        CMP.B   #2, D4      ; Move 32 bits of data
+        CMP.B   #4, D4      ; Move 32 bits of data
         BEQ     OP_MOVE32
         
-        CMP.B   #1, D4       ; Move 16 bits of data
+        CMP.B   #2, D4       ; Move 16 bits of data
         BEQ     OP_MOVE16
         RTS                 ; Move 0 bits of data
         
@@ -658,7 +658,7 @@ HELPER_ORIB:
         MOVE.B   #1, D3
         MOVE.B  #'B', (A3)+
              
-        JSR     ORI_EA
+        JSR     IMMEDIATE_EA  
         JMP     OP_FINISH
     
 HELPER_ORIW:
@@ -666,7 +666,7 @@ HELPER_ORIW:
         MOVE.B   #2, D3
         MOVE.B  #'W', (A3)+
     
-        JSR     ORI_EA 
+        JSR     IMMEDIATE_EA   
         JMP     OP_FINISH
         
 HELPER_ORIL:
@@ -674,7 +674,7 @@ HELPER_ORIL:
         MOVE.B   #3, D3
         MOVE.B  #'L', (A3)+
     
-        JSR     ORI_EA   
+        JSR     IMMEDIATE_EA     
         JMP     OP_FINISH
 ;---------------------------------------------------
 ; MOVEA . calling EA
@@ -1154,8 +1154,6 @@ HELPER_CMP_CONVERT_B:
         JSR     CMP_EA
         JMP     OP_FINISH
 
-
-
 ;---------------------------------------------------
 ; ASL   Memory Shift only word size 
 ;-------------------------------------------------             
@@ -1287,17 +1285,47 @@ OP_ERROR:
 ;--------------------------------------------------
 ; Effective Address Start   
 ;------------------------------------------------- 
-ORI_EA
-        MOVE.L D0, D5
-        MOVE.L D0, D6
-    
-        ;and off mode
-        ANDI #56, D5
-        ASR.L #3, D5
-        ;and off data
-        ANDI #7, D6
-    
-        JSR EA_DECODER
+
+;----------------------------------------------
+;IMMEDIATE_EA for ORI,ANDI,SUBI,ADDI
+    *D1 = # of ITOA Loop ITERATION
+    *D3 = size of instruct
+    *D4 = Shift Data
+    *D5 = Mode
+    *D6 = Register
+    *D7 = current immediate data
+    *A5 = bits read 
+;----------------------------------------------    
+IMMEDIATE_EA
+        ; Extract dst mode and register
+        MOVE.B  D3, D4
+        MOVE.L D0, D5       ; Mode
+        MOVE.L D0, D6       ; Register    
+
+        CLR.L   D6
+        ANDI.W  #$7,D6
+        
+        CLR.L   D5
+        MOVE.L  D0,D5               ; Current instruct word
+        ANDI.W  #$38,D5              
+        MOVE.B  #$3, D4            
+        LSR.W   D4,D5               ; Extract the Mode      
+         
+        CMP.B   #1, D5          ; Check for valid dst 
+        BEQ     DATA_ERROR    
+        
+        MOVE.B  D3,D1
+        MULU    #2, D3          ; Iteration Byte = 2 ITOA Loops, Word = 4 ITOA Loops, Long = 8 Loops 
+ 
+        MOVE.B  #' ', (A3)+
+        MOVE.B  #'#', (A3)+
+        MOVE.B  #'$', (A3)+
+        
+        ; Call ITOA 
+        JSR     ITOA
+        
+        JSR     EA_DECODER
+        
         RTS
 
 MOVEA_EA
@@ -1652,16 +1680,21 @@ EA_DECODER:
         
     ;   This is a jump table that will jump to certain sub-functions based on what the mode is.
 EAJUMPTABLE
-        JMP MODE0     
-        JMP MODE1
-        JMP MODE2
-        JMP MODE3
-        JMP MODE4
-        JMP MODE5
-        JMP MODE6
-        JMP MODE7
+        JMP MODE0       ; ea_immediate
+        JMP MODE1       ; ea_move
+        JMP MODE2       ; ea_lea
+        JMP MODE3       ; ea_dstonly
+        JMP MODE4       ; ea_ext
+        JMP MODE5       ; ea_trap
+        JMP MODE6       ; ea_quick
+        JMP MODE7       ; ea_branch
     
 MODE0
+        ;Implement ITOA
+        
+        
+        ; Figure the  that relate to it op codes 
+        
         CMP #0, D6
         BEQ APPEND_D0
     
@@ -1928,44 +1961,152 @@ APPEND_A7
         MOVE.B  #'7', (A3)+
         RTS
 
-ITOA:                       ; Converts hex string into int 
-        JSR     ATOI_LOOP
-        RTS
         
-ITOA_LOOP: 
-        ;Grab a character
-        ;Don't know how to take only a hex character.
-        MOVE.L D0, D0
-         
-        ; Checks if counter is empty
-        CMP.B   #0,D5
-        BEQ     ATOI_DONE
+; -------------------------------------------------------------
+;   ERROR when Data has incorrect Addressing MODE
+; -------------------------------------------------------------          
+DATA_ERROR:      
         
-        CMP.B   #$40,D1          ; Checks for value in range of num (0 - 9) 
-        BLT.B   ATOI_NUM_VALUE              
-        
-        CMP.B   #$47, D1          
-        BLT     ATOI_CAP_LETTR_VALUE   ; Checks for value in range of A-F
-                
-ITOA_NUM_VALUE: 
-        LSL.L   #$4, D3
-        ADDI.B  #30, D1
-        ;Send to counter
-        MOVE  D5, (A3)+
-        JMP     ATOI_LOOP
-        
-ITOA_CAP_LETTR_VALUE: 
-        LSL.L   #$4, D3
-        ADDI.B  #37, D1
-        ADD.L   D1, D3
-        MOVE  D5, (A3)+
-        JMP     ATOI_LOOP
-        
-        ;Subtract one off counter
-                
-ITOA_DONE: 
-        RTS
 
+ 
+*-------------------------------------------------------------------        
+    * ITOA CONVERT for IMMEDIATE DATA
+    ;Iteration Byte = 2 ITOA Loops, Word = 4 ITOA Loops, Long = 8 Loops 
+    *D3 = # of ITOA Loop ITERATION
+    *D7 = immediate address 
+    *D4 = LSR Moving count
+    *D0 = Data that is shifted
+*-------------------------------------------------------------------   
+ITOA:                       ; Converts hex string into int 
+        ; D7 has the immediate address  
+        JSR     ITOA_LOOP
+        RTS
+        
+ITOA_LOOP:
+        CLR.L   D0 
+        CLR.L   D4
+        
+        SUB.B   #1, D3  
+        MOVE.L  D7, D0
+        MOVE.B  D3, D4
+
+        MULU    #4, D4      ; The amount that we shift 
+        LSR.L   D4, D0       ; Shift D0 with iteration Loop * 4
+        
+        ANDI.L  #$F, D0          ; Last 4 bits in hex 
+        ADD.W   #48, D0        ; Convert into ASCII +30 
+        
+        ; ADD to A3 
+        JSR     ITOA_ADD_CHAR                  
+        ; Checks if counter is empty, ITOA is completed 
+        CMP.B   #0,D3
+        BEQ     ITOA_DONE
+        
+        JMP     ITOA_LOOP   ; Continue Reading more bits from immediate data         
+                       
+ITOA_DONE:          
+        RTS         ; Returns back to last JSR 
+
+ITOA_ADD_CHAR: 
+        CMP.B   #$30, D0
+        BEQ     CHAR_0
+        
+        CMP.B   #$31, D0
+        BEQ     CHAR_1
+        
+        CMP.B   #$32, D0
+        BEQ     CHAR_2
+        
+        CMP.B   #$33, D0
+        BEQ     CHAR_3
+        
+        CMP.B   #$34, D0
+        BEQ     CHAR_4
+        
+        CMP.B   #$35, D0
+        BEQ     CHAR_5
+        
+        CMP.B   #$36, D0
+        BEQ     CHAR_6
+        
+        CMP.B   #$37, D0
+        BEQ     CHAR_7
+        
+        CMP.B   #$38, D0
+        BEQ     CHAR_8
+        
+        CMP.B   #$39, D0
+        BEQ     CHAR_9
+        
+        CMP.B   #41, D0
+        BEQ     CHAR_A
+        
+        CMP.B   #$42, D0
+        BEQ     CHAR_B        
+        
+        CMP.B   #43, D0
+        BEQ     CHAR_C
+        
+        CMP.B   #$44, D0
+        BEQ     CHAR_D
+        
+        CMP.B   #45, D0
+        BEQ     CHAR_E
+        
+        CMP.B   #$46, D0
+        BEQ     CHAR_F  
+        
+CHAR_0:
+        MOVE.B  #'0', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE        
+CHAR_1:
+        MOVE.B  #'1', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+CHAR_2:
+        MOVE.B  #'2', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+CHAR_3:
+        MOVE.B  #'3', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+CHAR_4:
+        MOVE.B  #'4', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+CHAR_5:
+        MOVE.B  #'5', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+CHAR_6:
+        MOVE.B  #'6', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+CHAR_7:
+        MOVE.B  #'7', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+CHAR_8:
+        MOVE.B  #'8', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+CHAR_9:
+        MOVE.B  #'9', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+CHAR_A:
+        MOVE.B  #'A', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+CHAR_B:
+        MOVE.B  #'B', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+CHAR_C:
+        MOVE.B  #'C', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+CHAR_D:
+        MOVE.B  #'D', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+CHAR_E:
+        MOVE.B  #'E', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+CHAR_F:
+        MOVE.B  #'F', (A3)+ 
+        JMP     ITOA_ADD_CHAR_DONE
+        
+ITOA_ADD_CHAR_DONE:
+        RTS                
 ; -------------------------------------------------------------
 ;   Converts User string input into HEX 
 ; -------------------------------------------------------------         
@@ -2050,6 +2191,7 @@ MAX_SCREEN_OUTPUT       DC.B    'Press enter any key to continue the program',CR
 DECODE_OP_ERROR         DC.B    'Error in reading the instruction. Invalid Op code readings', CR, LF,0
 DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
         END    START        ; last line of source
+
 
 
 
