@@ -155,7 +155,6 @@ DECODE_PAUSE:
         ; Program is is ready to continue the program
         BRA     DECODE_START
         
-        
 CLEAR_SCREEN: 
         ; Clear output for the screen 
         CLR.L   D2
@@ -170,7 +169,6 @@ OP_START:
         JSR     OP_DATA_CLR
         ; LEA     A3, buffer    ; Loads the message in 
         
-      
         LEA      OP_JMP_TABLE, A0
         CLR.L    D0
         CLR.L    D1
@@ -522,23 +520,39 @@ INDEX1101:
 ; ------------------------------------
 ;   OP ASL,ASR    --> Figure out Rotation 
 ; ------------------------------------ 
-INDEX1110:
+INDEX1110:       
+
+        ; Extract the size (7 -8 )
         CLR.L   D1 
-        LEA     OP_1100_TABLE, A0
+        MOVE.L  D0,D1               ; Current instruct word
+        ANDI.W  #size,D1         ; Extract 2nd nibble
+        MOVE.B  #right6, D2             
+        LSR.W   D2,D1               ; 
+        
+        CLR.L   D3
+        MOVE.B   D1, D3 
+
+        CMP.B #3, D3 
+        BEQ     INDEX1110_MEM
+
+        JMP     OP_ROTATION_CHECK
+INDEX1110_MEM:
+        ; Memory Register Shift 11  
+        LEA     OP_1110_TABLE, A0  
+        CLR.L   D1
+        CLR.L   D2
         MOVE.L  D0,D1               ; Current instruct word
         ANDI.W  #nibble2,D1         ; Extract 2nd nibble
-        MOVE.B  #right4, D2         
+        MOVE.B  #right8, D2         
         LSR.W   D2,D1               ; D1 = 2nd nibble
         MULU    #6,D1               
         JMP     0(A0,D1)
-
 ; ------------------------------------
 ;   OP Code not supported 
 ; ------------------------------------         
 INDEX1111:
         JMP     OP_UNSUPPORTED
         
-
 ; ------------------------------------
 ;   JUMP Tables for OP codes 
 ; ------------------------------------         
@@ -596,23 +610,23 @@ OP_0110_TABLE:
         JMP     OP_UNSUPPORTED      ; E: Not supported      BGT
         JMP     OP_UNSUPPORTED      ; F: Not supported      BLE
         
-OP_1100_TABLE: 
-        JMP     OP_ASR              ; 0: ASR
-        JMP     OP_ASL              ; 1: ASL  
+OP_1110_TABLE: 
+        JMP     OP_ASR_M              ; 0: ASR
+        JMP     OP_ASL_M              ; 1: ASL  
         JMP     OP_UNSUPPORTED      ; 2: Not Supported      LSR     
         JMP     OP_UNSUPPORTED      ; 3: Not Supported      LSL      
         JMP     OP_UNSUPPORTED      ; 4: Not Supported      ROXR     
         JMP     OP_UNSUPPORTED      ; 5: Not supported      ROXL      
         JMP     OP_UNSUPPORTED      ; 6: Not supported      ROR
         JMP     OP_UNSUPPORTED      ; 7: Not supported      ROL
-        JMP     OP_UNSUPPORTED      ; 8: Not supported      
-        JMP     OP_UNSUPPORTED      ; 9: Not supported      
-        JMP     OP_UNSUPPORTED      ; A: Not supported     
-        JMP     OP_UNSUPPORTED      ; B: Not supported      
-        JMP     OP_UNSUPPORTED      ; C: Not supported      
-        JMP     OP_UNSUPPORTED      ; D: Not supported      
-        JMP     OP_UNSUPPORTED      ; E: Not supported      
-        JMP     OP_UNSUPPORTED      ; F: Not supported      
+        JMP     OP_ERROR            ; 8: Error     
+        JMP     OP_ERROR            ; 9: Error       
+        JMP     OP_ERROR            ; A: Error       
+        JMP     OP_ERROR            ; B: Error        
+        JMP     OP_ERROR            ; C: Error        
+        JMP     OP_ERROR            ; D: Error        
+        JMP     OP_ERROR            ; E: Error        
+        JMP     OP_ERROR            ; F: Error        
 
 ;---------------------------------------------------
 ; ORI. Gathering instruct size and calling EA
@@ -1106,13 +1120,13 @@ HELPER_CMP_SIZE_CAL:
         CLR.L   D3
         MOVE.B   D1, D3  
 
-        CMP.B   #$11, D3
+        CMP.B   #2, D3
         BEQ     HELPER_CMP_CONVERT_L
         
-        CMP.B   #$10, D3
+        CMP.B   #1, D3
         BEQ     HELPER_CMP_CONVERT_W
         
-        CMP.B   #$0, D3   
+        CMP.B   #0, D3   
         BEQ     HELPER_CMP_CONVERT_B
         
 HELPER_CMP_CONVERT_L: 
@@ -1140,20 +1154,121 @@ HELPER_CMP_CONVERT_B:
         JSR     CMP_EA
         JMP     OP_FINISH
 
+
+
 ;---------------------------------------------------
-; ASL   calling EA and finding size
+; ASL   Memory Shift only word size 
 ;-------------------------------------------------             
-OP_ASL: 
-
-        JSR     ASL_EA
-        JMP     OP_FINISH
+OP_ASL_M: 
+        MOVE.B  #'A', (A3)+
+        MOVE.B  #'S', (A3)+
+        MOVE.B  #'L', (A3)+ 
+        CLR.L   D3
+        MOVE.B  #2, D3 
+        ; Get ready to call Mode 7 subclass 1
+        
 ;---------------------------------------------------
-; ASR   calling EA and finding size
+; ASR    Memory Shift only word size 
 ;------------------------------------------------- 
-OP_ASR: 
+OP_ASR_M: 
+        MOVE.B  #'A', (A3)+
+        MOVE.B  #'S', (A3)+
+        MOVE.B  #'R', (A3)+ 
+        
+        CLR.L   D3
+        MOVE.B  #2, D3 
+        ; Get ready to call Mode 7 subclass 1
+        
+*-------------------------------------------------
+*  Rotation Checker, Mainly looking for ASL/ASR
+*------------------------------------------------        
+OP_ROTATION_CHECK: 
+       ; Check the 4 - 5 bit for 00 
+        CLR.L   D1 
+        MOVE.L  D0,D1               ; Current instruct word
+        ANDI.W  #$18,D1         ; Extract 2nd nibble
+        MOVE.B  #3, D2         
+        LSR.W   D2,D1    
+        
+        CMP.B   #0, D1      ; AS
+        BEQ     OP_ROTATION_HELP
+        
+        CMP.B   #1, D1      ; LS
+        BEQ     OP_UNSUPPORTED
 
+        CMP.B   #2, D1      ; ROXd
+        BEQ     OP_UNSUPPORTED
+        
+        CMP.B   #3, D1      ; ROXd
+        BEQ     OP_UNSUPPORTED   
+ 
+OP_ROTATION_HELP: 
+        ; Find the Rotation 
+        ; Extract the size 
+        CLR.L   D1 
+        MOVE.L  D0,D1               ; Current instruct word
+        ANDI.W  #$100,D1         ; Extract 2nd nibble
+        MOVE.B  #right8, D2             
+        LSR.W   D2,D1  
+
+        CMP.B   #0, D1      ; Right Rotation 
+        BEQ     OP_ASR_ADDER
+        
+        CMP.B   #1, D1      ; Left rotation
+        BEQ     OP_ASL_ADDER
+        
+OP_ROTATION_SIZE_HELP:        
+        ; Check the size 
+        CMP.B   #2, D3
+        BEQ     OP_ROTATION_SIZE_L    
+        
+        CMP.B   #1, D3
+        BEQ     OP_ROTATION_SIZE_W   
+        
+        CMP.B   #0, D3
+        BEQ     OP_ROTATION_SIZE_B 
+        
+        
+OP_ROTATION_SIZE_B: 
+        CLR.L   D3
+        MOVE.B  #1, D3     
+        MOVE.B  #'.', (A3)+
+        MOVE.B  #'B', (A3)+
+        
         JSR     ASL_EA
         JMP     OP_FINISH
+        
+OP_ROTATION_SIZE_W: 
+        CLR.L   D3
+        MOVE.B  #2, D3 
+        MOVE.B  #'.', (A3)+
+        MOVE.B  #'W', (A3)+
+        
+        JSR     ASL_EA
+        JMP     OP_FINISH
+        
+OP_ROTATION_SIZE_L:
+        CLR.L   D3
+        MOVE.B  #3, D3  
+        MOVE.B  #'.', (A3)+
+        MOVE.B  #'L', (A3)+
+        
+        JSR     ASL_EA
+        JMP     OP_FINISH
+        
+OP_ASL_ADDER: 
+        MOVE.B  #'A', (A3)+
+        MOVE.B  #'S', (A3)+
+        MOVE.B  #'L', (A3)+    
+        
+        JMP     OP_ROTATION_SIZE_HELP 
+        
+OP_ASR_ADDER: 
+        MOVE.B  #'A', (A3)+
+        MOVE.B  #'S', (A3)+
+        MOVE.B  #'R', (A3)+    
+        
+        JMP     OP_ROTATION_SIZE_HELP  
 ;--------------------------------------------------
 ; Error Handling    
 ;------------------------------------------------- 
@@ -1821,9 +1936,7 @@ ITOA_LOOP:
         ;Grab a character
         ;Don't know how to take only a hex character.
         MOVE.L D0, D0
-        
-        
-        
+         
         ; Checks if counter is empty
         CMP.B   #0,D5
         BEQ     ATOI_DONE
