@@ -1333,16 +1333,16 @@ MOVE_EA
         RTS
 
 MOVEM_EA
-    ;check if we're reading from or writing to memory.
-    MOVE.W D0, D5
-    ANDI #1024, D5
-    CMP #0, D5
-    BEQ MOVEM_EA_TO_MEM
-    CMP #1024, D5
-    BEQ MOVEM_EA_TO_MEM
+        ;check if we're reading from or writing to memory.
+        MOVE.W D0, D5
+        ANDI #1024, D5
+        CMP #0, D5
+        BEQ MOVEM_EA_TO_MEM
+        CMP #1024, D5
+        BEQ MOVEM_EA_TO_MEM
     
-    ;Error-handling return
-    RTS
+        ;Error-handling return
+        RTS
     
 MOVEM_EA_TO_MEM
 
@@ -1350,583 +1350,583 @@ MOVEM_EA_FROM_MEM
 
 
 MOVEQ_EA
-    MOVE.L D0, D5
-    MOVE.L D0, D6
+        MOVE.L D0, D5
+        MOVE.L D0, D6
     
-    ;set mode to immediate
-    MOVE #7, D0
-    ;and off data
-    ANDI #255, D7
-    JSR EA_DECODER
+        ;set mode to immediate
+        MOVE #7, D0
+        ;and off data
+        ANDI #255, D7
+        JSR EA_DECODER
     
-    MOVE.B #',', (A3)+
+        MOVE.B #',', (A3)+
 
-    MOVE.L D0, D5
-    MOVE.L D0, D6
+        MOVE.L D0, D5
+        MOVE.L D0, D6
     
-    ;set mode to data register
-    CLR.L D5
-    ;and off data
-    ANDI #3584, D6
-    ASR.L #8, D6
-    ASR.L #1, D6
-    JSR EA_DECODER
+        ;set mode to data register
+        CLR.L D5
+        ;and off data
+        ANDI #3584, D6
+        ASR.L #8, D6
+        ASR.L #1, D6
+        JSR EA_DECODER
     
-    RTS
+        RTS
 
 LEA_EA
-    MOVE.L D0, D5
-    MOVE.L D0, D6
+        MOVE.L D0, D5
+        MOVE.L D0, D6
     
-    ;and off mode
-    ANDI #448, D5
-    ASR.L #6, D5
-    ;and off data
-    ANDI #3584, D6
-    ASR.L #8, D6
-    ASR.L #1, D6
-    JSR EA_DECODER
+        ;and off mode
+        ANDI #448, D5
+        ASR.L #6, D5
+        ;and off data
+        ANDI #3584, D6
+        ASR.L #8, D6
+        ASR.L #1, D6
+        JSR EA_DECODER
     
-    MOVE.B #',', (A3)+
+        MOVE.B #',', (A3)+
     
-    ; Grab the other mode
-    MOVE.L D0, D5
-    MOVE.L D0, D6
+        ; Grab the other mode
+        MOVE.L D0, D5
+        MOVE.L D0, D6
     
-    ;and off mode
-    ANDI #56, D5
-    ASR.L #3, D5
-    ;and off data
-    ANDI #7, D6
-    JSR EA_DECODER
+        ;and off mode
+        ANDI #56, D5
+        ASR.L #3, D5
+        ;and off data
+        ANDI #7, D6
+        JSR EA_DECODER
     
-    RTS
+        RTS
     
 BRA_EA
-    ;Effectively the same as BRA
-    JMP BSR_EA
+        ;Effectively the same as BRA
+        JMP BSR_EA
 
 BSR_EA
-    ;Its some form of move 7
-    MOVE #7, D5
-    CLR.L D6
+        ;Its some form of move 7
+        MOVE #7, D5
+        CLR.L D6
     
-    MOVE D0, D7
-    ANDI #255, D7
-    CMP #$FF, D7
-    BEQ BSR_EA_32
+        MOVE D0, D7
+        ANDI #255, D7
+        CMP #$FF, D7
+        BEQ BSR_EA_32
 
-    JSR EA_DECODER
+        JSR EA_DECODER
     
-    RTS
+        RTS
 
 BSR_EA_32
-    MOVE #1, D6
-    RTS
+        MOVE #1, D6
+        RTS
     
 DIVU_EA
-    ;Practically the same as DIVS
-    JMP DIVS_EA
+        ;Practically the same as DIVS
+        JMP DIVS_EA
 
 DIVS_EA
-    MOVE.L D0, D5
-    MOVE.L D0, D6
+        MOVE.L D0, D5
+        MOVE.L D0, D6
     
-    ;and off mode
-    ANDI #448, D5
-    ASR.L #6, D5
-    ;and off data
-    ANDI #3584, D6
-    ASR.L #8, D6
-    ASR.L #1, D6
-    JSR EA_DECODER
+        ;and off mode
+        ANDI #448, D5
+        ASR.L #6, D5
+        ;and off data
+        ANDI #3584, D6
+        ASR.L #8, D6
+        ASR.L #1, D6
+        JSR EA_DECODER
     
-    MOVE.B #',', (A3)+
+        MOVE.B #',', (A3)+
     
-    ; Grab the other mode
-    MOVE.L D0, D5
-    MOVE.L D0, D6
+        ; Grab the other mode
+        MOVE.L D0, D5
+        MOVE.L D0, D6
     
-    ;and off mode
-    ANDI #56, D5
-    ASR.L #3, D5
-    ;and off data
-    ANDI #7, D6
-    JSR EA_DECODER
+        ;and off mode
+        ANDI #56, D5
+        ASR.L #3, D5
+        ;and off data
+        ANDI #7, D6
+        JSR EA_DECODER
     
-    RTS
+        RTS
 
 SUB_EA
-    MOVE.L D0, D5
-    MOVE.L D0, D6
+        MOVE.L D0, D5
+        MOVE.L D0, D6
     
-    ;and off mode
-    ANDI #56, D5
-    ;and off data
-    ANDI #7, D6
-    JSR EA_DECODER
-    MOVE.L D0, D6
+        ;and off mode
+        ANDI #56, D5
+        ;and off data
+        ANDI #7, D6
+        JSR EA_DECODER
+        MOVE.L D0, D6
     
-    MOVE.B #',', (A3)+
+        MOVE.B #',', (A3)+
     
-    ;sub only works on data registers, so we set mode to data
-    CLR.L D5
-    ;and off data
-    ANDI #3584, D6
-    JSR EA_DECODER
+        ;sub only works on data registers, so we set mode to data
+        CLR.L D5
+        ;and off data
+        ANDI #3584, D6
+        JSR EA_DECODER
 
-    RTS
+        RTS
 
 ADDQ_EA
-    ;For EA effectively SUBQ
-    JMP SUBQ_EA
+        ;For EA effectively SUBQ
+        JMP SUBQ_EA
 
 SUBQ_EA
-    MOVE.L D0, D5
-    MOVE.L D0, D7
+        MOVE.L D0, D5
+        MOVE.L D0, D7
     
-    ;set mode immediate
-    CLR.L D5
-    ;and off data for immediate
-    ANDI #3584, D7
-    ASR.L #8, D6
-    ASR.L #1, D6
-    JSR EA_DECODER
+        ;set mode immediate
+        CLR.L D5
+        ;and off data for immediate
+        ANDI #3584, D7
+        ASR.L #8, D6
+        ASR.L #1, D6
+        JSR EA_DECODER
     
-    MOVE.B #',', (A3)+
+        MOVE.B #',', (A3)+
     
-    MOVE.L D0, D5
-    MOVE.L D0, D6
+        MOVE.L D0, D5
+        MOVE.L D0, D6
     
-    ;and off mode
-    ANDI #56, D5
-    ASR.L #3, D5
-    ;and off data
-    ANDI #7, D6
-    JSR EA_DECODER
+        ;and off mode
+        ANDI #56, D5
+        ASR.L #3, D5
+        ;and off data
+        ANDI #7, D6
+        JSR EA_DECODER
     
-    RTS
+        RTS
 
 CMP_EA
-    MOVE.L D0, D5
-    MOVE.L D0, D6
+        MOVE.L D0, D5
+        MOVE.L D0, D6
     
-    ;and off mode
-    ANDI #56, D5
-    ;and off data
-    ANDI #7, D6
-    JSR EA_DECODER
+        ;and off mode
+        ANDI #56, D5
+        ;and off data
+        ANDI #7, D6
+        JSR EA_DECODER
             
-    MOVE.B #',', (A3)+
+        MOVE.B #',', (A3)+
     
-    ;Do other part of the EA
-    MOVE.L D0, D5
-    MOVE.L D0, D6
+        ;Do other part of the EA
+        MOVE.L D0, D5
+        MOVE.L D0, D6
     
-    ;set mode to data register
-    CLR.L D5
-    ;and off data
-    ANDI #3584, D6
-    ASR.L #8, D6
-    ASR.L #1, D6
-    JSR EA_DECODER
+        ;set mode to data register
+        CLR.L D5
+        ;and off data
+        ANDI #3584, D6
+        ASR.L #8, D6
+        ASR.L #1, D6
+        JSR EA_DECODER
 
-    RTS
+        RTS
 
 MULU_EA
-    MOVE.L D0, D5
-    MOVE.L D0, D7
+        MOVE.L D0, D5
+        MOVE.L D0, D7
     
-    ;Get mode
-    ANDI #56, D5
-    ASR.L #3, D5
-    ;and off data
-    ANDI #7, D6
-    JSR EA_DECODER
+        ;Get mode
+        ANDI #56, D5
+        ASR.L #3, D5
+        ;and off data
+        ANDI #7, D6
+        JSR EA_DECODER
    
-    MOVE.B #',', (A3)+
+        MOVE.B #',', (A3)+
     
-    MOVE.L D0, D5
-    MOVE.L D0, D6
+        MOVE.L D0, D5
+        MOVE.L D0, D6
     
-    ;set mode data register
-    CLR.L D5
-    ;and off data for immediate
-    ANDI #3584, D7
-    ASR.L #8, D6
-    ASR.L #1, D6
-    JSR EA_DECODER
+        ;set mode data register
+        CLR.L D5
+        ;and off data for immediate
+        ANDI #3584, D7
+        ASR.L #8, D6
+        ASR.L #1, D6
+        JSR EA_DECODER
     
-    MOVE.L D0, D5
-    MOVE.L D0, D6
+        MOVE.L D0, D5
+        MOVE.L D0, D6
 
 
 ADD_EA
-    ;Effective the same as ADD
-    JMP ADDA_EA
+        ;Effective the same as ADD
+        JMP ADDA_EA
 
 ADDA_EA
-    MOVE.L D0, D5
-    MOVE.L D0, D6
+        MOVE.L D0, D5
+        MOVE.L D0, D6
     
-    ;and off mode
-    ANDI #448, D5
-    ASR.L #8, D5
-    ;and off data
-    ANDI #3584, D6
-    ASR.L #8, D6
-    ASR.L #1, D6
-    JSR EA_DECODER
+        ;and off mode
+        ANDI #448, D5
+        ASR.L #8, D5
+        ;and off data
+        ANDI #3584, D6
+        ASR.L #8, D6
+        ASR.L #1, D6
+        JSR EA_DECODER
     
-    MOVE.B #',', (A3)+
+        MOVE.B #',', (A3)+
     
-    ; Grab the other mode
-    MOVE.L D0, D5
-    MOVE.L D0, D6
+        ; Grab the other mode
+        MOVE.L D0, D5
+        MOVE.L D0, D6
     
-    ;and off mode
-    ANDI #56, D5
-    ASR.L #3, D5
-    ;and off data
-    ANDI #7, D6
-    JSR EA_DECODER
+        ;and off mode
+        ANDI #56, D5
+        ASR.L #3, D5
+        ;and off data
+        ANDI #7, D6
+        JSR EA_DECODER
     
-    RTS
+        RTS
 
 ASL_EA
-    ;Practically the same as DIVS
-    JMP ASR_EA
+        ;Practically the same as DIVS
+        JMP ASR_EA
 
 ASR_EA
-    ;Check bit 5 to see if its a register or count.
-    MOVE D0, D5
-    ANDI #32, D5
-    ASR.L #5, D5
-    CMP #0, D5
-    BEQ ASR_EA_NUM
-    CMP #1, D5
-    BEQ ASR_EA_REG
+        ;Check bit 5 to see if its a register or count.
+        MOVE D0, D5
+        ANDI #32, D5
+        ASR.L #5, D5
+        CMP #0, D5
+        BEQ ASR_EA_NUM
+        CMP #1, D5
+        BEQ ASR_EA_REG
     
-    ;Error-handling return
-    RTS
+        ;Error-handling return
+        RTS
     
 ASR_EA_NUM
-    ;Set to immediate data;
-    MOVE #7, D5
-    ;Missing something here.
-    JSR EA_DECODER
+        ;Set to immediate data;
+        MOVE #7, D5
+        ;Missing something here.
+        JSR EA_DECODER
     
-    MOVE.B #',', (A3)+
+        MOVE.B #',', (A3)+
     
-    ;Set to data register
-    CLR.L D5
-    MOVE D0, D6
-    AND #7, D6
-    JSR EA_DECODER    
+        ;Set to data register
+        CLR.L D5
+        MOVE D0, D6
+        AND #7, D6
+        JSR EA_DECODER    
 
 ASR_EA_REG
-    ;Set to data register
-    CLR.L D5
-    MOVE D0, D6
-    AND #3584, D6
-    ASR.L #8, D6
-    ASR.L #1, D6
-    JSR EA_DECODER  
+        ;Set to data register
+        CLR.L D5
+        MOVE D0, D6
+        AND #3584, D6
+        ASR.L #8, D6
+        ASR.L #1, D6
+        JSR EA_DECODER  
     
-    MOVE.B #',', (A3)+
+        MOVE.B #',', (A3)+
     
-    ;Set to data register
-    CLR.L D5
-    MOVE D0, D6
-    AND #7, D6
-    JSR EA_DECODER    
+        ;Set to data register
+        CLR.L D5
+        MOVE D0, D6
+        AND #7, D6
+        JSR EA_DECODER    
 
 
 EA_DECODER:
-    ;Add space.
-    MOVE.B #' ', (A3)+
-    ;Jump to the Mode given.
-    LEA EAJUMPTABLE, A0
-    MULU #6, D5
-    JMP 0(A0,D5)
+        ;Add space.
+        MOVE.B #' ', (A3)+
+        ;Jump to the Mode given.
+        LEA EAJUMPTABLE, A0
+        MULU #6, D5
+        JMP 0(A0,D5)
         
-    ;This is a jump table that will jump to certain sub-functions based on what the mode is.
+    ;   This is a jump table that will jump to certain sub-functions based on what the mode is.
 EAJUMPTABLE
-    JMP MODE0     
-    JMP MODE1
-    JMP MODE2
-    JMP MODE3
-    JMP MODE4
-    JMP MODE5
-    JMP MODE6
-    JMP MODE7
+        JMP MODE0     
+        JMP MODE1
+        JMP MODE2
+        JMP MODE3
+        JMP MODE4
+        JMP MODE5
+        JMP MODE6
+        JMP MODE7
     
 MODE0
-    CMP #0, D6
-    BEQ APPEND_D0
+        CMP #0, D6
+        BEQ APPEND_D0
     
-    CMP #1, D6
-    BEQ APPEND_D1
+        CMP #1, D6
+        BEQ APPEND_D1
     
-    CMP #2, D6
-    BEQ APPEND_D2
+        CMP #2, D6
+        BEQ APPEND_D2
     
-    CMP #3, D6
-    BEQ APPEND_D3
+        CMP #3, D6
+        BEQ APPEND_D3
     
-    CMP #4, D6
-    BEQ APPEND_D4
+        CMP #4, D6
+        BEQ APPEND_D4
+        
+        CMP #5, D6
+        BEQ APPEND_D5
     
-    CMP #5, D6
-    BEQ APPEND_D5
+        CMP #6, D6
+        BEQ APPEND_D6
     
-    CMP #6, D6
-    BEQ APPEND_D6
+        CMP #7, D6
+        BEQ APPEND_D7
     
-    CMP #7, D6
-    BEQ APPEND_D7
-    
-    ;Return
-    RTS
+        ;Return
+        RTS
 
 MODE1
-    CMP #0, D6
-    BEQ APPEND_A0
+        CMP #0, D6
+        BEQ APPEND_A0
     
-    CMP #1, D6
-    BEQ APPEND_A1
+        CMP #1, D6
+        BEQ APPEND_A1
     
-    CMP #2, D6
-    BEQ APPEND_A2
+        CMP #2, D6
+        BEQ APPEND_A2
     
-    CMP #3, D6
-    BEQ APPEND_A3
+        CMP #3, D6
+        BEQ APPEND_A3
     
-    CMP #4, D6
-    BEQ APPEND_A4
+        CMP #4, D6
+        BEQ APPEND_A4
     
-    CMP #5, D6
-    BEQ APPEND_A5
+        CMP #5, D6
+        BEQ APPEND_A5
     
-    CMP #6, D6
-    BEQ APPEND_A6
+        CMP #6, D6
+        BEQ APPEND_A6
     
-    CMP #7, D6
-    BEQ APPEND_A7
+        CMP #7, D6
+        BEQ APPEND_A7
     
-    ;Return
-    RTS
+        ;Return
+        RTS
 
 MODE2
-    CMP #0, D6
-    BEQ APPEND_A0
+        CMP #0, D6
+        BEQ APPEND_A0
     
-    CMP #1, D6
-    BEQ APPEND_A1
+        CMP #1, D6
+        BEQ APPEND_A1
     
-    CMP #2, D6
-    BEQ APPEND_A2
+        CMP #2, D6
+        BEQ APPEND_A2
     
-    CMP #3, D6
-    BEQ APPEND_A3
+        CMP #3, D6
+        BEQ APPEND_A3
     
-    CMP #4, D6
-    BEQ APPEND_A4
+        CMP #4, D6
+        BEQ APPEND_A4
     
-    CMP #5, D6
-    BEQ APPEND_A5
+        CMP #5, D6
+        BEQ APPEND_A5
     
-    CMP #6, D6
-    BEQ APPEND_A6
+        CMP #6, D6
+        BEQ APPEND_A6
     
-    CMP #7, D6
-    BEQ APPEND_A7
+        CMP #7, D6
+        BEQ APPEND_A7
     
-    ;Return
-    RTS
+        ;Return
+        RTS
 
 MODE3
-    MOVE.B #'(', (A3)+
+        MOVE.B #'(', (A3)+
 
-    CMP #0, D6
-    BEQ APPEND_A0
+        CMP #0, D6
+        BEQ APPEND_A0
     
-    CMP #1, D6
-    BEQ APPEND_A1
+        CMP #1, D6
+        BEQ APPEND_A1
     
-    CMP #2, D6
-    BEQ APPEND_A2
+        CMP #2, D6
+        BEQ APPEND_A2
     
-    CMP #3, D6
-    BEQ APPEND_A3
+        CMP #3, D6
+        BEQ APPEND_A3
     
-    CMP #4, D6
-    BEQ APPEND_A4
+        CMP #4, D6
+        BEQ APPEND_A4
     
-    CMP #5, D6
-    BEQ APPEND_A5
+        CMP #5, D6
+        BEQ APPEND_A5
     
-    CMP #6, D6
-    BEQ APPEND_A6
+        CMP #6, D6
+        BEQ APPEND_A6
     
-    CMP #7, D6
-    BEQ APPEND_A7
+        CMP #7, D6
+        BEQ APPEND_A7
     
-    MOVE.B ')', (A3)+
+        MOVE.B ')', (A3)+
     
-    ;Return
-    RTS
+        ;Return
+        RTS
 
 MODE4
-    MOVE.B ')', (A3)+
+        MOVE.B ')', (A3)+
 
-    CMP #0, D6
-    BEQ APPEND_A0
+        CMP #0, D6
+        BEQ APPEND_A0
     
-    CMP #1, D6
-    BEQ APPEND_A1
+        CMP #1, D6
+        BEQ APPEND_A1
     
-    CMP #2, D6
-    BEQ APPEND_A2
+        CMP #2, D6
+        BEQ APPEND_A2
     
-    CMP #3, D6
-    BEQ APPEND_A3
+        CMP #3, D6
+        BEQ APPEND_A3
     
-    CMP #4, D6
-    BEQ APPEND_A4
+        CMP #4, D6
+        BEQ APPEND_A4
     
-    CMP #5, D6
-    BEQ APPEND_A5
+        CMP #5, D6
+        BEQ APPEND_A5
     
-    CMP #6, D6
-    BEQ APPEND_A6
+        CMP #6, D6
+        BEQ APPEND_A6
     
-    CMP #7, D6
-    BEQ APPEND_A7
+        CMP #7, D6
+        BEQ APPEND_A7
     
-    MOVE.B #')', (A3)+
-    MOVE.B #'+', (A3)+
+        MOVE.B #')', (A3)+
+        MOVE.B #'+', (A3)+
     
-    ;Return
-    RTS
+        ;Return
+        RTS
 
 MODE5
-    ;Error-handling mode.
-    RTS
+        ;Error-handling mode.
+        RTS
     
 MODE6
-    ;Error-handling mode.
-    RTS
+        ;Error-handling mode.
+        RTS
     
 MODE7
-    CMP #0, D6
-    BEQ MODE_7_SHORT
+        CMP #0, D6
+        BEQ MODE_7_SHORT
     
-    CMP #1, D6
-    BEQ MODE_7_LONG
+        CMP #1, D6
+        BEQ MODE_7_LONG
     
-    CMP #4, D6
-    BEQ MODE_7_IMM
+        CMP #4, D6
+        BEQ MODE_7_IMM
     
-    RTS
+        RTS
 
 MODE_7_SHORT
-    MOVE.B #'%', (A3)+
-    ROR #8, D7
-    MOVE #16, D5
+        MOVE.B #'%', (A3)+
+        ROR #8, D7
+        MOVE #16, D5
     
-    RTS
+        RTS
     
 MODE_7_LONG
-    MOVE.B #'%', (A3)+
-    MOVE #32, D5
-    RTS
+        MOVE.B #'%', (A3)+
+        MOVE #32, D5
+        RTS
 
 MODE_7_IMM
-    MOVE.B #'#',(A3)+
-    MOVE #16, D5
+        MOVE.B #'#',(A3)+
+        MOVE #16, D5
     
-    RTS
+        RTS
 
 APPEND_D0
-    MOVE.B  #'D', (A3)+
-    MOVE.B  #'0', (A3)+
-    RTS
+        MOVE.B  #'D', (A3)+
+        MOVE.B  #'0', (A3)+
+        RTS
 
 APPEND_D1
-    MOVE.B  #'D', (A3)+
-    MOVE.B  #'1', (A3)+
-    RTS
+        MOVE.B  #'D', (A3)+
+        MOVE.B  #'1', (A3)+
+        RTS
 
 APPEND_D2
-    MOVE.B  #'D', (A3)+
-    MOVE.B  #'2', (A3)+
-    RTS
+        MOVE.B  #'D', (A3)+
+        MOVE.B  #'2', (A3)+
+        RTS
 
 APPEND_D3
-    MOVE.B  #'D', (A3)+
-    MOVE.B  #'3', (A3)+
-    RTS
+        MOVE.B  #'D', (A3)+
+        MOVE.B  #'3', (A3)+
+        RTS
 
 APPEND_D4
-    MOVE.B  #'D', (A3)+
-    MOVE.B  #'4', (A3)+
-    RTS
+        MOVE.B  #'D', (A3)+
+        MOVE.B  #'4', (A3)+
+        RTS
 
 APPEND_D5
-    MOVE.B  #'D', (A3)+
-    MOVE.B  #'5', (A3)+
-    RTS
+        MOVE.B  #'D', (A3)+
+        MOVE.B  #'5', (A3)+
+        RTS
 
 APPEND_D6
-    MOVE.B  #'D', (A3)+
-    MOVE.B  #'6', (A3)+
-    RTS
+        MOVE.B  #'D', (A3)+
+        MOVE.B  #'6', (A3)+
+        RTS
 
 APPEND_D7
-    MOVE.B  #'D', (A3)+
-    MOVE.B  #'7', (A3)+
-    RTS
+        MOVE.B  #'D', (A3)+
+        MOVE.B  #'7', (A3)+
+        RTS
     
 APPEND_A0
-    MOVE.B  #'A', (A3)+
-    MOVE.B  #'0', (A3)+
-    RTS
+        MOVE.B  #'A', (A3)+
+        MOVE.B  #'0', (A3)+
+        RTS
 
 APPEND_A1
-    MOVE.B  #'A', (A3)+
-    MOVE.B  #'1', (A3)+
-    RTS
+        MOVE.B  #'A', (A3)+
+        MOVE.B  #'1', (A3)+
+        RTS
 
 APPEND_A2
-    MOVE.B  #'A', (A3)+
-    MOVE.B  #'2', (A3)+
-    RTS
+        MOVE.B  #'A', (A3)+
+        MOVE.B  #'2', (A3)+
+        RTS
 
 APPEND_A3
-    MOVE.B  #'A', (A3)+
-    MOVE.B  #'3', (A3)+
-    RTS
+        MOVE.B  #'A', (A3)+
+        MOVE.B  #'3', (A3)+
+        RTS
 
 APPEND_A4
-    MOVE.B  #'A', (A3)+
-    MOVE.B  #'4', (A3)+
-    RTS
+        MOVE.B  #'A', (A3)+
+        MOVE.B  #'4', (A3)+
+        RTS
 
 APPEND_A5
-    MOVE.B  #'A', (A3)+
-    MOVE.B  #'5', (A3)+
-    RTS
+        MOVE.B  #'A', (A3)+
+        MOVE.B  #'5', (A3)+
+        RTS
 
 APPEND_A6
-    MOVE.B  #'A', (A3)+
-    MOVE.B  #'6', (A3)+
-    RTS
+        MOVE.B  #'A', (A3)+
+        MOVE.B  #'6', (A3)+
+        RTS
     
 APPEND_A7
-    MOVE.B  #'A', (A3)+
-    MOVE.B  #'7', (A3)+
-    RTS
+        MOVE.B  #'A', (A3)+
+        MOVE.B  #'7', (A3)+
+        RTS
 
 ITOA:                       ; Converts hex string into int 
         JSR     ATOI_LOOP
@@ -1965,7 +1965,6 @@ ITOA_CAP_LETTR_VALUE:
                 
 ITOA_DONE: 
         RTS
-
 
 ; -------------------------------------------------------------
 ;   Converts User string input into HEX 
