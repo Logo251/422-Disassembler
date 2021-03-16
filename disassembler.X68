@@ -562,17 +562,17 @@ INDEX1111:
 OP_0000_TABLE: 
         JMP     OP_ORI              ; 0: ORI
         JMP     OP_UNSUPPORTED      ; 1: Not supported  
-        JMP     OP_UNSUPPORTED      ; 2: Not supported      ANDI
+        JMP     OP_ANDI             ; 2: Not supported      ANDI
         JMP     OP_UNSUPPORTED      ; 3: Not supported      
-        JMP     OP_UNSUPPORTED      ; 4: Not supported      SUBI
+        JMP     OP_SUBI             ; 4: Not supported      SUBI
         JMP     OP_UNSUPPORTED      ; 5: Not supported
-        JMP     OP_UNSUPPORTED      ; 6: Not supported      ADDI
+        JMP     OP_ADDI             ; 6: Not supported      ADDI
         JMP     OP_UNSUPPORTED      ; 7: Not supported
         JMP     OP_UNSUPPORTED      ; 8: Not supported
         JMP     OP_UNSUPPORTED      ; 9: Not supported
-        JMP     OP_UNSUPPORTED      ; A: Not supported      EORI
+        JMP     OP_EORI             ; A: Not supported      EORI
         JMP     OP_UNSUPPORTED      ; B: Not supported
-        JMP     OP_UNSUPPORTED      ; C: Not supported      CMPI
+        JMP     OP_CMPI             ; C: Not supported      CMPI
         JMP     OP_UNSUPPORTED      ; D: Not supported
         JMP     OP_ERROR            ; E: Not supported      INVALID
         JMP     OP_UNSUPPORTED      ; F: Not supported  
@@ -635,12 +635,54 @@ OP_1110_TABLE:
 ; ORI. Gathering instruct size and calling EA
 ;-------------------------------------------------      
 OP_ORI:
-        CLR.L   D1
         MOVE.B  #'O', (A3)+
         MOVE.B  #'R', (A3)+
         MOVE.B  #'I', (A3)+
         MOVE.B  #'.', (A3)+
+        JMP     OP_ORI_SIZE_EXTACT
+
+OP_ANDI:     
+        MOVE.B  #'A', (A3)+
+        MOVE.B  #'N', (A3)+
+        MOVE.B  #'D', (A3)+
+        MOVE.B  #'I', (A3)+
+        MOVE.B  #'.', (A3)+
+        JMP     OP_ORI_SIZE_EXTACT
+
+OP_SUBI:     
+        MOVE.B  #'S', (A3)+
+        MOVE.B  #'U', (A3)+
+        MOVE.B  #'B', (A3)+
+        MOVE.B  #'I', (A3)+
+        MOVE.B  #'.', (A3)+
+        JMP     OP_ORI_SIZE_EXTACT
         
+OP_ADDI:     
+        MOVE.B  #'A', (A3)+
+        MOVE.B  #'D', (A3)+
+        MOVE.B  #'D', (A3)+
+        MOVE.B  #'I', (A3)+
+        MOVE.B  #'.', (A3)+
+        JMP     OP_ORI_SIZE_EXTACT
+        
+OP_EORI:     
+        MOVE.B  #'E', (A3)+
+        MOVE.B  #'O', (A3)+
+        MOVE.B  #'R', (A3)+
+        MOVE.B  #'I', (A3)+
+        MOVE.B  #'.', (A3)+
+        JMP     OP_ORI_SIZE_EXTACT
+
+OP_CMPI:     
+        MOVE.B  #'C', (A3)+
+        MOVE.B  #'M', (A3)+
+        MOVE.B  #'P', (A3)+
+        MOVE.B  #'I', (A3)+
+        MOVE.B  #'.', (A3)+
+        JMP     OP_ORI_SIZE_EXTACT   
+     
+OP_ORI_SIZE_EXTACT:     
+        CLR.L   D1    
         MOVE.L  D0,D1               ; Current instruct word
         ANDI.W  #size,D1         ; Extract 2nd nibble
         MOVE.B  #right6, D2         
@@ -655,7 +697,8 @@ OP_ORI:
         CMP.B   #2, D1      ; --> Long
         BEQ     HELPER_ORIL
         
-        
+
+            
 HELPER_ORIB:
         CLR.L   D3
         MOVE.B   #1, D3
@@ -1291,8 +1334,8 @@ OP_ERROR:
 
 ;----------------------------------------------
 ;IMMEDIATE_EA for ORI,ANDI,SUBI,ADDI
-    *D1 = # of ITOA Loop ITERATION
-    *D3 = size of instruct
+    *D3 = # of ITOA Loop ITERATION
+    *D1 = size of instruct
     *D0 = Shift Data
     *D5 = Mode
     *D6 = Register
@@ -1302,14 +1345,13 @@ IMMEDIATE_EA
         ; Extract dst mode and register
         JSR     MOVE_IMM_DATA
         
-        MOVE.L D0, D6       ; Register    
-        
-        MOVE.B  D3, D0
         CLR.L   D6
-        ANDI.W  #$7,D6
-        
         CLR.L   D5
-        MOVE.L  D0,D5               ; Current instruct word
+        MOVE.L  D0,D6               ; Current Instruct word Register    
+        MOVE.L  D0,D5               ; Current instruct word Mode
+        
+        ANDI.W  #$7,D6              ; Gets the Register
+        
         ANDI.W  #$38,D5              
         MOVE.B  #$3, D0            
         LSR.W   D0,D5               ; Extract the Mode      
@@ -1317,7 +1359,7 @@ IMMEDIATE_EA
         CMP.B   #1, D5          ; Check for valid dst 
         BEQ     DATA_ERROR    
         
-        MOVE.B  D3,D1
+        MOVE.B  D3,D1           ; Size Instruct 
         MULU    #2, D3          ; Iteration Byte = 2 ITOA Loops, Word = 4 ITOA Loops, Long = 8 Loops 
  
         MOVE.B  #' ', (A3)+
@@ -1717,10 +1759,7 @@ EAJUMPTABLE
         JMP MODE6       
         JMP MODE7      
     
-MODE0
-        ;Implement ITOA
-        
-        
+MODE0      
         ; Figure the  that relate to it op codes 
         
         CMP #0, D6
@@ -2012,14 +2051,14 @@ ITOA:                       ; Converts hex string into int
         
 ITOA_LOOP:
         CLR.L   D0 
-        CLR.L   D6
+        CLR.L   D1
         
         SUB.B   #1, D3  
         MOVE.L  D7, D0
-        MOVE.B  D3, D6
+        MOVE.B  D3, D1
 
-        MULU    #4, D6      ; The amount that we shift 
-        LSR.L   D6, D0       ; Shift D0 with iteration Loop * 4
+        MULU    #4, D1      ; The amount that we shift 
+        LSR.L   D1, D0       ; Shift D0 with iteration Loop * 4
         
         ANDI.L  #$F, D0          ; Last 4 bits in hex 
         
