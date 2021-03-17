@@ -1897,7 +1897,7 @@ MODE2
         CMP #7, D6
         BEQ APPEND_A7
         
-        MOVE.B ')', (A3)+
+        MOVE.B #')', (A3)+
     
         ;Return
         RTS
@@ -1929,13 +1929,15 @@ MODE3
         CMP #7, D6
         BEQ APPEND_A7
     
-        MOVE.B ')', (A3)+
+        MOVE.B #')', (A3)+
+        MOVE.B #'+', (A3)+
     
         ;Return
         RTS
 
 MODE4
-        MOVE.B ')', (A3)+
+        MOVE.B '-', (A3)+
+        MOVE.B '(', (A3)+
 
         CMP #0, D6
         BEQ APPEND_A0
@@ -1962,7 +1964,6 @@ MODE4
         BEQ APPEND_A7
     
         MOVE.B #')', (A3)+
-        MOVE.B #'+', (A3)+
     
         ;Return
         RTS
