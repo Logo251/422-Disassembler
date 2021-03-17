@@ -447,7 +447,7 @@ INDEX1010:
         JMP     OP_UNSUPPORTED
         
 ; ------------------------------------
-;   OP CMP --> Forgot to do this one lol 
+;   OP CMP --> \
 ; ------------------------------------         
 INDEX1011: 
         MOVE.B  #'C', (A3)+
@@ -458,7 +458,7 @@ INDEX1011:
         CLR.L   D1 
         MOVE.L  D0,D1               ; Current instruct word
         ANDI.W  #size,D1         ; Extract 2nd nibble
-        MOVE.B  #right8, D2         
+        MOVE.B  #right6, D2         
         LSR.W   D2,D1               ; D1 = 2nd nibble
         
         JMP     OP_CMP
@@ -1138,7 +1138,7 @@ OP_DIVU:
 ; CMP   calling EA and finding size
 ;------------------------------------------------ 
 OP_CMP: 
-      JMP   HELPER_CMP_SIZE_CAL   
+        JMP   HELPER_CMP_SIZE_CAL   
      
 HELPER_CMP_SIZE_CAL:         
         CLR.L   D3
@@ -2523,6 +2523,7 @@ DECODE_EA_UNSUPPORT     DC.B    'Unsupported EA code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
 
 
 
