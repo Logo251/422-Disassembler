@@ -1631,11 +1631,11 @@ SUB_EA
         ;and off data
         ANDI #7, D6
         JSR EA_DECODER
-        MOVE.L D0, D6
     
         MOVE.B #',', (A3)+
         ;Reset D6 just in case.
         CLR.L D6
+        MOVE.L D0, D6
         ;Second argument, set D4
         MOVE #1, D4
     
@@ -2696,6 +2696,7 @@ DECODE_EA_UNSUPPORT     DC.B    'Unsupported EA code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
 
 
 
