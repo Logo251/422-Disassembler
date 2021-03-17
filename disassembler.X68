@@ -53,7 +53,9 @@ RESTART_PROGRAM:
         MOVEA.L #$0, A6
         MOVEQ   #0,D3       
         MOVEQ   #0,D0
-                
+        MOVEQ   #0,D2
+        JSR     CLEAR_SCREEN
+        
 START_ADDR:
         MOVEQ   #0,D2
         ; Prompt a start address
@@ -100,7 +102,7 @@ END_ADDR:
         
         ; Validate end address & check if its greater than start
         ROR.L   #1, D3
-        BCS     ERROR_END_ADDR
+        BCS     ERROR_START_ADDR
         ROL.L   #1, D3
         
         CMP.L   #$000FFFFFF, D3 
@@ -187,27 +189,6 @@ OP_START:
 OP_FINISH: 
         MOVEM.L (SP)+,D2/A6,
         JSR     OP_MOVECALC 
-        RTS
-
-OP_MOVECALC: 
-        CMP.B   #4, D4      ; Move 32 bits of data
-        BEQ     OP_MOVE32
-
-        CMP.B   #1, D4      ; Move 32 bits of data
-        BEQ     OP_MOVE32
-       
-        CMP.B   #2, D4       ; Move 16 bits of data
-        BEQ     OP_MOVE16
-        RTS                 ; Move 0 bits of data
-        
-OP_MOVE32:                  ; #2
-        ADD.L   #$4, A5
-        CLR.L   D4
-        RTS
-        
-OP_MOVE16:                  ; #1
-        ADD.L   #$2, A5
-        CLR.L   D4
         RTS
          
 ;-------------------------------------------
@@ -1414,6 +1395,9 @@ MOVE_EA
         JSR EA_DECODER
     
         MOVE.B #',', (A3)+
+        ;Reset D5 and D6 just in case.
+        CLR.L D5
+        CLR.L D6
     
         ; Grab the other mode
         MOVE.L D0, D5
@@ -1458,6 +1442,8 @@ MOVEQ_EA
         JSR EA_DECODER
     
         MOVE.B #',', (A3)+
+        ;Reset D6 just in case.
+        CLR.L D6
 
         MOVE.L D0, D5
         MOVE.L D0, D6
@@ -1486,6 +1472,9 @@ LEA_EA
         JSR EA_DECODER
     
         MOVE.B #',', (A3)+
+        ;Reset D5 and D6 just in case.
+        CLR.L D5
+        CLR.L D6
     
         ; Grab the other mode
         MOVE.L D0, D5
@@ -1540,6 +1529,9 @@ DIVS_EA
         JSR EA_DECODER
     
         MOVE.B #',', (A3)+
+        ;Reset D5 and D6 just in case.
+        CLR.L D5
+        CLR.L D6
     
         ; Grab the other mode
         MOVE.L D0, D5
@@ -1566,6 +1558,8 @@ SUB_EA
         MOVE.L D0, D6
     
         MOVE.B #',', (A3)+
+        ;Reset D6 just in case.
+        CLR.L D6
     
         ;sub only works on data registers, so we set mode to data
         CLR.L D5
@@ -1585,15 +1579,18 @@ SUBQ_EA
         MOVE.L D0, D5
         MOVE.L D0, D7
     
-        ;set mode immediate
+        ;set mode data
         CLR.L D5
-        ;and off data for immediate
+        ;and off data for data
         ANDI #3584, D7
         ASR.L #8, D6
         ASR.L #1, D6
         JSR EA_DECODER
     
         MOVE.B #',', (A3)+
+        ;Reset D5 and D6 just in case.
+        CLR.L D5
+        CLR.L D6
     
         MOVE.L D0, D5
         MOVE.L D0, D6
@@ -1618,6 +1615,8 @@ CMP_EA
         JSR EA_DECODER
             
         MOVE.B #',', (A3)+
+        ;Reset D6 just in case.
+        CLR.L D6
     
         ;Do other part of the EA
         MOVE.L D0, D5
@@ -1645,6 +1644,8 @@ MULU_EA
         JSR EA_DECODER
    
         MOVE.B #',', (A3)+
+        ;Reset D6 just in case.
+        CLR.L D6
     
         MOVE.L D0, D5
         MOVE.L D0, D6
@@ -1677,6 +1678,9 @@ ADDA_EA
         JSR EA_DECODER
     
         MOVE.B #',', (A3)+
+        ;Reset D5 and D6 just in case.
+        CLR.L D5
+        CLR.L D6
     
         ; Grab the other mode
         MOVE.L D0, D5
@@ -1717,6 +1721,8 @@ ASR_EA_NUM
         JSR EA_DECODER
     
         MOVE.B #',', (A3)+
+        ;Reset D6 just in case.
+        CLR.L D6
     
         ;Set to data register
         CLR.L D5
@@ -1734,6 +1740,8 @@ ASR_EA_REG
         JSR EA_DECODER  
     
         MOVE.B #',', (A3)+
+        ;Reset D6 just in case.
+        CLR.L D6
     
         ;Set to data register
         CLR.L D5
@@ -2259,17 +2267,18 @@ ERROR_START_ADDR:
         LEA     START_ADDR_ERROR , A1
         MOVE.B  #task14,D0
         TRAP    #15           Display  Error Message
-        JMP     RESTART_PROGRAM
+        JMP     USER_INPUT
         
 ERROR_END_ADDR:   
         LEA     END_ADDR_ERROR , A1
         MOVE.B  #task14,D0
         TRAP    #15           Display  Error Message
-        JMP     RESTART_PROGRAM        
+        JMP     USER_INPUT        
                 
 DONE:
         MOVE.B  #9, D0
         TRAP    #15             Halt Simulator   
+        
         
 * Put variables and constants here
 CR      EQU     $0D
@@ -2297,6 +2306,10 @@ DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
 *~Tab type~1~
 *~Tab size~4~
 
+*~Font name~Courier New~
+*~Font size~10~
+*~Tab type~1~
+*~Tab size~4~
 
 *~Font name~Courier New~
 *~Font size~10~
