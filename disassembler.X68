@@ -54,8 +54,9 @@ RESTART_PROGRAM:
         MOVEQ   #0,D3       
         MOVEQ   #0,D0
         MOVEQ   #0,D2
+        JMP     START_ADDR
         JSR     CLEAR_SCREEN
-        
+              
 START_ADDR:
         MOVEQ   #0,D2
         ; Prompt a start address
@@ -2241,13 +2242,13 @@ ERROR_START_ADDR:
         LEA     START_ADDR_ERROR , A1
         MOVE.B  #task14,D0
         TRAP    #15           Display  Error Message
-        JMP     USER_INPUT
+        JMP     RESTART_PROGRAM
         
 ERROR_END_ADDR:   
         LEA     END_ADDR_ERROR , A1
         MOVE.B  #task14,D0
         TRAP    #15           Display  Error Message
-        JMP     USER_INPUT        
+        JMP     RESTART_PROGRAM        
                 
 DONE:
         MOVE.B  #9, D0
