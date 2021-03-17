@@ -1758,6 +1758,7 @@ MULU_EA
         ;set mode data register
         CLR.L D5
         ;and off data for register
+        ANDI #3584, D7
         ASR.L #8, D6
         ASR.L #1, D6
         JSR EA_DECODER
