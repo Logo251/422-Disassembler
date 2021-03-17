@@ -1990,6 +1990,7 @@ MODE6
         RTS
     
 MODE7
+        CLR.L D7
         CMP #0, D6
         BEQ MODE_7_SHORT
     
@@ -2038,8 +2039,6 @@ MODE_7_IMM
         MOVE.B #'$',(A3)+
         MOVE.W (A5)+, D7
         MOVE #4, D3
-        ROR.L #8, D7
-        ROR.L #8, D7
         JMP ITOA
         
         RTS
