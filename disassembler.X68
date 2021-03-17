@@ -377,8 +377,8 @@ INDEX0101:
         LSR.W   D2,D1               ; D1 = 2nd nibble
     
         ANDI.B  #1, D1
-        BEQ     OP_SUBQ             ; If last bit = 1 --> SUBQ 
-        BNE     OP_ADDQ             ; If lat bit = 0 --> ADDQ
+        BEQ     OP_ADDQ             ; If last bit = 1 --> ADDQ 
+        BNE     OP_SUBQ             ; If lat bit = 0 --> SUBQ
         
         
 ; ------------------------------------
