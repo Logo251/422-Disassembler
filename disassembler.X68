@@ -53,9 +53,7 @@ RESTART_PROGRAM:
         MOVEA.L #$0, A6
         MOVEQ   #0,D3       
         MOVEQ   #0,D0
-        MOVEQ   #0,D2
-        JSR     CLEAR_SCREEN
-        
+                
 START_ADDR:
         MOVEQ   #0,D2
         ; Prompt a start address
@@ -102,7 +100,7 @@ END_ADDR:
         
         ; Validate end address & check if its greater than start
         ROR.L   #1, D3
-        BCS     ERROR_START_ADDR
+        BCS     ERROR_END_ADDR
         ROL.L   #1, D3
         
         CMP.L   #$000FFFFFF, D3 
@@ -204,10 +202,12 @@ OP_MOVECALC:
         
 OP_MOVE32:                  ; #2
         ADD.L   #$4, A5
+        CLR.L   D4
         RTS
         
 OP_MOVE16:                  ; #1
         ADD.L   #$2, A5
+        CLR.L   D4
         RTS
          
 ;-------------------------------------------
@@ -2259,18 +2259,17 @@ ERROR_START_ADDR:
         LEA     START_ADDR_ERROR , A1
         MOVE.B  #task14,D0
         TRAP    #15           Display  Error Message
-        JMP     USER_INPUT
+        JMP     RESTART_PROGRAM
         
 ERROR_END_ADDR:   
         LEA     END_ADDR_ERROR , A1
         MOVE.B  #task14,D0
         TRAP    #15           Display  Error Message
-        JMP     USER_INPUT        
+        JMP     RESTART_PROGRAM        
                 
 DONE:
         MOVE.B  #9, D0
         TRAP    #15             Halt Simulator   
-        
         
 * Put variables and constants here
 CR      EQU     $0D
@@ -2297,6 +2296,7 @@ DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
 
 *~Font name~Courier New~
 *~Font size~10~
