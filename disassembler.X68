@@ -1292,13 +1292,13 @@ OP_UNSUPPORTED:
         LEA     DECODE_OP_UNSUPPORT, A1
         MOVE.B  #task14,D0
         TRAP    #15           Display  Error Message
-        JMP     OP_FINISH
+        JMP     RESTART_PROGRAM
         
 OP_ERROR: 
         LEA     DECODE_OP_ERROR, A1
         MOVE.B  #task14,D0
         TRAP    #15           Display  Error Message
-        JMP     OP_FINISH
+        JMP     RESTART_PROGRAM
               
 ;--------------------------------------------------
 ; Effective Address Start   
@@ -2184,8 +2184,16 @@ APPEND_A7
 ;   ERROR when Data has incorrect Addressing MODE
 ; -------------------------------------------------------------          
 DATA_ERROR:      
-        
+        LEA     DECODE_OP_ERROR, A1
+        MOVE.B  #task14,D0
+        TRAP    #15           Display  Error Message
+        JMP     RESTART_PROGRAM
 
+DATA_UNSUPPORTED:      
+        LEA     DECODE_EA_UNSUPPORT, A1
+        MOVE.B  #task14,D0
+        TRAP    #15           Display  Error Message
+        JMP     RESTART_PROGRAM
  
 *-------------------------------------------------------------------        
     * ITOA CONVERT for IMMEDIATE DATA
@@ -2394,13 +2402,13 @@ ERROR_START_ADDR:
         LEA     START_ADDR_ERROR , A1
         MOVE.B  #task14,D0
         TRAP    #15           Display  Error Message
-        JMP     USER_INPUT
+        JMP     RESTART_PROGRAM
         
 ERROR_END_ADDR:   
         LEA     END_ADDR_ERROR , A1
         MOVE.B  #task14,D0
         TRAP    #15           Display  Error Message
-        JMP     USER_INPUT       
+        JMP     RESTART_PROGRAM       
                 
 DONE:
         MOVE.B  #9, D0
@@ -2421,7 +2429,9 @@ END_ADDR_ERROR          DC.B    'Invalid end address, Please try again',CR,LF,LF
 buffer                  DS.B    bufferSize
 MAX_SCREEN_OUTPUT       DC.B    'Press enter any key to continue the program',CR,LF,0
 DECODE_OP_ERROR         DC.B    'Error in reading the instruction. Invalid Op code readings', CR, LF,0
+DECODE_EA_ERROR         DC.B    'Error in reading the instruction. Invalid EA readings', CR, LF,0
 DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
+DECODE_EA_UNSUPPORT     DC.B    'Unsupported EA code readings', CR, LF,0
         END    START        ; last line of source
 
 
@@ -2437,6 +2447,7 @@ DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
 
 
 
