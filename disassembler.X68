@@ -1707,6 +1707,7 @@ CMP_EA
     
         ;and off mode
         ANDI #56, D5
+        ASR #3, D5
         ;and off data
         ANDI #7, D6
         JSR EA_DECODER
@@ -2699,6 +2700,7 @@ DECODE_EA_UNSUPPORT     DC.B    'Unsupported EA code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
 
 
 
