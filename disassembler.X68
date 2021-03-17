@@ -1758,7 +1758,7 @@ MULU_EA
         ;set mode data register
         CLR.L D5
         ;and off data for register
-        ANDI #3584, D7
+        ANDI #3584, D6
         ASR.L #8, D6
         ASR.L #1, D6
         JSR EA_DECODER
@@ -2523,6 +2523,7 @@ DECODE_EA_UNSUPPORT     DC.B    'Unsupported EA code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
 
 
 
