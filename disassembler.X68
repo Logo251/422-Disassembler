@@ -54,9 +54,8 @@ RESTART_PROGRAM:
         MOVEQ   #0,D3       
         MOVEQ   #0,D0
         MOVEQ   #0,D2
-        JMP     START_ADDR
         JSR     CLEAR_SCREEN
-              
+        
 START_ADDR:
         MOVEQ   #0,D2
         ; Prompt a start address
@@ -82,7 +81,6 @@ START_ADDR:
         ROL.L   #1, D3
         MOVEA.L D3,A5           ; A5 = start address
         ADDQ    #2,D2        
-        
 END_ADDR:         
         ; Prompt end address
         MOVEQ   #0,D3       ; Reset D3 Register
@@ -206,12 +204,10 @@ OP_MOVECALC:
         
 OP_MOVE32:                  ; #2
         ADD.L   #$4, A5
-        CLR.L   D4
         RTS
-
+        
 OP_MOVE16:                  ; #1
         ADD.L   #$2, A5
-        CLR.L   D4
         RTS
          
 ;-------------------------------------------
@@ -1390,13 +1386,13 @@ MOVE_IMM_DATA:
         MOVE.B  #4, D4
         RTS
         
-SHIFT16:        ; word 
+SHIFT16: 
         LSR.L   #8,D7
         LSR.L   #8,D7
         MOVE.B  #2, D4
         RTS
 
-SHIFT24         ; byte
+SHIFT24
         LSR.L   #8,D7
         LSR.L   #8,D7
         MOVE.B  #4, D4  
@@ -1824,6 +1820,8 @@ MODE1
         RTS
 
 MODE2
+        MOVE.B #'(', (A3)+
+
         CMP #0, D6
         BEQ APPEND_A0
     
@@ -1847,6 +1845,8 @@ MODE2
     
         CMP #7, D6
         BEQ APPEND_A7
+        
+        MOVE.B ')', (A3)+
     
         ;Return
         RTS
@@ -1938,20 +1938,30 @@ MODE7
 
 MODE_7_SHORT
         MOVE.B #'%', (A3)+
-        ROR #8, D7
-        MOVE #16, D5
+        MOVE #2, D4
+        MOVE #4, D3
+        ROR.L #8, D7
+        ROR.L #8, D7
+        JMP ITOA
     
         RTS
     
 MODE_7_LONG
         MOVE.B #'%', (A3)+
-        MOVE #32, D5
+        MOVE #1, D4
+        MOVE #8, D3
+        JMP ITOA
         RTS
 
 MODE_7_IMM
         MOVE.B #'#',(A3)+
-        MOVE #16, D5
-    
+        MOVE.B #'$',(A3)+
+        MOVE #2, D4
+        MOVE #4, D3
+        ROR.L #8, D7
+        ROR.L #8, D7
+        JMP ITOA
+        
         RTS
 
 APPEND_D0
@@ -2051,8 +2061,10 @@ DATA_ERROR:
     *D0 = Data that is shifted
 *-------------------------------------------------------------------   
 ITOA:                       ; Converts hex string into int 
-        ; D7 has the immediate address  
+        ; D7 has the immediate address
+        MOVE.L D0, -(SP)  
         JSR     ITOA_LOOP
+        MOVE.L (SP)+, D0
         RTS
         
 ITOA_LOOP:
@@ -2247,13 +2259,13 @@ ERROR_START_ADDR:
         LEA     START_ADDR_ERROR , A1
         MOVE.B  #task14,D0
         TRAP    #15           Display  Error Message
-        JMP     RESTART_PROGRAM
+        JMP     USER_INPUT
         
 ERROR_END_ADDR:   
         LEA     END_ADDR_ERROR , A1
         MOVE.B  #task14,D0
         TRAP    #15           Display  Error Message
-        JMP     RESTART_PROGRAM        
+        JMP     USER_INPUT        
                 
 DONE:
         MOVE.B  #9, D0
@@ -2285,7 +2297,6 @@ DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
-
 
 *~Font name~Courier New~
 *~Font size~10~
