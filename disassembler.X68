@@ -1183,6 +1183,8 @@ OP_ASL_M:
         MOVE.B  #2, D3 
         ; Get ready to call Mode 7 subclass 1
         
+        JSR     ASL_EA
+        JMP     OP_FINISH
 ;---------------------------------------------------
 ; ASR    Memory Shift only word size 
 ;------------------------------------------------- 
@@ -1195,6 +1197,8 @@ OP_ASR_M:
         MOVE.B  #2, D3 
         ; Get ready to call Mode 7 subclass 1
         
+        JSR     ASL_EA
+        JMP     OP_FINISH
 *-------------------------------------------------
 *  Rotation Checker, Mainly looking for ASL/ASR
 *------------------------------------------------        
@@ -1416,6 +1420,7 @@ MOVEM_EA
         BLT     DATA_UNSUPPORTED   
         
         JSR EA_DECODER
+        
         CMP #0, D4
         BEQ MOVEM_REG_TO_MEM
         
@@ -1427,13 +1432,40 @@ MOVEM_REG_TO_MEM
         BEQ     MOVEM_PRE
         JMP     MOVEM_POST  
 
+*---------------------------------
+*   D6 = Set Address
+*   D5 = Loop Counter (16 Shifts) 
+*   D4 = even = Address, odd = Data Register 
+*---------------------------------
 ; Mode 3        
 MOVEM_POST
         MOVE.W  (A5)+, D7
         
+MOVE_POST_LOOP        
+        CMP.B   #16, D5
+        BEQ     MOVEM_FINISH
+        
+        CMP.B   #8, D5
+        BEQ     MOVEM_SWITCH
+        
+        ADD.B   #1, D6
+
+MOVEM_SWITCH:
+        CLR.L   D6
+        ; Even num = address
+
+        ; Odd num  = data register          
+
+
+
+
 ; Mode 4
 MOVEM_PRE
         MOVE.W  (A5)+, D7
+
+MOVEM_FINISH:
+        RTS
+
         
 MOVEQ_EA
         MOVE.L D0, D5
@@ -1508,21 +1540,41 @@ BRA_EA
         JMP BSR_EA
 
 BSR_EA
-        ;Its some form of move 7
-        MOVE #7, D5
+        CLR.L D7
         CLR.L D6
-    
-        MOVE D0, D7
-        ANDI #255, D7
-        CMP #$FF, D7
-        BEQ BSR_EA_32
+        CLR.L D5
+        CLR.L D4
+        
+        MOVE #7, D5     ; Immediate Addressing 
 
+        MOVE D0, D7 
+        ANDI #255, D7
+        
+        CMP.B  #$00, D7
+        BEQ    BSR_EA_16
+ 
+        CMP.B  #$FF, D7
+        BEQ  BSR_EA_32
+        
+        MOVE.B  #0, D6
+        MOVE.B  #0, D4
         JSR EA_DECODER
     
         RTS
 
+BSR_EA_16
+        ;Mode 7 Word
+        MOVE.B  #0, D6
+        MOVE.B  #0, D4
+        JSR EA_DECODER
+        RTS
+
 BSR_EA_32
-        MOVE #1, D6
+        ;Mode 7 : Long 
+        
+        MOVE.B  #1, D6
+        MOVE.B  #0, D4
+        JSR EA_DECODER
         RTS
     
 DIVU_EA
