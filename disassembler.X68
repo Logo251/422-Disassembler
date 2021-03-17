@@ -1489,8 +1489,6 @@ MOVEQ_EA
         JSR EA_PRINT_IMMEDIATE_NUMBER
     
         MOVE.B #',', (A3)+
-        
-        ;Reset D6 just in case.
 
         ;Second argument, set D4
         MOVE #1, D4
@@ -1528,6 +1526,8 @@ LEA_EA
         
         MOVE.L D0, D6
         MOVE.B #',', (A3)+
+        ;Second argument, set D4
+        MOVE #1, D4
         
         ;and off mode
         MOVE.B #2, D5 
@@ -1537,6 +1537,7 @@ LEA_EA
         ASR.L #1, D6
         
         JSR EA_DECODER
+        
         ;Reset D4
         CLR.L D4
     
