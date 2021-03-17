@@ -1984,10 +1984,12 @@ MODE7
         BEQ MODE_7_LONG
     
         CMP #4, D6
-        BEQ MODE_7_IMM
+        BEQ MODE_7_IMM_WORD
     
         RTS
-
+        
+;MODE 7 WHEN IT IS WORD
+;======================
 MODE_7_SHORT
         CMP #0, D4
         BEQ MODE_7_SHORT_1
@@ -2008,7 +2010,9 @@ MODE_7_SHORT_1
         MOVE.B #'W', (A3)+
 MODE_7_SHORT_2        
         RTS
-    
+
+;MODE 7 WHEN IT IS LONG
+;======================    
 MODE_7_LONG
         CMP #0, D4
         BEQ MODE_7_LONG_1
@@ -2030,10 +2034,16 @@ MODE_7_LONG_1
 MODE_7_LONG_2  
         RTS
 
-MODE_7_IMM
+;MODE 7 WHEN IT IS IMMEDIATE WORD
+;================================
+MODE_7_IMM_WORD
         ;Immediate data can't be written to.
         CMP #1, D4
         BEQ DATA_ERROR
+     
+        ;If the instruction is a long, we belong in next operation.
+        CMP #4, D3
+        BEQ MODE_7_IMM_LONG   
      
         MOVE.B #'#',(A3)+
         MOVE.B #'$',(A3)+
@@ -2042,7 +2052,18 @@ MODE_7_IMM
         JSR ITOA
         
         RTS
+
+;MODE 7 WHEN IT IS IMMEDIATE LONG
+;================================
+MODE_7_IMM_LONG
+        MOVE.B #'#',(A3)+
+        MOVE.B #'$',(A3)+
+        MOVE.L (A5)+, D7
+        MOVE #8, D3
+        JSR ITOA
         
+        RTS
+
 MODE_7_2NDARG_START
     MOVE.B #'(', (A3)+
     RTS
@@ -2390,6 +2411,7 @@ DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
 
 
 

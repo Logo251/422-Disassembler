@@ -48,11 +48,11 @@ START:
       ;NOT.W     D3          ; optional
       ;EXT.W     D4          ; optional       
       ;TRAP      #15         ; optional
-      NOP                   ; 4
+      ;NOP                   ; 4
       ;STOP      #$2700      ; optional
       ;RTE                   ; optional
       ;RTS                   ; optional
-      JSR	    (A5)        ; optional
+      ;JSR	    (A5)        ; optional
       ;JMP       (A6)		; optional
       ;MOVEM.W	D7, (A0)    ; 5
       ;LEA	    (A1), A2    ; 6
@@ -143,6 +143,7 @@ START:
       ;MOVE.L    #$12345678, ($ABCDEF12).L ; mode 7 subclass 1 and 4  2.5pts
 
       END   START
+
 
 
 
