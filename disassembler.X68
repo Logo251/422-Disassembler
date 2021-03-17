@@ -2006,10 +2006,8 @@ MODE_7_SHORT
         BEQ MODE_7_2NDARG_START
         
         MOVE.B #'%', (A3)+
-        MOVE #2, D4
+        MOVE.W (A5)+, D7
         MOVE #4, D3
-        ROR.L #8, D7
-        ROR.L #8, D7
         JMP ITOA
     
         CMP #1, D4
@@ -2024,7 +2022,7 @@ MODE_7_LONG
         BEQ MODE_7_2NDARG_START
 
         MOVE.B #'%', (A3)+
-        MOVE #1, D4
+        MOVE.L (A5)+, D7
         MOVE #8, D3
         JMP ITOA
         
@@ -2038,7 +2036,7 @@ MODE_7_LONG
 MODE_7_IMM     
         MOVE.B #'#',(A3)+
         MOVE.B #'$',(A3)+
-        MOVE #2, D4
+        MOVE.W (A5)+, D7
         MOVE #4, D3
         ROR.L #8, D7
         ROR.L #8, D7
@@ -2401,6 +2399,7 @@ DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
 
 *~Font name~Courier New~
 *~Font size~10~
