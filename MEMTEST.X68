@@ -32,6 +32,9 @@ START:
 
 * Remove optional CPU instructions your disassembler haven't handled
 
+      MULU	    D0, D1	    ; 14
+      MULS	    D2, D3      ; optional
+
       ORI.W     #$ABCD, D0  ; 1
       ANDI.W    #$ABCD, D1  ; optional
       SUBI.W	#$ABCD, D2  ; optional
@@ -71,8 +74,7 @@ START:
       EOR.W     D4, D5      ; optional
       CMP.W	    D6, D7      ; 13
       
-      MULU	    D0, D1	    ; 14
-      MULS	    D2, D3      ; optional
+
       ;AND.W	    D3, D4      ; optional
       
       ADD.W	    D5, D6      ; 15
@@ -139,6 +141,7 @@ LOOP:
       MOVE.L    #$12345678, ($ABCDEF12).L ; mode 7 subclass 1 and 4  2.5pts
 
       END   START
+
 
 
 

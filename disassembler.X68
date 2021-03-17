@@ -1737,7 +1737,7 @@ MULS_EA
 
 MULU_EA
         MOVE.L D0, D5
-        MOVE.L D0, D7
+        MOVE.L D0, D6
     
         ;Get mode
         ANDI #56, D5
@@ -2696,6 +2696,7 @@ DECODE_EA_UNSUPPORT     DC.B    'Unsupported EA code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
 
 
 
