@@ -727,7 +727,6 @@ OP_LEA:
         MOVE.B  #'L', (A3)+
         MOVE.B  #'E', (A3)+
         MOVE.B  #'A', (A3)+
-    
         ; Long Size 
         CLR.L   D3
         MOVE.B   #4, D3
@@ -1509,19 +1508,6 @@ MOVEQ_EA
         RTS
 
 LEA_EA
-        MOVE.L D0, D5
-        MOVE.L D0, D6
-    
-        ;and off mode
-        ANDI #448, D5
-        ASR.L #6, D5
-        ;and off data
-        ANDI #3584, D6
-        ASR.L #8, D6
-        ASR.L #1, D6
-        JSR EA_DECODER
-    
-        MOVE.B #',', (A3)+
         ;Reset D5 and D6 just in case.
         CLR.L D5
         CLR.L D6
@@ -1539,6 +1525,17 @@ LEA_EA
         ANDI #7, D6
         JSR EA_DECODER
         
+        MOVE.L D0, D6
+        MOVE.B #',', (A3)+
+        
+        ;and off mode
+        MOVE.B #2, D5 
+        ;and off data
+        ANDI #3584, D6
+        ASR.L #8, D6
+        ASR.L #1, D6
+        
+        JSR EA_DECODER
         ;Reset D4
         CLR.L D4
     
@@ -1761,7 +1758,7 @@ MULU_EA
         ;set mode data register
         CLR.L D5
         ;and off data for register
-        ANDI #3584, D6
+        ANDI #3584, D7
         ASR.L #8, D6
         ASR.L #1, D6
         JSR EA_DECODER
@@ -2526,7 +2523,6 @@ DECODE_EA_UNSUPPORT     DC.B    'Unsupported EA code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
-
 
 
 
