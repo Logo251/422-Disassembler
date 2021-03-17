@@ -377,8 +377,8 @@ INDEX0101:
         LSR.W   D2,D1               ; D1 = 2nd nibble
     
         ANDI.B  #1, D1
-        BEQ     OP_SUBQ             ; If last bit = 1 --> SUBQ 
-        BNE     OP_ADDQ             ; If lat bit = 0 --> ADDQ
+        BEQ     OP_ADDQ             ; If last bit = 1 --> ADDQ 
+        BNE     OP_SUBQ             ; If lat bit = 0 --> SUBQ
         
         
 ; ------------------------------------
@@ -400,6 +400,12 @@ INDEX0110:
 ;   OP MOVEQ --> DONE
 ; ------------------------------------
 INDEX0111: 
+        MOVE.B  #'M', (A3)+
+        MOVE.B  #'O', (A3)+
+        MOVE.B  #'V', (A3)+
+        MOVE.B  #'E', (A3)+
+        MOVE.B  #'Q', (A3)+
+        
         CLR.L   D3
         MOVE.B   #4, D3        ; long 
         
@@ -1089,7 +1095,7 @@ OP_BRA:
 ;------------------------------------------------- 
 OP_MULU: 
         MOVE.B  #'U', (A3)+
-
+        
         ; Call EA
         JSR     MULU_EA
         JMP     OP_FINISH
@@ -1470,22 +1476,25 @@ MOVEM_FINISH:
 MOVEQ_EA
         MOVE.L D0, D5
         MOVE.L D0, D6
-    
+        
+        MOVE.L D0, D7
         ;set mode to immediate
+        
         MOVE #7, D0
         ;and off data
         ANDI #255, D7
+        
+        MOVE.B  #' ', (A3)+
+        MOVE.B  #2, D3
         JSR EA_PRINT_IMMEDIATE_NUMBER
     
         MOVE.B #',', (A3)+
+        
         ;Reset D6 just in case.
-        CLR.L D6
+
         ;Second argument, set D4
         MOVE #1, D4
-
-        MOVE.L D0, D5
-        MOVE.L D0, D6
-    
+   
         ;set mode to data register
         CLR.L D5
         ;and off data
@@ -1543,8 +1552,7 @@ BSR_EA
         CLR.L D7
         CLR.L D6
         CLR.L D5
-        CLR.L D4
-        
+        CLR.L D4 
         MOVE #7, D5     ; Immediate Addressing 
 
         MOVE D0, D7 
@@ -1556,9 +1564,9 @@ BSR_EA
         CMP.B  #$FF, D7
         BEQ  BSR_EA_32
         
-        MOVE.B  #0, D6
-        MOVE.B  #0, D4
-        JSR EA_DECODER
+        MOVE.B  #' ', (A3)+
+        MOVE.B  #2, D3
+        JSR EA_PRINT_IMMEDIATE_NUMBER
     
         RTS
 
@@ -1811,13 +1819,6 @@ ASL_EA
         JMP ASR_EA
 
 ASR_EA
-        ;Check bit 6 and 7 to see if this is a memory transfer
-        MOVE D0, D5
-        ANDI #192, D5
-        ASR.L #6, D5
-        CMP #3, D5
-        BEQ ASR_EA_MEM
-        
         ;Check bit 5 to see if its a register or count.
         MOVE D0, D5
         ANDI #32, D5
@@ -1828,25 +1829,6 @@ ASR_EA
         BEQ ASR_EA_REG
     
         ;Error-handling return
-        RTS
-    
-ASR_EA_MEM
-        MOVE.L D0, D5
-        MOVE.L D0, D6
-        ;and off mode
-        ANDI #56, D5
-        ASR.L #3, D5
-        ;and off data
-        ANDI #7, D6
-        JSR EA_DECODER
-    
-        ;Reset D5 and D6 just in case.
-        CLR.L D5
-        CLR.L D6
-        
-        ;Clear D4
-        CLR.L D4
-        
         RTS
     
 ASR_EA_NUM
