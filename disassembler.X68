@@ -1361,6 +1361,9 @@ MOVE_IMM_DATA:
         CMP.B   #2, D3
         BEQ     SHIFT16
         
+        CMP.B   #1, D3
+        BEQ     SHIFT16
+        
         MOVE.L  (A5)+, D7
         RTS
         
@@ -2696,6 +2699,7 @@ DECODE_EA_UNSUPPORT     DC.B    'Unsupported EA code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
 
 
 
