@@ -172,9 +172,6 @@ OP_START:
         CLR.L    D1
         MOVE.W   (A5)+,D0       ; Loads current word instruction to D0
         
-        ; Load long address into D7 
-        MOVE.L   (A5)+,D7
-        
         MOVE.L   D0,D1          ; Move word instruct to D1
         MOVE.B   #right12, D2   
         LSR.W    D2, D1         ; D1 = op code
@@ -2003,43 +2000,57 @@ MODE7
         RTS
 
 MODE_7_SHORT
-        CMP #1, D4
-        BEQ MODE_7_2NDARG_START
+        CMP #0, D4
+        BEQ MODE_7_SHORT_1
         
-        MOVE.B #'%', (A3)+
+        MOVE.B #'(', (A3)+
+
+MODE_7_SHORT_1
+        MOVE.B #'$', (A3)+
         MOVE.W (A5)+, D7
         MOVE #4, D3
-        JMP ITOA
+        JSR ITOA
     
-        CMP #1, D4
-        BEQ MODE_7_2NDARG_END
-        CMP #1, D4
-        BEQ APPEND_W
+        CMP #0, D4
+        BEQ MODE_7_SHORT_2
         
+        MOVE.B #')', (A3)+
+        MOVE.B #'.', (A3)+
+        MOVE.B #'W', (A3)+
+MODE_7_SHORT_2        
         RTS
     
 MODE_7_LONG
-        CMP #1, D4
-        BEQ MODE_7_2NDARG_START
+        CMP #0, D4
+        BEQ MODE_7_LONG_1
+        
+        MOVE.B #'(', (A3)+
 
-        MOVE.B #'%', (A3)+
+MODE_7_LONG_1
+        MOVE.B #'$', (A3)+
         MOVE.L (A5)+, D7
         MOVE #8, D3
-        JMP ITOA
+        JSR ITOA
         
-        CMP #1, D4
-        BEQ MODE_7_2NDARG_END
-        CMP #1, D4
-        BEQ APPEND_L
+        CMP #0, D4
+        BEQ MODE_7_LONG_2
         
+        MOVE.B #')', (A3)+
+        MOVE.B #'.', (A3)+
+        MOVE.B #'L', (A3)+
+MODE_7_LONG_2  
         RTS
 
-MODE_7_IMM     
+MODE_7_IMM
+        ;Immediate data can't be written to.
+        CMP #1, D4
+        BEQ DATA_ERROR
+     
         MOVE.B #'#',(A3)+
         MOVE.B #'$',(A3)+
         MOVE.W (A5)+, D7
         MOVE #4, D3
-        JMP ITOA
+        JSR ITOA
         
         RTS
         
@@ -2050,14 +2061,6 @@ MODE_7_2NDARG_START
 MODE_7_2NDARG_END
     MOVE.B #')', (A3)+
     MOVE.B #'.', (A3)+
-    RTS
-            
-APPEND_W
-    MOVE.B #'W', (A3)+
-    RTS
-
-APPEND_L
-    MOVE.B #'L', (A3)+
     RTS
 
 APPEND_D0

@@ -39,8 +39,10 @@ START:
       ;EORI.W    #$ABCD, D4  ; optional
       ;CMPI.W    #$ABCD, D5  ; optional
       
-      MOVEA.W	D6, A7      ; 2
-      MOVE.W	D0, D1      ; 3
+      MOVE.W #9999, D5
+      MOVE.W $1234, D5
+      MOVE.L $12345678, D5
+      MOVE.L    #$12345678, ($ABCDEF12).L
       
       ;CLR.W     D2          ; optional
       ;NOT.W     D3          ; optional
@@ -141,6 +143,9 @@ START:
       ;MOVE.L    #$12345678, ($ABCDEF12).L ; mode 7 subclass 1 and 4  2.5pts
 
       END   START
+
+
+
 
 
 
