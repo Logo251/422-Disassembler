@@ -1392,6 +1392,8 @@ MOVE_EA
         ;Reset D5 and D6 just in case.
         CLR.L D5
         CLR.L D6
+        ;Second argument, set D4
+        MOVE #1, D4
     
         ; Grab the other mode
         MOVE.L D0, D5
@@ -1405,7 +1407,10 @@ MOVE_EA
         ASR.L #8, D6
         ASR.L #1, D6
         JSR EA_DECODER
-    
+        
+        ;Clear D4
+        CLR.L D4
+        
         RTS
 
 MOVEM_EA
@@ -1438,6 +1443,8 @@ MOVEQ_EA
         MOVE.B #',', (A3)+
         ;Reset D6 just in case.
         CLR.L D6
+        ;Second argument, set D4
+        MOVE #1, D4
 
         MOVE.L D0, D5
         MOVE.L D0, D6
@@ -1449,7 +1456,10 @@ MOVEQ_EA
         ASR.L #8, D6
         ASR.L #1, D6
         JSR EA_DECODER
-    
+        
+        ;Reset D4
+        CLR.L D4
+        
         RTS
 
 LEA_EA
@@ -1469,6 +1479,8 @@ LEA_EA
         ;Reset D5 and D6 just in case.
         CLR.L D5
         CLR.L D6
+        ;Second argument, set D4
+        MOVE #1, D4
     
         ; Grab the other mode
         MOVE.L D0, D5
@@ -1480,6 +1492,9 @@ LEA_EA
         ;and off data
         ANDI #7, D6
         JSR EA_DECODER
+        
+        ;Reset D4
+        CLR.L D4
     
         RTS
     
@@ -1526,6 +1541,8 @@ DIVS_EA
         ;Reset D5 and D6 just in case.
         CLR.L D5
         CLR.L D6
+        ;Second argument, set D4
+        MOVE #1, D4
     
         ; Grab the other mode
         MOVE.L D0, D5
@@ -1537,6 +1554,9 @@ DIVS_EA
         ;and off data
         ANDI #7, D6
         JSR EA_DECODER
+        
+        ;Clear D4
+        CLR.L D4
     
         RTS
 
@@ -1554,6 +1574,8 @@ SUB_EA
         MOVE.B #',', (A3)+
         ;Reset D6 just in case.
         CLR.L D6
+        ;Second argument, set D4
+        MOVE #1, D4
     
         ;sub only works on data registers, so we set mode to data
         CLR.L D5
@@ -1562,6 +1584,9 @@ SUB_EA
         ASR.L #8, D6
         ASR.L #1, D6
         JSR EA_DECODER
+        
+        ;Clear D4
+        CLR.L D4
 
         RTS
 
@@ -1585,6 +1610,8 @@ SUBQ_EA
         ;Reset D5 and D6 just in case.
         CLR.L D5
         CLR.L D6
+        ;Second argument, set D4
+        MOVE #1, D4
     
         MOVE.L D0, D5
         MOVE.L D0, D6
@@ -1595,6 +1622,9 @@ SUBQ_EA
         ;and off data
         ANDI #7, D6
         JSR EA_DECODER
+        
+        ;Clear d4
+        CLR.L D4
     
         RTS
 
@@ -1611,6 +1641,8 @@ CMP_EA
         MOVE.B #',', (A3)+
         ;Reset D6 just in case.
         CLR.L D6
+        ;Second argument, set D4
+        MOVE #1, D4
     
         ;Do other part of the EA
         MOVE.L D0, D5
@@ -1623,6 +1655,9 @@ CMP_EA
         ASR.L #8, D6
         ASR.L #1, D6
         JSR EA_DECODER
+        
+        ;Clear D4
+        CLR.L D4
 
         RTS
 
@@ -1644,6 +1679,8 @@ MULU_EA
         MOVE.B #',', (A3)+
         ;Reset D6 just in case.
         CLR.L D6
+        ;Second argument, set D4
+        MOVE #1, D4
     
         MOVE.L D0, D5
         MOVE.L D0, D6
@@ -1658,6 +1695,9 @@ MULU_EA
     
         MOVE.L D0, D5
         MOVE.L D0, D6
+        
+        ;Clear D
+        CLR.L D4
         
         RTS
         
@@ -1680,6 +1720,8 @@ ADDA_EA
         ;Reset D5 and D6 just in case.
         CLR.L D5
         CLR.L D6
+        ;Second argument, set D4
+        MOVE #1, D4
     
         ; Grab the other mode
         MOVE.L D0, D5
@@ -1693,6 +1735,9 @@ ADDA_EA
         ASR.L #8, D6
         ASR.L #1, D6
         JSR EA_DECODER
+        
+        ;Clear D4
+        CLR.L D4
     
         RTS
 
@@ -1722,12 +1767,19 @@ ASR_EA_NUM
         MOVE.B #',', (A3)+
         ;Reset D6 just in case.
         CLR.L D6
+        ;Second argument, set D4
+        MOVE #1, D4
     
         ;Set to data register
         CLR.L D5
         MOVE D0, D6
         AND #7, D6
-        JSR EA_DECODER    
+        JSR EA_DECODER
+
+        ;clear D4
+        CLR.L D4
+        
+        RTS    
 
 ASR_EA_REG
         ;Set to data register
@@ -1741,13 +1793,19 @@ ASR_EA_REG
         MOVE.B #',', (A3)+
         ;Reset D6 just in case.
         CLR.L D6
+        ;Second argument, set D4
+        MOVE #1, D4
     
         ;Set to data register
         CLR.L D5
         MOVE D0, D6
         AND #7, D6
         JSR EA_DECODER    
-
+        
+        ;Clear D4
+        CLR.L D4
+        
+        RTS
 
 EA_DECODER:
         ;Add space.
@@ -1944,6 +2002,9 @@ MODE7
         RTS
 
 MODE_7_SHORT
+        CMP #1, D4
+        BEQ MODE_7_2NDARG_START
+        
         MOVE.B #'%', (A3)+
         MOVE #2, D4
         MOVE #4, D3
@@ -1951,16 +2012,30 @@ MODE_7_SHORT
         ROR.L #8, D7
         JMP ITOA
     
+        CMP #1, D4
+        BEQ MODE_7_2NDARG_END
+        CMP #1, D4
+        BEQ APPEND_W
+        
         RTS
     
 MODE_7_LONG
+        CMP #1, D4
+        BEQ MODE_7_2NDARG_START
+
         MOVE.B #'%', (A3)+
         MOVE #1, D4
         MOVE #8, D3
         JMP ITOA
+        
+        CMP #1, D4
+        BEQ MODE_7_2NDARG_END
+        CMP #1, D4
+        BEQ APPEND_L
+        
         RTS
 
-MODE_7_IMM
+MODE_7_IMM     
         MOVE.B #'#',(A3)+
         MOVE.B #'$',(A3)+
         MOVE #2, D4
@@ -1970,6 +2045,23 @@ MODE_7_IMM
         JMP ITOA
         
         RTS
+        
+MODE_7_2NDARG_START
+    MOVE.B #'(', (A3)+
+    RTS
+
+MODE_7_2NDARG_END
+    MOVE.B #')', (A3)+
+    MOVE.B #'.', (A3)+
+    RTS
+            
+APPEND_W
+    MOVE.B #'W', (A3)+
+    RTS
+
+APPEND_L
+    MOVE.B #'L', (A3)+
+    RTS
 
 APPEND_D0
         MOVE.B  #'D', (A3)+
