@@ -1936,8 +1936,8 @@ MODE3
         RTS
 
 MODE4
-        MOVE.B '-', (A3)+
-        MOVE.B '(', (A3)+
+        MOVE.B #'-', (A3)+
+        MOVE.B #'(', (A3)+
 
         CMP #0, D6
         BEQ APPEND_A0
