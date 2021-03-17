@@ -1400,22 +1400,41 @@ MOVE_EA
         RTS
 
 MOVEM_EA
-        ;check if we're reading from or writing to memory.
-        MOVE.W D0, D5
-        ANDI #1024, D5
-        CMP #0, D5
-        BEQ MOVEM_EA_TO_MEM
-        CMP #1024, D5
-        BEQ MOVEM_EA_TO_MEM
-    
-        ;Error-handling return
-        RTS
-    
-MOVEM_EA_TO_MEM
+        ; Extract the mode and register
+        CLR.L   D5
+        CLR.L   D6
+        
+        MOVE.L D0, D5
+        MOVE.L D0, D6
+        
+        ANDI #7, D6
+        ANDI #56, D5
+        ASR.L #3, D5
+            
+        ; Call the right mode to fix 
+        CMP.B   #2, D6              ; Error Handling for wrong modes
+        BLT     DATA_UNSUPPORTED   
+        
+        JSR EA_DECODER
+        CMP #0, D4
+        BEQ MOVEM_REG_TO_MEM
+        
+        CMP #1, D4
+        BEQ MOVEM_POST      ; Mem To Register
+        
+MOVEM_REG_TO_MEM
+        CMP.W   #4, D5      ; Register List Mask is flipped
+        BEQ     MOVEM_PRE
+        JMP     MOVEM_POST  
 
-MOVEM_EA_FROM_MEM
-
-
+; Mode 3        
+MOVEM_POST
+        MOVE.W  (A5)+, D7
+        
+; Mode 4
+MOVEM_PRE
+        MOVE.W  (A5)+, D7
+        
 MOVEQ_EA
         MOVE.L D0, D5
         MOVE.L D0, D6
@@ -2091,13 +2110,13 @@ MODE_7_IMM_LONG
         RTS
 
 MODE_7_2NDARG_START
-    MOVE.B #'(', (A3)+
-    RTS
+        MOVE.B #'(', (A3)+
+        RTS
 
 MODE_7_2NDARG_END
-    MOVE.B #')', (A3)+
-    MOVE.B #'.', (A3)+
-    RTS
+        MOVE.B #')', (A3)+
+        MOVE.B #'.', (A3)+
+        RTS
 
 APPEND_D0
         MOVE.B  #'D', (A3)+
