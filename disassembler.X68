@@ -377,8 +377,8 @@ INDEX0101:
         LSR.W   D2,D1               ; D1 = 2nd nibble
     
         ANDI.B  #1, D1
-        BEQ     OP_ADDQ             ; If last bit = 1 --> ADDQ 
-        BNE     OP_SUBQ             ; If lat bit = 0 --> SUBQ
+        BEQ     OP_SUBQ             ; If last bit = 1 --> SUBQ 
+        BNE     OP_ADDQ             ; If lat bit = 0 --> ADDQ
         
         
 ; ------------------------------------
@@ -1816,6 +1816,13 @@ ASL_EA
         JMP ASR_EA
 
 ASR_EA
+        ;Check bit 6 and 7 to see if this is a memory transfer
+        MOVE D0, D5
+        ANDI #192, D5
+        ASR.L #6, D5
+        CMP #3, D5
+        BEQ ASR_EA_MEM
+
         ;Check bit 5 to see if its a register or count.
         MOVE D0, D5
         ANDI #32, D5
@@ -1826,6 +1833,25 @@ ASR_EA
         BEQ ASR_EA_REG
     
         ;Error-handling return
+        RTS
+        
+ASR_EA_MEM
+        MOVE.L D0, D5
+        MOVE.L D0, D6
+        ;and off mode
+        ANDI #56, D5
+        ASR.L #3, D5
+        ;and off data
+        ANDI #7, D6
+        JSR EA_DECODER
+
+        ;Reset D5 and D6 just in case.
+        CLR.L D5
+        CLR.L D6
+
+        ;Clear D4
+        CLR.L D4
+
         RTS
     
 ASR_EA_NUM
@@ -2670,6 +2696,7 @@ DECODE_EA_UNSUPPORT     DC.B    'Unsupported EA code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
 
 
 
