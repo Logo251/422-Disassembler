@@ -1424,7 +1424,7 @@ MOVEQ_EA
         MOVE #7, D0
         ;and off data
         ANDI #255, D7
-        JSR EA_DECODER
+        JSR EA_PRINT_IMMEDIATE_NUMBER
     
         MOVE.B #',', (A3)+
         ;Reset D6 just in case.
@@ -1583,14 +1583,22 @@ ADDQ_EA
 SUBQ_EA
         MOVE.L D0, D5
         MOVE.L D0, D7
-    
-        ;set mode data
-        CLR.L D5
-        ;and off data for data
+        
+        
+        ;Set to immediate data;
+        MOVE #7, D5
+        ;Get the immediate data.
+        MOVE D0, D7
         ANDI #3584, D7
-        ASR.L #8, D6
-        ASR.L #1, D6
-        JSR EA_DECODER
+        ASR.L #8, D7
+        ASR.L #1, D7
+        CMP #0, D7
+        BNE SUBQ_EA_1
+        
+        MOVE.L #8, D7
+        
+SUBQ_EA_1        
+        JSR EA_PRINT_IMMEDIATE_NUMBER
     
         MOVE.B #',', (A3)+
         ;Reset D5 and D6 just in case.
@@ -1673,7 +1681,7 @@ MULU_EA
     
         ;set mode data register
         CLR.L D5
-        ;and off data for immediate
+        ;and off data for register
         ANDI #3584, D7
         ASR.L #8, D6
         ASR.L #1, D6
@@ -1728,7 +1736,7 @@ ADDA_EA
         RTS
 
 ASL_EA
-        ;Practically the same as DIVS
+        ;Practically the same as ASR
         JMP ASR_EA
 
 ASR_EA
@@ -1747,8 +1755,18 @@ ASR_EA
 ASR_EA_NUM
         ;Set to immediate data;
         MOVE #7, D5
-        ;Missing something here.
-        JSR EA_DECODER
+        ;Get the immediate data.
+        MOVE D0, D7
+        ANDI #3584, D7
+        ASR.L #8, D7
+        ASR.L #1, D7
+        CMP #0, D7
+        BNE ASR_EA_NUM_1
+        
+        MOVE.L #8, D7
+        
+ASR_EA_NUM_1        
+        JSR EA_PRINT_IMMEDIATE_NUMBER
     
         MOVE.B #',', (A3)+
         ;Reset D6 just in case.
@@ -1792,6 +1810,13 @@ ASR_EA_REG
         CLR.L D4
         
         RTS
+
+;For the instructions that have a immediate number in the instruction itself, not in a following word/long
+EA_PRINT_IMMEDIATE_NUMBER
+    MOVE.B #'#', (A3)+
+    JSR ITOA
+    RTS
+
 
 EA_DECODER:
         ;Add space.
