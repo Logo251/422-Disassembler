@@ -1971,7 +1971,7 @@ MODE1
         ;Return
         RTS
 
-MODE2
+MODE2 
         MOVE.B #'(', (A3)+
 
         CMP #0, D6
@@ -1998,6 +1998,7 @@ MODE2
         CMP #7, D6
         BEQ APPEND_A7
         
+MODE_2_END
         MOVE.B #')', (A3)+
     
         ;Return
@@ -2029,7 +2030,8 @@ MODE3
     
         CMP #7, D6
         BEQ APPEND_A7
-    
+
+MODE_3_END
         MOVE.B #')', (A3)+
         MOVE.B #'+', (A3)+
     
@@ -2063,7 +2065,8 @@ MODE4
     
         CMP #7, D6
         BEQ APPEND_A7
-    
+
+MODE_4_END
         MOVE.B #')', (A3)+
     
         ;Return
@@ -2178,81 +2181,225 @@ MODE_7_2NDARG_END
 APPEND_D0
         MOVE.B  #'D', (A3)+
         MOVE.B  #'0', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
 
 APPEND_D1
         MOVE.B  #'D', (A3)+
         MOVE.B  #'1', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
 
 APPEND_D2
         MOVE.B  #'D', (A3)+
         MOVE.B  #'2', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
 
 APPEND_D3
         MOVE.B  #'D', (A3)+
         MOVE.B  #'3', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
 
 APPEND_D4
         MOVE.B  #'D', (A3)+
         MOVE.B  #'4', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
 
 APPEND_D5
         MOVE.B  #'D', (A3)+
         MOVE.B  #'5', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
 
 APPEND_D6
         MOVE.B  #'D', (A3)+
         MOVE.B  #'6', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
 
 APPEND_D7
         MOVE.B  #'D', (A3)+
         MOVE.B  #'7', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
     
 APPEND_A0
         MOVE.B  #'A', (A3)+
         MOVE.B  #'0', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
 
 APPEND_A1
         MOVE.B  #'A', (A3)+
         MOVE.B  #'1', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
 
 APPEND_A2
         MOVE.B  #'A', (A3)+
         MOVE.B  #'2', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
 
 APPEND_A3
         MOVE.B  #'A', (A3)+
         MOVE.B  #'3', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
 
 APPEND_A4
         MOVE.B  #'A', (A3)+
         MOVE.B  #'4', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
 
 APPEND_A5
         MOVE.B  #'A', (A3)+
         MOVE.B  #'5', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
 
 APPEND_A6
         MOVE.B  #'A', (A3)+
         MOVE.B  #'6', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
     
 APPEND_A7
         MOVE.B  #'A', (A3)+
         MOVE.B  #'7', (A3)+
+        
+        ;Return back to Mode 2/3/4 if we need to.
+        CMP #12, D5
+        BEQ MODE_2_END
+        CMP #18, D5
+        BEQ MODE_3_END
+        CMP #24, D5
+        BEQ MODE_4_END
+        
         RTS
 
         
@@ -2523,6 +2670,7 @@ DECODE_EA_UNSUPPORT     DC.B    'Unsupported EA code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
 
 
 

@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 3/17/2021 1:23:23 PM
+Created On: 3/17/2021 1:55:15 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : 
@@ -39,7 +39,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001000                            35  MAIN:
 00001000  4FF9 000A0000             36          LEA     stack, SP
 00001006                            37  WELCOME: 
-00001006  43F9 000024EF             38          LEA     WELCOME_MESS, A1
+00001006  43F9 0000266B             38          LEA     WELCOME_MESS, A1
 0000100C  103C 000E                 39          MOVE.B  #task14,D0
 00001010  4E4F                      40          TRAP    #15             Display  Openning Message 
 00001012                            41  
@@ -61,7 +61,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001036                            57  START_ADDR:
 00001036  7400                      58          MOVEQ   #0,D2
 00001038                            59          ; Prompt a start address
-00001038  43F9 00002515             60          LEA     START_MESS, A1
+00001038  43F9 00002691             60          LEA     START_MESS, A1
 0000103E  103C 000E                 61          MOVE.B  #task14,D0
 00001042  4E4F                      62          TRAP    #15           Display  Start_Addr Message
 00001044                            63  
@@ -70,16 +70,16 @@ Created On: 3/17/2021 1:23:23 PM
 0000104A  103C 0002                 66          MOVE.B  #task2,D0     Gets input from the user
 0000104E  4E4F                      67          TRAP    #15
 00001050                            68          
-00001050  4EB9 00002468             69          JSR     ATOI
+00001050  4EB9 000025E4             69          JSR     ATOI
 00001056                            70          
 00001056                            71          ; Validate start address       
 00001056  7200                      72          MOVEQ   #0,D1
 00001058  B6BC FFFFFFFF             73          CMP.L   #-1,D3
-0000105E  6700 1466                 74          BEQ     ERROR_START_ADDR
+0000105E  6700 15E2                 74          BEQ     ERROR_START_ADDR
 00001062                            75          
 00001062                            76                          
 00001062  E29B                      77          ROR.L   #1, D3          ; Checks for odd number
-00001064  6500 1460                 78          BCS     ERROR_START_ADDR
+00001064  6500 15DC                 78          BCS     ERROR_START_ADDR
 00001068  E39B                      79          ROL.L   #1, D3
 0000106A  2A43                      80          MOVEA.L D3,A5           ; A5 = start address
 0000106C  5442                      81          ADDQ    #2,D2        
@@ -88,7 +88,7 @@ Created On: 3/17/2021 1:23:23 PM
 0000106E  7600                      84          MOVEQ   #0,D3       ; Reset D3 Register
 00001070  7200                      85          MOVEQ   #0,D1
 00001072                            86          
-00001072  43F9 0000257A             87          LEA     END_MESS, A1
+00001072  43F9 000026F6             87          LEA     END_MESS, A1
 00001078  103C 000E                 88          MOVE.B  #task14,D0
 0000107C  4E4F                      89          TRAP    #15           Display  END_Addr Message
 0000107E                            90          
@@ -97,22 +97,22 @@ Created On: 3/17/2021 1:23:23 PM
 00001088  4E4F                      93          TRAP    #15
 0000108A                            94          
 0000108A                            95          ; Read the end address
-0000108A  4EB9 00002468             96          JSR     ATOI
+0000108A  4EB9 000025E4             96          JSR     ATOI
 00001090  7200                      97          MOVEQ   #0,D1
 00001092  B6BC FFFFFFFF             98          CMP.L   #-1,D3
-00001098  6700 143C                 99          BEQ     ERROR_END_ADDR
+00001098  6700 15B8                 99          BEQ     ERROR_END_ADDR
 0000109C                           100          
 0000109C                           101          ; Validate end address & check if its greater than start
 0000109C  E29B                     102          ROR.L   #1, D3
-0000109E  6500 1436                103          BCS     ERROR_END_ADDR
+0000109E  6500 15B2                103          BCS     ERROR_END_ADDR
 000010A2  E39B                     104          ROL.L   #1, D3
 000010A4                           105          
 000010A4  B6BC 00FFFFFF            106          CMP.L   #$000FFFFFF, D3 
-000010AA  6C00 142A                107          BGE     ERROR_END_ADDR
+000010AA  6C00 15A6                107          BGE     ERROR_END_ADDR
 000010AE                           108          
 000010AE  7202                     109          MOVEQ   #2, D1
 000010B0  BBC3                     110          CMP.L   D3, A5 
-000010B2  6C00 1422                111          BGE     ERROR_END_ADDR
+000010B2  6C00 159E                111          BGE     ERROR_END_ADDR
 000010B6  2C43                     112          MOVEA.L D3,A6       ; A6 = end address
 000010B8  5442                     113          ADDQ    #2,D2
 000010BA  4EF9 000010C2            114          JMP     DECODE_LOOP
@@ -145,7 +145,7 @@ Created On: 3/17/2021 1:23:23 PM
 000010E6  60DA                     141          BRA     DECODE_LOOP
 000010E8                           142          
 000010E8                           143  DECODE_PAUSE:   
-000010E8  43F9 00002659            144          LEA     MAX_SCREEN_OUTPUT,  A1
+000010E8  43F9 000027D5            144          LEA     MAX_SCREEN_OUTPUT,  A1
 000010EE  103C 000E                145          MOVE.B  #task14, D0     ; Display the input that it exceeds 
 000010F2  4E4F                     146          TRAP    #15 
 000010F4                           147          
@@ -160,7 +160,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001102                           156  CLEAR_SCREEN: 
 00001102                           157          ; Clear output for the screen 
 00001102  4282                     158          CLR.L   D2
-00001104  43F9 000024EC            159          LEA     BLANK,  A1
+00001104  43F9 00002668            159          LEA     BLANK,  A1
 0000110A  103C 000D                160          MOVE.B  #task13, D0     ; Display the input that it exceeds 
 0000110E  4E4F                     161          TRAP    #15 
 00001110  4E75                     162          RTS
@@ -193,7 +193,7 @@ Created On: 3/17/2021 1:23:23 PM
 0000113E                           189  OP_DATA_CLR: 
 0000113E  4283                     190          CLR.L   D3
 00001140  163C 0040                191          MOVE.B  #bufferSize ,D3
-00001144  47F9 00002619            192          LEA     buffer,A3
+00001144  47F9 00002795            192          LEA     buffer,A3
 0000114A                           193          
 0000114A  4EB9 00001154            194          JSR     OP_DATA_CLR_LOOP
 00001150                           195          
@@ -209,7 +209,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001162                           205          
 00001162                           206  REPEAT_PROGRAM: 
 00001162                           207          ; Output text to continue 
-00001162  43F9 0000252D            208          LEA     REPEAT_MESS, A1
+00001162  43F9 000026A9            208          LEA     REPEAT_MESS, A1
 00001168  103C 000E                209          MOVE.B  #task14,D0
 0000116C  4E4F                     210          TRAP    #15           Display  message asking to repeat 
 0000116E                           211          
@@ -235,7 +235,7 @@ Created On: 3/17/2021 1:23:23 PM
 0000119C                           231          
 0000119C                           232          ; Error Retry: 
 0000119C  227C 00000000            233          MOVEA.L #$0, A1 
-000011A2  43F9 00002561            234          LEA     INVALID_MESS, A1
+000011A2  43F9 000026DD            234          LEA     INVALID_MESS, A1
 000011A8  103C 000E                235          MOVE.B  #task14,D0
 000011AC  4E4F                     236          TRAP    #15           Display  Error Message
 000011AE                           237          
@@ -246,7 +246,7 @@ Created On: 3/17/2021 1:23:23 PM
 000011B6  4EF8 1018                242          JMP     RESTART_PROGRAM
 000011BA                           243          
 000011BA                           244  END_PROGRAM: 
-000011BA  4EF9 000024E6            245         JMP      DONE 
+000011BA  4EF9 00002662            245         JMP      DONE 
 000011C0                           246      
 000011C0                           247  OP_JMP_TABLE:
 000011C0  4EF9 00001220            248          JMP     INDEX0000        ; ORI
@@ -905,7 +905,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001884  16FC 004C                901          MOVE.B  #'L', (A3)+   
 00001888                           902          
 00001888                           903          ; CALL EA 
-00001888  4EB9 00001E24            904          JSR     ADDQ_EA
+00001888  4EB9 00001E20            904          JSR     ADDQ_EA
 0000188E  4EF8 1138                905          JMP     OP_FINISH
 00001892                           906          
 00001892                           907  HELPER_ADDSUBQ_CONVERT_W: 
@@ -914,7 +914,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001898  16FC 0057                910          MOVE.B  #'W', (A3)+   
 0000189C                           911          
 0000189C                           912          ; CALL EA
-0000189C  4EB9 00001E24            913          JSR     ADDQ_EA
+0000189C  4EB9 00001E20            913          JSR     ADDQ_EA
 000018A2  4EF8 1138                914          JMP     OP_FINISH  
 000018A6                           915        
 000018A6                           916  HELPER_ADDSUBQ_CONVERT_B: 
@@ -923,7 +923,7 @@ Created On: 3/17/2021 1:23:23 PM
 000018AC  16FC 0042                919          MOVE.B  #'B', (A3)+ 
 000018B0                           920          
 000018B0                           921          ; CALL EA  
-000018B0  4EB9 00001E24            922          JSR     ADDQ_EA
+000018B0  4EB9 00001E20            922          JSR     ADDQ_EA
 000018B6  4EF8 1138                923          JMP     OP_FINISH
 000018BA                           924  ;---------------------------------------------------
 000018BA                           925  ; SUB. Gathering instruct size and calling EA
@@ -956,7 +956,7 @@ Created On: 3/17/2021 1:23:23 PM
 000018F0  16FC 004C                952          MOVE.B  #'L', (A3)+   
 000018F4                           953  
 000018F4                           954          ; CALL EA  
-000018F4  4EB9 00001DF2            955          JSR     SUB_EA
+000018F4  4EB9 00001DEE            955          JSR     SUB_EA
 000018FA  4EF8 1138                956          JMP     OP_FINISH  
 000018FE                           957          
 000018FE                           958  HELPER_SUB_CONVERT_W: 
@@ -965,7 +965,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001904  16FC 0057                961          MOVE.B  #'W', (A3)+   
 00001908                           962  
 00001908                           963          ; CALL EA
-00001908  4EB9 00001DF2            964          JSR     SUB_EA
+00001908  4EB9 00001DEE            964          JSR     SUB_EA
 0000190E  4EF8 1138                965          JMP     OP_FINISH  
 00001912                           966          
 00001912                           967  HELPER_SUB_CONVERT_B: 
@@ -974,7 +974,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001918  16FC 0042                970          MOVE.B  #'B', (A3)+   
 0000191C                           971  
 0000191C                           972          ; CALL EA
-0000191C  4EB9 00001DF2            973          JSR     SUB_EA
+0000191C  4EB9 00001DEE            973          JSR     SUB_EA
 00001922  4EF8 1138                974          JMP     OP_FINISH    
 00001926                           975        
 00001926                           976  ;---------------------------------------------------
@@ -1004,7 +1004,7 @@ Created On: 3/17/2021 1:23:23 PM
 0000195A  16FC 004C               1000          MOVE.B   #'L', (A3)+
 0000195E                          1001          
 0000195E                          1002          ;CALL EA
-0000195E  4EB9 00001EEA           1003          JSR     ADDA_EA
+0000195E  4EB9 00001EE6           1003          JSR     ADDA_EA
 00001964  4EF8 1138               1004          JMP     OP_FINISH 
 00001968                          1005          
 00001968                          1006  HELPER_ADDA_W: 
@@ -1013,7 +1013,7 @@ Created On: 3/17/2021 1:23:23 PM
 0000196E  16FC 0057               1009          MOVE.B  #'W', (A3)+
 00001972                          1010  
 00001972                          1011          ;CALL EA
-00001972  4EB9 00001EEA           1012          JSR     ADDA_EA
+00001972  4EB9 00001EE6           1012          JSR     ADDA_EA
 00001978  4EF8 1138               1013          JMP     OP_FINISH 
 0000197C                          1014  ;---------------------------------------------------
 0000197C                          1015  ; ADD. Gathering instruct size and calling EA
@@ -1051,7 +1051,7 @@ Created On: 3/17/2021 1:23:23 PM
 000019BC  16FC 004C               1047          MOVE.B  #'L', (A3)+   
 000019C0                          1048  
 000019C0                          1049          ; CALL EA  
-000019C0  4EB9 00001EE4           1050          JSR     ADD_EA
+000019C0  4EB9 00001EE0           1050          JSR     ADD_EA
 000019C6  4EF8 1138               1051          JMP     OP_FINISH 
 000019CA                          1052          
 000019CA                          1053  HELPER_ADD_CONVERT_W: 
@@ -1060,7 +1060,7 @@ Created On: 3/17/2021 1:23:23 PM
 000019D0  16FC 0057               1056          MOVE.B  #'W', (A3)+   
 000019D4                          1057  
 000019D4                          1058          ; CALL EA
-000019D4  4EB9 00001EE4           1059          JSR     ADD_EA
+000019D4  4EB9 00001EE0           1059          JSR     ADD_EA
 000019DA  4EF8 1138               1060          JMP     OP_FINISH
 000019DE                          1061          
 000019DE                          1062  HELPER_ADD_CONVERT_B: 
@@ -1069,7 +1069,7 @@ Created On: 3/17/2021 1:23:23 PM
 000019E4  16FC 0042               1065          MOVE.B  #'B', (A3)+   
 000019E8                          1066  
 000019E8                          1067          ; CALL EA
-000019E8  4EB9 00001EE4           1068          JSR     ADD_EA
+000019E8  4EB9 00001EE0           1068          JSR     ADD_EA
 000019EE  4EF8 1138               1069          JMP     OP_FINISH             
 000019F2                          1070  ;---------------------------------------------------
 000019F2                          1071  ; BSR. Gathering instruct size and calling EA
@@ -1079,7 +1079,7 @@ Created On: 3/17/2021 1:23:23 PM
 000019F6  16FC 0053               1075          MOVE.B  #'S', (A3)+
 000019FA  16FC 0052               1076          MOVE.B  #'R', (A3)+
 000019FE                          1077   
-000019FE  4EB9 00001D60           1078          JSR     BSR_EA
+000019FE  4EB9 00001D5C           1078          JSR     BSR_EA
 00001A04  4EF8 1138               1079          JMP     OP_FINISH
 00001A08                          1080          
 00001A08                          1081  ;---------------------------------------------------
@@ -1091,7 +1091,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001A10  16FC 0041               1087          MOVE.B  #'A', (A3)+
 00001A14                          1088       
 00001A14                          1089          ; Call BRA EA 
-00001A14  4EB9 00001D5A           1090          JSR     BRA_EA
+00001A14  4EB9 00001D56           1090          JSR     BRA_EA
 00001A1A  4EF8 1138               1091          JMP     OP_FINISH
 00001A1E                          1092          
 00001A1E                          1093  ;---------------------------------------------------
@@ -1101,7 +1101,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001A1E  16FC 0055               1097          MOVE.B  #'U', (A3)+
 00001A22                          1098          
 00001A22                          1099          ; Call EA
-00001A22  4EB9 00001EAA           1100          JSR     MULU_EA
+00001A22  4EB9 00001EA6           1100          JSR     MULU_EA
 00001A28  4EF8 1138               1101          JMP     OP_FINISH
 00001A2C                          1102  
 00001A2C                          1103  ;---------------------------------------------------
@@ -1111,7 +1111,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001A2C  16FC 0053               1107          MOVE.B  #'S', (A3)+
 00001A30                          1108  
 00001A30                          1109          ; Call EA
-00001A30  4EB9 00001EAA           1110          JSR     MULU_EA
+00001A30  4EB9 00001EA6           1110          JSR     MULU_EA
 00001A36  4EF8 1138               1111          JMP     OP_FINISH        
 00001A3A                          1112          
 00001A3A                          1113  ;---------------------------------------------------
@@ -1124,7 +1124,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001A46  16FC 0053               1120          MOVE.B  #'S', (A3)+
 00001A4A                          1121          
 00001A4A                          1122          ; Call EA
-00001A4A  4EB9 00001DB8           1123          JSR     DIVS_EA
+00001A4A  4EB9 00001DB4           1123          JSR     DIVS_EA
 00001A50  4EF8 1138               1124          JMP     OP_FINISH
 00001A54                          1125  ;---------------------------------------------------
 00001A54                          1126  ; DIVU   calling EA
@@ -1136,7 +1136,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001A60  16FC 0055               1132          MOVE.B  #'U', (A3)+
 00001A64                          1133          
 00001A64                          1134          ; Call EA
-00001A64  4EB9 00001DB2           1135          JSR     DIVU_EA
+00001A64  4EB9 00001DAE           1135          JSR     DIVU_EA
 00001A6A  4EF8 1138               1136          JMP     OP_FINISH
 00001A6E                          1137  ;------------------------------------------------
 00001A6E                          1138  ; CMP   calling EA and finding size
@@ -1162,7 +1162,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001A92  163C 0004               1158          MOVE.B  #4, D3 
 00001A96  16FC 004C               1159          MOVE.B  #'L', (A3)+   
 00001A9A                          1160          ; CALL EA   
-00001A9A  4EB9 00001E70           1161          JSR     CMP_EA
+00001A9A  4EB9 00001E6C           1161          JSR     CMP_EA
 00001AA0  4EF8 1138               1162          JMP     OP_FINISH
 00001AA4                          1163          
 00001AA4                          1164  HELPER_CMP_CONVERT_W: 
@@ -1170,7 +1170,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001AA6  163C 0002               1166          MOVE.B  #2, D3 
 00001AAA  16FC 0057               1167          MOVE.B  #'W', (A3)+   
 00001AAE                          1168          ; CALL EA
-00001AAE  4EB9 00001E70           1169          JSR     CMP_EA
+00001AAE  4EB9 00001E6C           1169          JSR     CMP_EA
 00001AB4  4EF8 1138               1170          JMP     OP_FINISH
 00001AB8                          1171          
 00001AB8                          1172  HELPER_CMP_CONVERT_B: 
@@ -1179,7 +1179,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001ABE  16FC 0042               1175          MOVE.B  #'B', (A3)+ 
 00001AC2                          1176    
 00001AC2                          1177          ; CALL EA
-00001AC2  4EB9 00001E70           1178          JSR     CMP_EA
+00001AC2  4EB9 00001E6C           1178          JSR     CMP_EA
 00001AC8  4EF8 1138               1179          JMP     OP_FINISH
 00001ACC                          1180  
 00001ACC                          1181  ;---------------------------------------------------
@@ -1193,7 +1193,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001ADA  163C 0002               1189          MOVE.B  #2, D3 
 00001ADE                          1190          ; Get ready to call Mode 7 subclass 1
 00001ADE                          1191          
-00001ADE  4EB9 00001F26           1192          JSR     ASL_EA
+00001ADE  4EB9 00001F22           1192          JSR     ASL_EA
 00001AE4  4EF8 1138               1193          JMP     OP_FINISH
 00001AE8                          1194  ;---------------------------------------------------
 00001AE8                          1195  ; ASR    Memory Shift only word size 
@@ -1207,7 +1207,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001AF6  163C 0002               1203          MOVE.B  #2, D3 
 00001AFA                          1204          ; Get ready to call Mode 7 subclass 1
 00001AFA                          1205          
-00001AFA  4EB9 00001F26           1206          JSR     ASL_EA
+00001AFA  4EB9 00001F22           1206          JSR     ASL_EA
 00001B00  4EF8 1138               1207          JMP     OP_FINISH
 00001B04                          1208  *-------------------------------------------------
 00001B04                          1209  *  Rotation Checker, Mainly looking for ASL/ASR
@@ -1265,7 +1265,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001B6E  16FC 002E               1261          MOVE.B  #'.', (A3)+
 00001B72  16FC 0042               1262          MOVE.B  #'B', (A3)+
 00001B76                          1263          
-00001B76  4EB9 00001F26           1264          JSR     ASL_EA
+00001B76  4EB9 00001F22           1264          JSR     ASL_EA
 00001B7C  4EF8 1138               1265          JMP     OP_FINISH
 00001B80                          1266          
 00001B80                          1267  OP_ROTATION_SIZE_W: 
@@ -1274,7 +1274,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001B86  16FC 002E               1270          MOVE.B  #'.', (A3)+
 00001B8A  16FC 0057               1271          MOVE.B  #'W', (A3)+
 00001B8E                          1272          
-00001B8E  4EB9 00001F26           1273          JSR     ASL_EA
+00001B8E  4EB9 00001F22           1273          JSR     ASL_EA
 00001B94  4EF8 1138               1274          JMP     OP_FINISH
 00001B98                          1275          
 00001B98                          1276  OP_ROTATION_SIZE_L:
@@ -1283,7 +1283,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001B9E  16FC 002E               1279          MOVE.B  #'.', (A3)+
 00001BA2  16FC 004C               1280          MOVE.B  #'L', (A3)+
 00001BA6                          1281          
-00001BA6  4EB9 00001F26           1282          JSR     ASL_EA
+00001BA6  4EB9 00001F22           1282          JSR     ASL_EA
 00001BAC  4EF8 1138               1283          JMP     OP_FINISH
 00001BB0                          1284          
 00001BB0                          1285  OP_ASL_ADDER: 
@@ -1303,13 +1303,13 @@ Created On: 3/17/2021 1:23:23 PM
 00001BD0                          1299  ; Error Handling    
 00001BD0                          1300  ;------------------------------------------------- 
 00001BD0                          1301  OP_UNSUPPORTED: 
-00001BD0  43F9 000026FC           1302          LEA     DECODE_OP_UNSUPPORT, A1
+00001BD0  43F9 00002878           1302          LEA     DECODE_OP_UNSUPPORT, A1
 00001BD6  103C 000E               1303          MOVE.B  #task14,D0
 00001BDA  4E4F                    1304          TRAP    #15           Display  Error Message
 00001BDC  4EF8 1018               1305          JMP     RESTART_PROGRAM
 00001BE0                          1306          
 00001BE0                          1307  OP_ERROR: 
-00001BE0  43F9 00002687           1308          LEA     DECODE_OP_ERROR, A1
+00001BE0  43F9 00002803           1308          LEA     DECODE_OP_ERROR, A1
 00001BE6  103C 000E               1309          MOVE.B  #task14,D0
 00001BEA  4E4F                    1310          TRAP    #15           Display  Error Message
 00001BEC  4EF8 1018               1311          JMP     RESTART_PROGRAM
@@ -1343,7 +1343,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001C0A  E06D                    1339          LSR.W   D0,D5               ; Extract the Mode      
 00001C0C                          1340           
 00001C0C  BA3C 0001               1341          CMP.B   #1, D5          ; Check for valid dst 
-00001C10  6700 06C4               1342          BEQ     DATA_ERROR    
+00001C10  6700 0840               1342          BEQ     DATA_ERROR    
 00001C14                          1343          
 00001C14  1203                    1344          MOVE.B  D3,D1           ; Size Instruct 
 00001C16  C6FC 0002               1345          MULU    #2, D3          ; Iteration Byte = 2 ITOA Loops, Word = 4 ITOA Loops, Long = 8 Loops 
@@ -1353,12 +1353,12 @@ Created On: 3/17/2021 1:23:23 PM
 00001C22  16FC 0024               1349          MOVE.B  #'$', (A3)+
 00001C26                          1350          
 00001C26                          1351          ; Call ITOA 
-00001C26  4EB9 000022F6           1352          JSR     ITOA
+00001C26  4EB9 00002472           1352          JSR     ITOA
 00001C2C                          1353          
 00001C2C  16FC 002C               1354          MOVE.B  #',', (A3)+
 00001C30  16FC 0020               1355          MOVE.B  #' ', (A3)+
 00001C34                          1356          
-00001C34  4EB9 00001FBA           1357          JSR     EA_DECODER
+00001C34  4EB9 00001FB6           1357          JSR     EA_DECODER
 00001C3A  4E75                    1358          RTS
 00001C3C                          1359          
 00001C3C                          1360  MOVE_IMM_DATA: 
@@ -1386,7 +1386,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001C5A  E685                    1382          ASR.L #3, D5
 00001C5C                          1383          ;and off data
 00001C5C  0246 0007               1384          ANDI #7, D6
-00001C60  4EB9 00001FBA           1385          JSR EA_DECODER
+00001C60  4EB9 00001FB6           1385          JSR EA_DECODER
 00001C66                          1386      
 00001C66  16FC 002C               1387          MOVE.B #',', (A3)+
 00001C6A                          1388          ;Reset D5 and D6 just in case.
@@ -1406,7 +1406,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001C7C  0246 0E00               1402          ANDI #3584, D6
 00001C80  E086                    1403          ASR.L #8, D6
 00001C82  E286                    1404          ASR.L #1, D6
-00001C84  4EB9 00001FBA           1405          JSR EA_DECODER
+00001C84  4EB9 00001FB6           1405          JSR EA_DECODER
 00001C8A                          1406          
 00001C8A                          1407          ;Clear D4
 00001C8A  4284                    1408          CLR.L D4
@@ -1427,9 +1427,9 @@ Created On: 3/17/2021 1:23:23 PM
 00001CA0                          1423              
 00001CA0                          1424          ; Call the right mode to fix 
 00001CA0  BC3C 0002               1425          CMP.B   #2, D6              ; Error Handling for wrong modes
-00001CA4  6D00 0640               1426          BLT     DATA_UNSUPPORTED   
+00001CA4  6D00 07BC               1426          BLT     DATA_UNSUPPORTED   
 00001CA8                          1427          
-00001CA8  4EB9 00001FBA           1428          JSR EA_DECODER
+00001CA8  4EB9 00001FB6           1428          JSR EA_DECODER
 00001CAE                          1429          
 00001CAE  B87C 0000               1430          CMP #0, D4
 00001CB2  6700 000A               1431          BEQ MOVEM_REG_TO_MEM
@@ -1490,7 +1490,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001CF4                          1486          
 00001CF4  16FC 0020               1487          MOVE.B  #' ', (A3)+
 00001CF8  163C 0002               1488          MOVE.B  #2, D3
-00001CFC  4EB9 00001FAE           1489          JSR EA_PRINT_IMMEDIATE_NUMBER
+00001CFC  4EB9 00001FAA           1489          JSR EA_PRINT_IMMEDIATE_NUMBER
 00001D02                          1490      
 00001D02  16FC 002C               1491          MOVE.B #',', (A3)+
 00001D06                          1492          
@@ -1505,7 +1505,7 @@ Created On: 3/17/2021 1:23:23 PM
 00001D0C  0246 0E00               1501          ANDI #3584, D6
 00001D10  E086                    1502          ASR.L #8, D6
 00001D12  E286                    1503          ASR.L #1, D6
-00001D14  4EB9 00001FBA           1504          JSR EA_DECODER
+00001D14  4EB9 00001FB6           1504          JSR EA_DECODER
 00001D1A                          1505          
 00001D1A                          1506          ;Reset D4
 00001D1A  4284                    1507          CLR.L D4
@@ -1513,1008 +1513,1153 @@ Created On: 3/17/2021 1:23:23 PM
 00001D1C  4E75                    1509          RTS
 00001D1E                          1510  
 00001D1E                          1511  LEA_EA
-00001D1E  2A00                    1512          MOVE.L D0, D5
-00001D20  2C00                    1513          MOVE.L D0, D6
-00001D22                          1514      
-00001D22                          1515          ;and off mode
-00001D22  0245 01C0               1516          ANDI #448, D5
-00001D26  EC85                    1517          ASR.L #6, D5
-00001D28                          1518          ;and off data
-00001D28  0246 0E00               1519          ANDI #3584, D6
-00001D2C  E086                    1520          ASR.L #8, D6
-00001D2E  E286                    1521          ASR.L #1, D6
-00001D30  4EB9 00001FBA           1522          JSR EA_DECODER
-00001D36                          1523      
-00001D36  16FC 002C               1524          MOVE.B #',', (A3)+
-00001D3A                          1525          ;Reset D5 and D6 just in case.
-00001D3A  4285                    1526          CLR.L D5
-00001D3C  4286                    1527          CLR.L D6
-00001D3E                          1528          ;Second argument, set D4
-00001D3E  383C 0001               1529          MOVE #1, D4
-00001D42                          1530      
-00001D42                          1531          ; Grab the other mode
-00001D42  2A00                    1532          MOVE.L D0, D5
-00001D44  2C00                    1533          MOVE.L D0, D6
-00001D46                          1534      
-00001D46                          1535          ;and off mode
-00001D46  0245 0038               1536          ANDI #56, D5
-00001D4A  E685                    1537          ASR.L #3, D5
-00001D4C                          1538          ;and off data
-00001D4C  0246 0007               1539          ANDI #7, D6
-00001D50  4EB9 00001FBA           1540          JSR EA_DECODER
-00001D56                          1541          
-00001D56                          1542          ;Reset D4
-00001D56  4284                    1543          CLR.L D4
-00001D58                          1544      
-00001D58  4E75                    1545          RTS
-00001D5A                          1546      
-00001D5A                          1547  BRA_EA
-00001D5A                          1548          ;Effectively the same as BRA
-00001D5A  4EF9 00001D60           1549          JMP BSR_EA
-00001D60                          1550  
-00001D60                          1551  BSR_EA
-00001D60  4287                    1552          CLR.L D7
-00001D62  4286                    1553          CLR.L D6
-00001D64  4285                    1554          CLR.L D5
-00001D66  4284                    1555          CLR.L D4 
-00001D68  3A3C 0007               1556          MOVE #7, D5     ; Immediate Addressing 
-00001D6C                          1557  
-00001D6C  3E00                    1558          MOVE D0, D7 
-00001D6E  0247 00FF               1559          ANDI #255, D7
-00001D72                          1560          
-00001D72  BE3C 0000               1561          CMP.B  #$00, D7
-00001D76  6700 001A               1562          BEQ    BSR_EA_16
-00001D7A                          1563   
-00001D7A  BE3C 00FF               1564          CMP.B  #$FF, D7
-00001D7E  6700 0022               1565          BEQ  BSR_EA_32
-00001D82                          1566          
-00001D82  16FC 0020               1567          MOVE.B  #' ', (A3)+
-00001D86  163C 0002               1568          MOVE.B  #2, D3
-00001D8A  4EB9 00001FAE           1569          JSR EA_PRINT_IMMEDIATE_NUMBER
-00001D90                          1570      
-00001D90  4E75                    1571          RTS
-00001D92                          1572  
-00001D92                          1573  BSR_EA_16
-00001D92                          1574          ;Mode 7 Word
-00001D92  1C3C 0000               1575          MOVE.B  #0, D6
-00001D96  183C 0000               1576          MOVE.B  #0, D4
-00001D9A  4EB9 00001FBA           1577          JSR EA_DECODER
-00001DA0  4E75                    1578          RTS
-00001DA2                          1579  
-00001DA2                          1580  BSR_EA_32
-00001DA2                          1581          ;Mode 7 : Long 
-00001DA2                          1582          
-00001DA2  1C3C 0001               1583          MOVE.B  #1, D6
-00001DA6  183C 0000               1584          MOVE.B  #0, D4
-00001DAA  4EB9 00001FBA           1585          JSR EA_DECODER
-00001DB0  4E75                    1586          RTS
-00001DB2                          1587      
-00001DB2                          1588  DIVU_EA
-00001DB2                          1589          ;Practically the same as DIVS
-00001DB2  4EF9 00001DB8           1590          JMP DIVS_EA
-00001DB8                          1591  
-00001DB8                          1592  DIVS_EA
-00001DB8  2A00                    1593          MOVE.L D0, D5
-00001DBA  2C00                    1594          MOVE.L D0, D6
-00001DBC                          1595       
-00001DBC                          1596          ;Set mode data
-00001DBC  0245 0038               1597          ANDI #56, D5
-00001DC0  E685                    1598          ASR.L #3, D5
-00001DC2                          1599          ;and off data
-00001DC2  0246 0007               1600          ANDI #7, D6
-00001DC6  4EB9 00001FBA           1601          JSR EA_DECODER
-00001DCC                          1602      
-00001DCC  16FC 002C               1603          MOVE.B #',', (A3)+
-00001DD0                          1604          ;Reset D5 and D6 just in case.
-00001DD0  4285                    1605          CLR.L D5
-00001DD2  4286                    1606          CLR.L D6
-00001DD4                          1607          ;Second argument, set D4
-00001DD4  383C 0001               1608          MOVE #1, D4
-00001DD8                          1609      
-00001DD8                          1610          ; Grab the other mode
-00001DD8  2A00                    1611          MOVE.L D0, D5
-00001DDA  2C00                    1612          MOVE.L D0, D6
-00001DDC                          1613          
-00001DDC                          1614          ;set mode 0
-00001DDC  3A3C 0000               1615          MOVE #0, D5
-00001DE0                          1616          ;and off data
-00001DE0  0246 0E00               1617          ANDI #3584, D6
-00001DE4  E086                    1618          ASR.L #8, D6
-00001DE6  E286                    1619          ASR.L #1, D6
-00001DE8  4EB9 00001FBA           1620          JSR EA_DECODER
-00001DEE                          1621          
-00001DEE                          1622          ;Clear D4
-00001DEE  4284                    1623          CLR.L D4
-00001DF0                          1624      
-00001DF0  4E75                    1625          RTS
-00001DF2                          1626  
-00001DF2                          1627  SUB_EA
-00001DF2  2A00                    1628          MOVE.L D0, D5
-00001DF4  2C00                    1629          MOVE.L D0, D6
-00001DF6                          1630      
-00001DF6                          1631          ;and off mode
-00001DF6  0245 0038               1632          ANDI #56, D5
-00001DFA                          1633          ;and off data
-00001DFA  0246 0007               1634          ANDI #7, D6
-00001DFE  4EB9 00001FBA           1635          JSR EA_DECODER
-00001E04  2C00                    1636          MOVE.L D0, D6
-00001E06                          1637      
-00001E06  16FC 002C               1638          MOVE.B #',', (A3)+
-00001E0A                          1639          ;Reset D6 just in case.
-00001E0A  4286                    1640          CLR.L D6
-00001E0C                          1641          ;Second argument, set D4
-00001E0C  383C 0001               1642          MOVE #1, D4
-00001E10                          1643      
-00001E10                          1644          ;sub only works on data registers, so we set mode to data
-00001E10  4285                    1645          CLR.L D5
-00001E12                          1646          ;and off data
-00001E12  0246 0E00               1647          ANDI #3584, D6
-00001E16  E086                    1648          ASR.L #8, D6
-00001E18  E286                    1649          ASR.L #1, D6
-00001E1A  4EB9 00001FBA           1650          JSR EA_DECODER
-00001E20                          1651          
-00001E20                          1652          ;Clear D4
-00001E20  4284                    1653          CLR.L D4
-00001E22                          1654  
-00001E22  4E75                    1655          RTS
-00001E24                          1656  
-00001E24                          1657  ADDQ_EA
-00001E24                          1658          ;For EA effectively SUBQ
-00001E24  4EF9 00001E2A           1659          JMP SUBQ_EA
-00001E2A                          1660  
-00001E2A                          1661  SUBQ_EA
-00001E2A  2A00                    1662          MOVE.L D0, D5
-00001E2C  2E00                    1663          MOVE.L D0, D7
-00001E2E                          1664          
-00001E2E                          1665          
-00001E2E                          1666          ;Set to immediate data;
-00001E2E  3A3C 0007               1667          MOVE #7, D5
-00001E32                          1668          ;Get the immediate data.
-00001E32  3E00                    1669          MOVE D0, D7
-00001E34  0247 0E00               1670          ANDI #3584, D7
-00001E38  E087                    1671          ASR.L #8, D7
-00001E3A  E287                    1672          ASR.L #1, D7
-00001E3C  BE7C 0000               1673          CMP #0, D7
-00001E40  6600 0004               1674          BNE SUBQ_EA_1
-00001E44                          1675          
-00001E44  7E08                    1676          MOVE.L #8, D7
-00001E46                          1677          
-00001E46                          1678  SUBQ_EA_1        
-00001E46  4EB9 00001FAE           1679          JSR EA_PRINT_IMMEDIATE_NUMBER
-00001E4C                          1680      
-00001E4C  16FC 002C               1681          MOVE.B #',', (A3)+
-00001E50                          1682          ;Reset D5 and D6 just in case.
-00001E50  4285                    1683          CLR.L D5
-00001E52  4286                    1684          CLR.L D6
-00001E54                          1685          ;Second argument, set D4
-00001E54  383C 0001               1686          MOVE #1, D4
-00001E58                          1687      
-00001E58  2A00                    1688          MOVE.L D0, D5
-00001E5A  2C00                    1689          MOVE.L D0, D6
-00001E5C                          1690      
-00001E5C                          1691          ;and off mode
-00001E5C  0245 0038               1692          ANDI #56, D5
-00001E60  E685                    1693          ASR.L #3, D5
-00001E62                          1694          ;and off data
-00001E62  0246 0007               1695          ANDI #7, D6
-00001E66  4EB9 00001FBA           1696          JSR EA_DECODER
-00001E6C                          1697          
-00001E6C                          1698          ;Clear d4
-00001E6C  4284                    1699          CLR.L D4
-00001E6E                          1700      
-00001E6E  4E75                    1701          RTS
-00001E70                          1702  
-00001E70                          1703  CMP_EA
-00001E70  2A00                    1704          MOVE.L D0, D5
-00001E72  2C00                    1705          MOVE.L D0, D6
-00001E74                          1706      
-00001E74                          1707          ;and off mode
-00001E74  0245 0038               1708          ANDI #56, D5
-00001E78                          1709          ;and off data
-00001E78  0246 0007               1710          ANDI #7, D6
-00001E7C  4EB9 00001FBA           1711          JSR EA_DECODER
-00001E82                          1712              
-00001E82  16FC 002C               1713          MOVE.B #',', (A3)+
-00001E86                          1714          ;Reset D6 just in case.
-00001E86  4286                    1715          CLR.L D6
-00001E88                          1716          ;Second argument, set D4
-00001E88  383C 0001               1717          MOVE #1, D4
-00001E8C                          1718      
-00001E8C                          1719          ;Do other part of the EA
-00001E8C  2A00                    1720          MOVE.L D0, D5
-00001E8E  2C00                    1721          MOVE.L D0, D6
-00001E90                          1722      
-00001E90                          1723          ;set mode to data register
-00001E90  4285                    1724          CLR.L D5
-00001E92                          1725          ;and off data
-00001E92  0246 0E00               1726          ANDI #3584, D6
-00001E96  E086                    1727          ASR.L #8, D6
-00001E98  E286                    1728          ASR.L #1, D6
-00001E9A  4EB9 00001FBA           1729          JSR EA_DECODER
-00001EA0                          1730          
-00001EA0                          1731          ;Clear D4
-00001EA0  4284                    1732          CLR.L D4
-00001EA2                          1733  
-00001EA2  4E75                    1734          RTS
-00001EA4                          1735  
-00001EA4                          1736  MULS_EA
-00001EA4                          1737      ;Same as MULU
-00001EA4  4EF9 00001EAA           1738      JMP MULU_EA
-00001EAA                          1739  
-00001EAA                          1740  MULU_EA
-00001EAA  2A00                    1741          MOVE.L D0, D5
-00001EAC  2E00                    1742          MOVE.L D0, D7
-00001EAE                          1743      
-00001EAE                          1744          ;Get mode
-00001EAE  0245 0038               1745          ANDI #56, D5
-00001EB2  E685                    1746          ASR.L #3, D5
-00001EB4                          1747          ;and off data
-00001EB4  0246 0007               1748          ANDI #7, D6
-00001EB8  4EB9 00001FBA           1749          JSR EA_DECODER
-00001EBE                          1750     
-00001EBE  16FC 002C               1751          MOVE.B #',', (A3)+
-00001EC2                          1752          ;Reset D6 just in case.
-00001EC2  4286                    1753          CLR.L D6
-00001EC4                          1754          ;Second argument, set D4
-00001EC4  383C 0001               1755          MOVE #1, D4
-00001EC8                          1756      
-00001EC8  2A00                    1757          MOVE.L D0, D5
-00001ECA  2C00                    1758          MOVE.L D0, D6
-00001ECC                          1759      
-00001ECC                          1760          ;set mode data register
-00001ECC  4285                    1761          CLR.L D5
-00001ECE                          1762          ;and off data for register
-00001ECE  0246 0E00               1763          ANDI #3584, D6
-00001ED2  E086                    1764          ASR.L #8, D6
-00001ED4  E286                    1765          ASR.L #1, D6
-00001ED6  4EB9 00001FBA           1766          JSR EA_DECODER
-00001EDC                          1767      
-00001EDC  2A00                    1768          MOVE.L D0, D5
-00001EDE  2C00                    1769          MOVE.L D0, D6
-00001EE0                          1770          
-00001EE0                          1771          ;Clear D
-00001EE0  4284                    1772          CLR.L D4
-00001EE2                          1773          
-00001EE2  4E75                    1774          RTS
-00001EE4                          1775          
-00001EE4                          1776  ADD_EA
-00001EE4                          1777          ;Effective the same as ADD
-00001EE4  4EF9 00001EEA           1778          JMP ADDA_EA
-00001EEA                          1779  
-00001EEA                          1780  ADDA_EA
-00001EEA  2A00                    1781          MOVE.L D0, D5
-00001EEC  2C00                    1782          MOVE.L D0, D6
-00001EEE                          1783      
-00001EEE                          1784          ;and off mode
-00001EEE  0245 0038               1785          ANDI #56, D5
-00001EF2  E685                    1786          ASR.L #3, D5
-00001EF4                          1787          ;and off data
-00001EF4  0246 0007               1788          ANDI #7, D6
-00001EF8  4EB9 00001FBA           1789          JSR EA_DECODER
-00001EFE                          1790      
-00001EFE  16FC 002C               1791          MOVE.B #',', (A3)+
-00001F02                          1792          ;Reset D5 and D6 just in case.
-00001F02  4285                    1793          CLR.L D5
-00001F04  4286                    1794          CLR.L D6
-00001F06                          1795          ;Second argument, set D4
-00001F06  383C 0001               1796          MOVE #1, D4
-00001F0A                          1797      
-00001F0A                          1798          ; Grab the other mode
-00001F0A  2A00                    1799          MOVE.L D0, D5
-00001F0C  2C00                    1800          MOVE.L D0, D6
-00001F0E                          1801          
-00001F0E                          1802          ;and off mode
-00001F0E  0245 01C0               1803          ANDI #448, D5
-00001F12  E085                    1804          ASR.L #8, D5
-00001F14                          1805          ;and off data
-00001F14  0246 0E00               1806          ANDI #3584, D6
-00001F18  E086                    1807          ASR.L #8, D6
-00001F1A  E286                    1808          ASR.L #1, D6
-00001F1C  4EB9 00001FBA           1809          JSR EA_DECODER
-00001F22                          1810          
-00001F22                          1811          ;Clear D4
-00001F22  4284                    1812          CLR.L D4
-00001F24                          1813      
-00001F24  4E75                    1814          RTS
-00001F26                          1815  
-00001F26                          1816  ASL_EA
-00001F26                          1817          ;Practically the same as ASR
-00001F26  4EF9 00001F2C           1818          JMP ASR_EA
-00001F2C                          1819  
-00001F2C                          1820  ASR_EA
-00001F2C                          1821          ;Check bit 5 to see if its a register or count.
-00001F2C  3A00                    1822          MOVE D0, D5
-00001F2E  0245 0020               1823          ANDI #32, D5
-00001F32  EA85                    1824          ASR.L #5, D5
-00001F34  BA7C 0000               1825          CMP #0, D5
-00001F38  6700 000C               1826          BEQ ASR_EA_NUM
-00001F3C  BA7C 0001               1827          CMP #1, D5
-00001F40  6700 003E               1828          BEQ ASR_EA_REG
-00001F44                          1829      
-00001F44                          1830          ;Error-handling return
-00001F44  4E75                    1831          RTS
-00001F46                          1832      
-00001F46                          1833  ASR_EA_NUM
-00001F46                          1834          ;Set to immediate data;
-00001F46  3A3C 0007               1835          MOVE #7, D5
-00001F4A                          1836          ;Get the immediate data.
-00001F4A  3E00                    1837          MOVE D0, D7
-00001F4C  0247 0E00               1838          ANDI #3584, D7
-00001F50  E087                    1839          ASR.L #8, D7
-00001F52  E287                    1840          ASR.L #1, D7
-00001F54  BE7C 0000               1841          CMP #0, D7
-00001F58  6600 0004               1842          BNE ASR_EA_NUM_1
-00001F5C                          1843          
-00001F5C  7E08                    1844          MOVE.L #8, D7
-00001F5E                          1845          
-00001F5E                          1846  ASR_EA_NUM_1        
-00001F5E  4EB9 00001FAE           1847          JSR EA_PRINT_IMMEDIATE_NUMBER
-00001F64                          1848      
-00001F64  16FC 002C               1849          MOVE.B #',', (A3)+
-00001F68                          1850          ;Reset D6 just in case.
-00001F68  4286                    1851          CLR.L D6
-00001F6A                          1852          ;Second argument, set D4
-00001F6A  383C 0001               1853          MOVE #1, D4
-00001F6E                          1854      
-00001F6E                          1855          ;Set to data register
-00001F6E  4285                    1856          CLR.L D5
-00001F70  3C00                    1857          MOVE D0, D6
-00001F72  CC7C 0007               1858          AND #7, D6
-00001F76  4EB9 00001FBA           1859          JSR EA_DECODER
-00001F7C                          1860  
-00001F7C                          1861          ;clear D4
-00001F7C  4284                    1862          CLR.L D4
-00001F7E                          1863          
-00001F7E  4E75                    1864          RTS    
-00001F80                          1865  
-00001F80                          1866  ASR_EA_REG
-00001F80                          1867          ;Set to data register
-00001F80  4285                    1868          CLR.L D5
-00001F82  3C00                    1869          MOVE D0, D6
-00001F84  CC7C 0E00               1870          AND #3584, D6
-00001F88  E086                    1871          ASR.L #8, D6
-00001F8A  E286                    1872          ASR.L #1, D6
-00001F8C  4EB9 00001FBA           1873          JSR EA_DECODER  
-00001F92                          1874      
-00001F92  16FC 002C               1875          MOVE.B #',', (A3)+
-00001F96                          1876          ;Reset D6 just in case.
-00001F96  4286                    1877          CLR.L D6
-00001F98                          1878          ;Second argument, set D4
-00001F98  383C 0001               1879          MOVE #1, D4
-00001F9C                          1880      
-00001F9C                          1881          ;Set to data register
-00001F9C  4285                    1882          CLR.L D5
-00001F9E  3C00                    1883          MOVE D0, D6
-00001FA0  CC7C 0007               1884          AND #7, D6
-00001FA4  4EB9 00001FBA           1885          JSR EA_DECODER    
-00001FAA                          1886          
-00001FAA                          1887          ;Clear D4
-00001FAA  4284                    1888          CLR.L D4
-00001FAC                          1889          
-00001FAC  4E75                    1890          RTS
-00001FAE                          1891  
-00001FAE                          1892  ;For the instructions that have a immediate number in the instruction itself, not in a following word/long
-00001FAE                          1893  EA_PRINT_IMMEDIATE_NUMBER
-00001FAE  16FC 0023               1894      MOVE.B #'#', (A3)+
-00001FB2  4EB9 000022F6           1895      JSR ITOA
-00001FB8  4E75                    1896      RTS
-00001FBA                          1897  
-00001FBA                          1898  
-00001FBA                          1899  EA_DECODER:
-00001FBA                          1900          ;Add space.
-00001FBA  16FC 0020               1901          MOVE.B #' ', (A3)+
-00001FBE                          1902          ;Jump to the Mode given.
-00001FBE  41F9 00001FCC           1903          LEA EAJUMPTABLE, A0
-00001FC4  CAFC 0006               1904          MULU #6, D5
-00001FC8  4EF0 5000               1905          JMP 0(A0,D5)
-00001FCC                          1906          
-00001FCC                          1907      ;   This is a jump table that will jump to certain sub-functions based on what the mode is.
-00001FCC                          1908  EAJUMPTABLE
-00001FCC  4EF9 00001FFC           1909          JMP MODE0       
-00001FD2  4EF9 0000203E           1910          JMP MODE1      
-00001FD8  4EF9 00002080           1911          JMP MODE2       
-00001FDE  4EF9 000020CA           1912          JMP MODE3       
-00001FE4  4EF9 00002118           1913          JMP MODE4       
-00001FEA  4EF9 00002166           1914          JMP MODE5       
-00001FF0  4EF9 00002168           1915          JMP MODE6       
-00001FF6  4EF9 0000216A           1916          JMP MODE7      
-00001FFC                          1917      
-00001FFC                          1918  MODE0      
-00001FFC                          1919          ; Figure the  that relate to it op codes 
-00001FFC                          1920          
-00001FFC  BC7C 0000               1921          CMP #0, D6
-00002000  6700 0234               1922          BEQ APPEND_D0
-00002004                          1923      
-00002004  BC7C 0001               1924          CMP #1, D6
-00002008  6700 0236               1925          BEQ APPEND_D1
-0000200C                          1926      
-0000200C  BC7C 0002               1927          CMP #2, D6
-00002010  6700 0238               1928          BEQ APPEND_D2
-00002014                          1929      
-00002014  BC7C 0003               1930          CMP #3, D6
-00002018  6700 023A               1931          BEQ APPEND_D3
-0000201C                          1932      
-0000201C  BC7C 0004               1933          CMP #4, D6
-00002020  6700 023C               1934          BEQ APPEND_D4
-00002024                          1935          
-00002024  BC7C 0005               1936          CMP #5, D6
-00002028  6700 023E               1937          BEQ APPEND_D5
-0000202C                          1938      
-0000202C  BC7C 0006               1939          CMP #6, D6
-00002030  6700 0240               1940          BEQ APPEND_D6
-00002034                          1941      
-00002034  BC7C 0007               1942          CMP #7, D6
-00002038  6700 0242               1943          BEQ APPEND_D7
-0000203C                          1944      
-0000203C                          1945          ;Return
-0000203C  4E75                    1946          RTS
-0000203E                          1947  
-0000203E                          1948  MODE1
-0000203E  BC7C 0000               1949          CMP #0, D6
-00002042  6700 0242               1950          BEQ APPEND_A0
-00002046                          1951      
-00002046  BC7C 0001               1952          CMP #1, D6
-0000204A  6700 0244               1953          BEQ APPEND_A1
-0000204E                          1954      
-0000204E  BC7C 0002               1955          CMP #2, D6
-00002052  6700 0246               1956          BEQ APPEND_A2
-00002056                          1957      
-00002056  BC7C 0003               1958          CMP #3, D6
-0000205A  6700 0248               1959          BEQ APPEND_A3
-0000205E                          1960      
-0000205E  BC7C 0004               1961          CMP #4, D6
-00002062  6700 024A               1962          BEQ APPEND_A4
-00002066                          1963      
-00002066  BC7C 0005               1964          CMP #5, D6
-0000206A  6700 024C               1965          BEQ APPEND_A5
-0000206E                          1966      
-0000206E  BC7C 0006               1967          CMP #6, D6
-00002072  6700 024E               1968          BEQ APPEND_A6
-00002076                          1969      
-00002076  BC7C 0007               1970          CMP #7, D6
-0000207A  6700 0250               1971          BEQ APPEND_A7
-0000207E                          1972      
-0000207E                          1973          ;Return
-0000207E  4E75                    1974          RTS
-00002080                          1975  
-00002080                          1976  MODE2
-00002080  16FC 0028               1977          MOVE.B #'(', (A3)+
-00002084                          1978  
-00002084  BC7C 0000               1979          CMP #0, D6
-00002088  6700 01FC               1980          BEQ APPEND_A0
-0000208C                          1981      
-0000208C  BC7C 0001               1982          CMP #1, D6
-00002090  6700 01FE               1983          BEQ APPEND_A1
-00002094                          1984      
-00002094  BC7C 0002               1985          CMP #2, D6
-00002098  6700 0200               1986          BEQ APPEND_A2
-0000209C                          1987      
-0000209C  BC7C 0003               1988          CMP #3, D6
-000020A0  6700 0202               1989          BEQ APPEND_A3
-000020A4                          1990      
-000020A4  BC7C 0004               1991          CMP #4, D6
-000020A8  6700 0204               1992          BEQ APPEND_A4
-000020AC                          1993      
-000020AC  BC7C 0005               1994          CMP #5, D6
-000020B0  6700 0206               1995          BEQ APPEND_A5
-000020B4                          1996      
-000020B4  BC7C 0006               1997          CMP #6, D6
-000020B8  6700 0208               1998          BEQ APPEND_A6
-000020BC                          1999      
-000020BC  BC7C 0007               2000          CMP #7, D6
-000020C0  6700 020A               2001          BEQ APPEND_A7
-000020C4                          2002          
-000020C4  16FC 0029               2003          MOVE.B #')', (A3)+
-000020C8                          2004      
-000020C8                          2005          ;Return
-000020C8  4E75                    2006          RTS
-000020CA                          2007  
-000020CA                          2008  MODE3
-000020CA  16FC 0028               2009          MOVE.B #'(', (A3)+
-000020CE                          2010  
-000020CE  BC7C 0000               2011          CMP #0, D6
-000020D2  6700 01B2               2012          BEQ APPEND_A0
-000020D6                          2013      
-000020D6  BC7C 0001               2014          CMP #1, D6
-000020DA  6700 01B4               2015          BEQ APPEND_A1
-000020DE                          2016      
-000020DE  BC7C 0002               2017          CMP #2, D6
-000020E2  6700 01B6               2018          BEQ APPEND_A2
-000020E6                          2019      
-000020E6  BC7C 0003               2020          CMP #3, D6
-000020EA  6700 01B8               2021          BEQ APPEND_A3
-000020EE                          2022      
-000020EE  BC7C 0004               2023          CMP #4, D6
-000020F2  6700 01BA               2024          BEQ APPEND_A4
-000020F6                          2025      
-000020F6  BC7C 0005               2026          CMP #5, D6
-000020FA  6700 01BC               2027          BEQ APPEND_A5
-000020FE                          2028      
-000020FE  BC7C 0006               2029          CMP #6, D6
-00002102  6700 01BE               2030          BEQ APPEND_A6
-00002106                          2031      
-00002106  BC7C 0007               2032          CMP #7, D6
-0000210A  6700 01C0               2033          BEQ APPEND_A7
-0000210E                          2034      
-0000210E  16FC 0029               2035          MOVE.B #')', (A3)+
-00002112  16FC 002B               2036          MOVE.B #'+', (A3)+
-00002116                          2037      
-00002116                          2038          ;Return
-00002116  4E75                    2039          RTS
-00002118                          2040  
-00002118                          2041  MODE4
-00002118  16FC 002D               2042          MOVE.B #'-', (A3)+
-0000211C  16FC 0028               2043          MOVE.B #'(', (A3)+
-00002120                          2044  
-00002120  BC7C 0000               2045          CMP #0, D6
-00002124  6700 0160               2046          BEQ APPEND_A0
-00002128                          2047      
-00002128  BC7C 0001               2048          CMP #1, D6
-0000212C  6700 0162               2049          BEQ APPEND_A1
-00002130                          2050      
-00002130  BC7C 0002               2051          CMP #2, D6
-00002134  6700 0164               2052          BEQ APPEND_A2
-00002138                          2053      
-00002138  BC7C 0003               2054          CMP #3, D6
-0000213C  6700 0166               2055          BEQ APPEND_A3
-00002140                          2056      
-00002140  BC7C 0004               2057          CMP #4, D6
-00002144  6700 0168               2058          BEQ APPEND_A4
-00002148                          2059      
-00002148  BC7C 0005               2060          CMP #5, D6
-0000214C  6700 016A               2061          BEQ APPEND_A5
-00002150                          2062      
-00002150  BC7C 0006               2063          CMP #6, D6
-00002154  6700 016C               2064          BEQ APPEND_A6
-00002158                          2065      
-00002158  BC7C 0007               2066          CMP #7, D6
-0000215C  6700 016E               2067          BEQ APPEND_A7
-00002160                          2068      
-00002160  16FC 0029               2069          MOVE.B #')', (A3)+
-00002164                          2070      
-00002164                          2071          ;Return
-00002164  4E75                    2072          RTS
-00002166                          2073  
-00002166                          2074  MODE5
-00002166                          2075          ;Error-handling mode.
-00002166  4E75                    2076          RTS
-00002168                          2077      
-00002168                          2078  MODE6
-00002168                          2079          ;Error-handling mode.
-00002168  4E75                    2080          RTS
-0000216A                          2081      
-0000216A                          2082  MODE7
-0000216A  4287                    2083          CLR.L D7
-0000216C  BC7C 0000               2084          CMP #0, D6
-00002170  6700 0014               2085          BEQ MODE_7_SHORT
-00002174                          2086      
-00002174  BC7C 0001               2087          CMP #1, D6
-00002178  6700 003E               2088          BEQ MODE_7_LONG
-0000217C                          2089      
-0000217C  BC7C 0004               2090          CMP #4, D6
-00002180  6700 0068               2091          BEQ MODE_7_IMM_WORD
-00002184                          2092      
-00002184  4E75                    2093          RTS
-00002186                          2094          
-00002186                          2095  ;MODE 7 WHEN IT IS WORD
-00002186                          2096  ;======================
-00002186                          2097  MODE_7_SHORT
-00002186  B87C 0000               2098          CMP #0, D4
-0000218A  6700 0006               2099          BEQ MODE_7_SHORT_1
-0000218E                          2100          
-0000218E  16FC 0028               2101          MOVE.B #'(', (A3)+
-00002192                          2102  
-00002192                          2103  MODE_7_SHORT_1
-00002192  16FC 0024               2104          MOVE.B #'$', (A3)+
-00002196  3E1D                    2105          MOVE.W (A5)+, D7
-00002198  363C 0004               2106          MOVE #4, D3
-0000219C  4EB9 000022F6           2107          JSR ITOA
-000021A2                          2108      
-000021A2  B87C 0000               2109          CMP #0, D4
-000021A6  6700 000E               2110          BEQ MODE_7_SHORT_2
-000021AA                          2111          
-000021AA  16FC 0029               2112          MOVE.B #')', (A3)+
-000021AE  16FC 002E               2113          MOVE.B #'.', (A3)+
-000021B2  16FC 0057               2114          MOVE.B #'W', (A3)+
-000021B6                          2115  MODE_7_SHORT_2        
-000021B6  4E75                    2116          RTS
-000021B8                          2117  
-000021B8                          2118  ;MODE 7 WHEN IT IS LONG
-000021B8                          2119  ;======================    
-000021B8                          2120  MODE_7_LONG
-000021B8  B87C 0000               2121          CMP #0, D4
-000021BC  6700 0006               2122          BEQ MODE_7_LONG_1
-000021C0                          2123          
-000021C0  16FC 0028               2124          MOVE.B #'(', (A3)+
-000021C4                          2125  
-000021C4                          2126  MODE_7_LONG_1
-000021C4  16FC 0024               2127          MOVE.B #'$', (A3)+
-000021C8  2E1D                    2128          MOVE.L (A5)+, D7
-000021CA  363C 0008               2129          MOVE #8, D3
-000021CE  4EB9 000022F6           2130          JSR ITOA
-000021D4                          2131          
-000021D4  B87C 0000               2132          CMP #0, D4
-000021D8  6700 000E               2133          BEQ MODE_7_LONG_2
-000021DC                          2134          
-000021DC  16FC 0029               2135          MOVE.B #')', (A3)+
-000021E0  16FC 002E               2136          MOVE.B #'.', (A3)+
-000021E4  16FC 004C               2137          MOVE.B #'L', (A3)+
-000021E8                          2138  MODE_7_LONG_2  
-000021E8  4E75                    2139          RTS
-000021EA                          2140  
-000021EA                          2141  ;MODE 7 WHEN IT IS IMMEDIATE WORD
-000021EA                          2142  ;================================
-000021EA                          2143  MODE_7_IMM_WORD
-000021EA                          2144          ;Immediate data can't be written to.
-000021EA  B87C 0001               2145          CMP #1, D4
-000021EE  6700 00E6               2146          BEQ DATA_ERROR
-000021F2                          2147       
-000021F2                          2148          ;If the instruction is a long, we belong in next operation.
-000021F2  B67C 0004               2149          CMP #4, D3
-000021F6  6700 0018               2150          BEQ MODE_7_IMM_LONG   
-000021FA                          2151       
-000021FA  16FC 0023               2152          MOVE.B #'#',(A3)+
-000021FE  16FC 0024               2153          MOVE.B #'$',(A3)+
-00002202  3E1D                    2154          MOVE.W (A5)+, D7
-00002204  363C 0004               2155          MOVE #4, D3
-00002208  4EB9 000022F6           2156          JSR ITOA
-0000220E                          2157          
-0000220E  4E75                    2158          RTS
-00002210                          2159  
-00002210                          2160  ;MODE 7 WHEN IT IS IMMEDIATE LONG
-00002210                          2161  ;================================
-00002210                          2162  MODE_7_IMM_LONG
-00002210  16FC 0023               2163          MOVE.B #'#',(A3)+
-00002214  16FC 0024               2164          MOVE.B #'$',(A3)+
-00002218  2E1D                    2165          MOVE.L (A5)+, D7
-0000221A  363C 0008               2166          MOVE #8, D3
-0000221E  4EB9 000022F6           2167          JSR ITOA
-00002224                          2168          
-00002224  4E75                    2169          RTS
-00002226                          2170  
-00002226                          2171  MODE_7_2NDARG_START
-00002226  16FC 0028               2172          MOVE.B #'(', (A3)+
-0000222A  4E75                    2173          RTS
-0000222C                          2174  
-0000222C                          2175  MODE_7_2NDARG_END
-0000222C  16FC 0029               2176          MOVE.B #')', (A3)+
-00002230  16FC 002E               2177          MOVE.B #'.', (A3)+
-00002234  4E75                    2178          RTS
-00002236                          2179  
-00002236                          2180  APPEND_D0
-00002236  16FC 0044               2181          MOVE.B  #'D', (A3)+
-0000223A  16FC 0030               2182          MOVE.B  #'0', (A3)+
-0000223E  4E75                    2183          RTS
-00002240                          2184  
-00002240                          2185  APPEND_D1
-00002240  16FC 0044               2186          MOVE.B  #'D', (A3)+
-00002244  16FC 0031               2187          MOVE.B  #'1', (A3)+
-00002248  4E75                    2188          RTS
-0000224A                          2189  
-0000224A                          2190  APPEND_D2
-0000224A  16FC 0044               2191          MOVE.B  #'D', (A3)+
-0000224E  16FC 0032               2192          MOVE.B  #'2', (A3)+
+00001D1E                          1512          ;Reset D5 and D6 just in case.
+00001D1E  4285                    1513          CLR.L D5
+00001D20  4286                    1514          CLR.L D6
+00001D22                          1515          ;Second argument, set D4
+00001D22  383C 0001               1516          MOVE #1, D4
+00001D26                          1517      
+00001D26                          1518          ; Grab the other mode
+00001D26  2A00                    1519          MOVE.L D0, D5
+00001D28  2C00                    1520          MOVE.L D0, D6
+00001D2A                          1521      
+00001D2A                          1522          ;and off mode
+00001D2A  0245 0038               1523          ANDI #56, D5
+00001D2E  E685                    1524          ASR.L #3, D5
+00001D30                          1525          ;and off data
+00001D30  0246 0007               1526          ANDI #7, D6
+00001D34  4EB9 00001FB6           1527          JSR EA_DECODER
+00001D3A                          1528          
+00001D3A  2C00                    1529          MOVE.L D0, D6
+00001D3C  16FC 002C               1530          MOVE.B #',', (A3)+
+00001D40                          1531          
+00001D40                          1532          ;and off mode
+00001D40  1A3C 0002               1533          MOVE.B #2, D5 
+00001D44                          1534          ;and off data
+00001D44  0246 0E00               1535          ANDI #3584, D6
+00001D48  E086                    1536          ASR.L #8, D6
+00001D4A  E286                    1537          ASR.L #1, D6
+00001D4C                          1538          
+00001D4C  4EB9 00001FB6           1539          JSR EA_DECODER
+00001D52                          1540          ;Reset D4
+00001D52  4284                    1541          CLR.L D4
+00001D54                          1542      
+00001D54  4E75                    1543          RTS
+00001D56                          1544      
+00001D56                          1545  BRA_EA
+00001D56                          1546          ;Effectively the same as BRA
+00001D56  4EF9 00001D5C           1547          JMP BSR_EA
+00001D5C                          1548  
+00001D5C                          1549  BSR_EA
+00001D5C  4287                    1550          CLR.L D7
+00001D5E  4286                    1551          CLR.L D6
+00001D60  4285                    1552          CLR.L D5
+00001D62  4284                    1553          CLR.L D4 
+00001D64  3A3C 0007               1554          MOVE #7, D5     ; Immediate Addressing 
+00001D68                          1555  
+00001D68  3E00                    1556          MOVE D0, D7 
+00001D6A  0247 00FF               1557          ANDI #255, D7
+00001D6E                          1558          
+00001D6E  BE3C 0000               1559          CMP.B  #$00, D7
+00001D72  6700 001A               1560          BEQ    BSR_EA_16
+00001D76                          1561   
+00001D76  BE3C 00FF               1562          CMP.B  #$FF, D7
+00001D7A  6700 0022               1563          BEQ  BSR_EA_32
+00001D7E                          1564          
+00001D7E  16FC 0020               1565          MOVE.B  #' ', (A3)+
+00001D82  163C 0002               1566          MOVE.B  #2, D3
+00001D86  4EB9 00001FAA           1567          JSR EA_PRINT_IMMEDIATE_NUMBER
+00001D8C                          1568      
+00001D8C  4E75                    1569          RTS
+00001D8E                          1570  
+00001D8E                          1571  BSR_EA_16
+00001D8E                          1572          ;Mode 7 Word
+00001D8E  1C3C 0000               1573          MOVE.B  #0, D6
+00001D92  183C 0000               1574          MOVE.B  #0, D4
+00001D96  4EB9 00001FB6           1575          JSR EA_DECODER
+00001D9C  4E75                    1576          RTS
+00001D9E                          1577  
+00001D9E                          1578  BSR_EA_32
+00001D9E                          1579          ;Mode 7 : Long 
+00001D9E                          1580          
+00001D9E  1C3C 0001               1581          MOVE.B  #1, D6
+00001DA2  183C 0000               1582          MOVE.B  #0, D4
+00001DA6  4EB9 00001FB6           1583          JSR EA_DECODER
+00001DAC  4E75                    1584          RTS
+00001DAE                          1585      
+00001DAE                          1586  DIVU_EA
+00001DAE                          1587          ;Practically the same as DIVS
+00001DAE  4EF9 00001DB4           1588          JMP DIVS_EA
+00001DB4                          1589  
+00001DB4                          1590  DIVS_EA
+00001DB4  2A00                    1591          MOVE.L D0, D5
+00001DB6  2C00                    1592          MOVE.L D0, D6
+00001DB8                          1593       
+00001DB8                          1594          ;Set mode data
+00001DB8  0245 0038               1595          ANDI #56, D5
+00001DBC  E685                    1596          ASR.L #3, D5
+00001DBE                          1597          ;and off data
+00001DBE  0246 0007               1598          ANDI #7, D6
+00001DC2  4EB9 00001FB6           1599          JSR EA_DECODER
+00001DC8                          1600      
+00001DC8  16FC 002C               1601          MOVE.B #',', (A3)+
+00001DCC                          1602          ;Reset D5 and D6 just in case.
+00001DCC  4285                    1603          CLR.L D5
+00001DCE  4286                    1604          CLR.L D6
+00001DD0                          1605          ;Second argument, set D4
+00001DD0  383C 0001               1606          MOVE #1, D4
+00001DD4                          1607      
+00001DD4                          1608          ; Grab the other mode
+00001DD4  2A00                    1609          MOVE.L D0, D5
+00001DD6  2C00                    1610          MOVE.L D0, D6
+00001DD8                          1611          
+00001DD8                          1612          ;set mode 0
+00001DD8  3A3C 0000               1613          MOVE #0, D5
+00001DDC                          1614          ;and off data
+00001DDC  0246 0E00               1615          ANDI #3584, D6
+00001DE0  E086                    1616          ASR.L #8, D6
+00001DE2  E286                    1617          ASR.L #1, D6
+00001DE4  4EB9 00001FB6           1618          JSR EA_DECODER
+00001DEA                          1619          
+00001DEA                          1620          ;Clear D4
+00001DEA  4284                    1621          CLR.L D4
+00001DEC                          1622      
+00001DEC  4E75                    1623          RTS
+00001DEE                          1624  
+00001DEE                          1625  SUB_EA
+00001DEE  2A00                    1626          MOVE.L D0, D5
+00001DF0  2C00                    1627          MOVE.L D0, D6
+00001DF2                          1628      
+00001DF2                          1629          ;and off mode
+00001DF2  0245 0038               1630          ANDI #56, D5
+00001DF6                          1631          ;and off data
+00001DF6  0246 0007               1632          ANDI #7, D6
+00001DFA  4EB9 00001FB6           1633          JSR EA_DECODER
+00001E00  2C00                    1634          MOVE.L D0, D6
+00001E02                          1635      
+00001E02  16FC 002C               1636          MOVE.B #',', (A3)+
+00001E06                          1637          ;Reset D6 just in case.
+00001E06  4286                    1638          CLR.L D6
+00001E08                          1639          ;Second argument, set D4
+00001E08  383C 0001               1640          MOVE #1, D4
+00001E0C                          1641      
+00001E0C                          1642          ;sub only works on data registers, so we set mode to data
+00001E0C  4285                    1643          CLR.L D5
+00001E0E                          1644          ;and off data
+00001E0E  0246 0E00               1645          ANDI #3584, D6
+00001E12  E086                    1646          ASR.L #8, D6
+00001E14  E286                    1647          ASR.L #1, D6
+00001E16  4EB9 00001FB6           1648          JSR EA_DECODER
+00001E1C                          1649          
+00001E1C                          1650          ;Clear D4
+00001E1C  4284                    1651          CLR.L D4
+00001E1E                          1652  
+00001E1E  4E75                    1653          RTS
+00001E20                          1654  
+00001E20                          1655  ADDQ_EA
+00001E20                          1656          ;For EA effectively SUBQ
+00001E20  4EF9 00001E26           1657          JMP SUBQ_EA
+00001E26                          1658  
+00001E26                          1659  SUBQ_EA
+00001E26  2A00                    1660          MOVE.L D0, D5
+00001E28  2E00                    1661          MOVE.L D0, D7
+00001E2A                          1662          
+00001E2A                          1663          
+00001E2A                          1664          ;Set to immediate data;
+00001E2A  3A3C 0007               1665          MOVE #7, D5
+00001E2E                          1666          ;Get the immediate data.
+00001E2E  3E00                    1667          MOVE D0, D7
+00001E30  0247 0E00               1668          ANDI #3584, D7
+00001E34  E087                    1669          ASR.L #8, D7
+00001E36  E287                    1670          ASR.L #1, D7
+00001E38  BE7C 0000               1671          CMP #0, D7
+00001E3C  6600 0004               1672          BNE SUBQ_EA_1
+00001E40                          1673          
+00001E40  7E08                    1674          MOVE.L #8, D7
+00001E42                          1675          
+00001E42                          1676  SUBQ_EA_1        
+00001E42  4EB9 00001FAA           1677          JSR EA_PRINT_IMMEDIATE_NUMBER
+00001E48                          1678      
+00001E48  16FC 002C               1679          MOVE.B #',', (A3)+
+00001E4C                          1680          ;Reset D5 and D6 just in case.
+00001E4C  4285                    1681          CLR.L D5
+00001E4E  4286                    1682          CLR.L D6
+00001E50                          1683          ;Second argument, set D4
+00001E50  383C 0001               1684          MOVE #1, D4
+00001E54                          1685      
+00001E54  2A00                    1686          MOVE.L D0, D5
+00001E56  2C00                    1687          MOVE.L D0, D6
+00001E58                          1688      
+00001E58                          1689          ;and off mode
+00001E58  0245 0038               1690          ANDI #56, D5
+00001E5C  E685                    1691          ASR.L #3, D5
+00001E5E                          1692          ;and off data
+00001E5E  0246 0007               1693          ANDI #7, D6
+00001E62  4EB9 00001FB6           1694          JSR EA_DECODER
+00001E68                          1695          
+00001E68                          1696          ;Clear d4
+00001E68  4284                    1697          CLR.L D4
+00001E6A                          1698      
+00001E6A  4E75                    1699          RTS
+00001E6C                          1700  
+00001E6C                          1701  CMP_EA
+00001E6C  2A00                    1702          MOVE.L D0, D5
+00001E6E  2C00                    1703          MOVE.L D0, D6
+00001E70                          1704      
+00001E70                          1705          ;and off mode
+00001E70  0245 0038               1706          ANDI #56, D5
+00001E74                          1707          ;and off data
+00001E74  0246 0007               1708          ANDI #7, D6
+00001E78  4EB9 00001FB6           1709          JSR EA_DECODER
+00001E7E                          1710              
+00001E7E  16FC 002C               1711          MOVE.B #',', (A3)+
+00001E82                          1712          ;Reset D6 just in case.
+00001E82  4286                    1713          CLR.L D6
+00001E84                          1714          ;Second argument, set D4
+00001E84  383C 0001               1715          MOVE #1, D4
+00001E88                          1716      
+00001E88                          1717          ;Do other part of the EA
+00001E88  2A00                    1718          MOVE.L D0, D5
+00001E8A  2C00                    1719          MOVE.L D0, D6
+00001E8C                          1720      
+00001E8C                          1721          ;set mode to data register
+00001E8C  4285                    1722          CLR.L D5
+00001E8E                          1723          ;and off data
+00001E8E  0246 0E00               1724          ANDI #3584, D6
+00001E92  E086                    1725          ASR.L #8, D6
+00001E94  E286                    1726          ASR.L #1, D6
+00001E96  4EB9 00001FB6           1727          JSR EA_DECODER
+00001E9C                          1728          
+00001E9C                          1729          ;Clear D4
+00001E9C  4284                    1730          CLR.L D4
+00001E9E                          1731  
+00001E9E  4E75                    1732          RTS
+00001EA0                          1733  
+00001EA0                          1734  MULS_EA
+00001EA0                          1735      ;Same as MULU
+00001EA0  4EF9 00001EA6           1736      JMP MULU_EA
+00001EA6                          1737  
+00001EA6                          1738  MULU_EA
+00001EA6  2A00                    1739          MOVE.L D0, D5
+00001EA8  2E00                    1740          MOVE.L D0, D7
+00001EAA                          1741      
+00001EAA                          1742          ;Get mode
+00001EAA  0245 0038               1743          ANDI #56, D5
+00001EAE  E685                    1744          ASR.L #3, D5
+00001EB0                          1745          ;and off data
+00001EB0  0246 0007               1746          ANDI #7, D6
+00001EB4  4EB9 00001FB6           1747          JSR EA_DECODER
+00001EBA                          1748     
+00001EBA  16FC 002C               1749          MOVE.B #',', (A3)+
+00001EBE                          1750          ;Reset D6 just in case.
+00001EBE  4286                    1751          CLR.L D6
+00001EC0                          1752          ;Second argument, set D4
+00001EC0  383C 0001               1753          MOVE #1, D4
+00001EC4                          1754      
+00001EC4  2A00                    1755          MOVE.L D0, D5
+00001EC6  2C00                    1756          MOVE.L D0, D6
+00001EC8                          1757      
+00001EC8                          1758          ;set mode data register
+00001EC8  4285                    1759          CLR.L D5
+00001ECA                          1760          ;and off data for register
+00001ECA  0246 0E00               1761          ANDI #3584, D6
+00001ECE  E086                    1762          ASR.L #8, D6
+00001ED0  E286                    1763          ASR.L #1, D6
+00001ED2  4EB9 00001FB6           1764          JSR EA_DECODER
+00001ED8                          1765      
+00001ED8  2A00                    1766          MOVE.L D0, D5
+00001EDA  2C00                    1767          MOVE.L D0, D6
+00001EDC                          1768          
+00001EDC                          1769          ;Clear D
+00001EDC  4284                    1770          CLR.L D4
+00001EDE                          1771          
+00001EDE  4E75                    1772          RTS
+00001EE0                          1773          
+00001EE0                          1774  ADD_EA
+00001EE0                          1775          ;Effective the same as ADD
+00001EE0  4EF9 00001EE6           1776          JMP ADDA_EA
+00001EE6                          1777  
+00001EE6                          1778  ADDA_EA
+00001EE6  2A00                    1779          MOVE.L D0, D5
+00001EE8  2C00                    1780          MOVE.L D0, D6
+00001EEA                          1781      
+00001EEA                          1782          ;and off mode
+00001EEA  0245 0038               1783          ANDI #56, D5
+00001EEE  E685                    1784          ASR.L #3, D5
+00001EF0                          1785          ;and off data
+00001EF0  0246 0007               1786          ANDI #7, D6
+00001EF4  4EB9 00001FB6           1787          JSR EA_DECODER
+00001EFA                          1788      
+00001EFA  16FC 002C               1789          MOVE.B #',', (A3)+
+00001EFE                          1790          ;Reset D5 and D6 just in case.
+00001EFE  4285                    1791          CLR.L D5
+00001F00  4286                    1792          CLR.L D6
+00001F02                          1793          ;Second argument, set D4
+00001F02  383C 0001               1794          MOVE #1, D4
+00001F06                          1795      
+00001F06                          1796          ; Grab the other mode
+00001F06  2A00                    1797          MOVE.L D0, D5
+00001F08  2C00                    1798          MOVE.L D0, D6
+00001F0A                          1799          
+00001F0A                          1800          ;and off mode
+00001F0A  0245 01C0               1801          ANDI #448, D5
+00001F0E  E085                    1802          ASR.L #8, D5
+00001F10                          1803          ;and off data
+00001F10  0246 0E00               1804          ANDI #3584, D6
+00001F14  E086                    1805          ASR.L #8, D6
+00001F16  E286                    1806          ASR.L #1, D6
+00001F18  4EB9 00001FB6           1807          JSR EA_DECODER
+00001F1E                          1808          
+00001F1E                          1809          ;Clear D4
+00001F1E  4284                    1810          CLR.L D4
+00001F20                          1811      
+00001F20  4E75                    1812          RTS
+00001F22                          1813  
+00001F22                          1814  ASL_EA
+00001F22                          1815          ;Practically the same as ASR
+00001F22  4EF9 00001F28           1816          JMP ASR_EA
+00001F28                          1817  
+00001F28                          1818  ASR_EA
+00001F28                          1819          ;Check bit 5 to see if its a register or count.
+00001F28  3A00                    1820          MOVE D0, D5
+00001F2A  0245 0020               1821          ANDI #32, D5
+00001F2E  EA85                    1822          ASR.L #5, D5
+00001F30  BA7C 0000               1823          CMP #0, D5
+00001F34  6700 000C               1824          BEQ ASR_EA_NUM
+00001F38  BA7C 0001               1825          CMP #1, D5
+00001F3C  6700 003E               1826          BEQ ASR_EA_REG
+00001F40                          1827      
+00001F40                          1828          ;Error-handling return
+00001F40  4E75                    1829          RTS
+00001F42                          1830      
+00001F42                          1831  ASR_EA_NUM
+00001F42                          1832          ;Set to immediate data;
+00001F42  3A3C 0007               1833          MOVE #7, D5
+00001F46                          1834          ;Get the immediate data.
+00001F46  3E00                    1835          MOVE D0, D7
+00001F48  0247 0E00               1836          ANDI #3584, D7
+00001F4C  E087                    1837          ASR.L #8, D7
+00001F4E  E287                    1838          ASR.L #1, D7
+00001F50  BE7C 0000               1839          CMP #0, D7
+00001F54  6600 0004               1840          BNE ASR_EA_NUM_1
+00001F58                          1841          
+00001F58  7E08                    1842          MOVE.L #8, D7
+00001F5A                          1843          
+00001F5A                          1844  ASR_EA_NUM_1        
+00001F5A  4EB9 00001FAA           1845          JSR EA_PRINT_IMMEDIATE_NUMBER
+00001F60                          1846      
+00001F60  16FC 002C               1847          MOVE.B #',', (A3)+
+00001F64                          1848          ;Reset D6 just in case.
+00001F64  4286                    1849          CLR.L D6
+00001F66                          1850          ;Second argument, set D4
+00001F66  383C 0001               1851          MOVE #1, D4
+00001F6A                          1852      
+00001F6A                          1853          ;Set to data register
+00001F6A  4285                    1854          CLR.L D5
+00001F6C  3C00                    1855          MOVE D0, D6
+00001F6E  CC7C 0007               1856          AND #7, D6
+00001F72  4EB9 00001FB6           1857          JSR EA_DECODER
+00001F78                          1858  
+00001F78                          1859          ;clear D4
+00001F78  4284                    1860          CLR.L D4
+00001F7A                          1861          
+00001F7A  4E75                    1862          RTS    
+00001F7C                          1863  
+00001F7C                          1864  ASR_EA_REG
+00001F7C                          1865          ;Set to data register
+00001F7C  4285                    1866          CLR.L D5
+00001F7E  3C00                    1867          MOVE D0, D6
+00001F80  CC7C 0E00               1868          AND #3584, D6
+00001F84  E086                    1869          ASR.L #8, D6
+00001F86  E286                    1870          ASR.L #1, D6
+00001F88  4EB9 00001FB6           1871          JSR EA_DECODER  
+00001F8E                          1872      
+00001F8E  16FC 002C               1873          MOVE.B #',', (A3)+
+00001F92                          1874          ;Reset D6 just in case.
+00001F92  4286                    1875          CLR.L D6
+00001F94                          1876          ;Second argument, set D4
+00001F94  383C 0001               1877          MOVE #1, D4
+00001F98                          1878      
+00001F98                          1879          ;Set to data register
+00001F98  4285                    1880          CLR.L D5
+00001F9A  3C00                    1881          MOVE D0, D6
+00001F9C  CC7C 0007               1882          AND #7, D6
+00001FA0  4EB9 00001FB6           1883          JSR EA_DECODER    
+00001FA6                          1884          
+00001FA6                          1885          ;Clear D4
+00001FA6  4284                    1886          CLR.L D4
+00001FA8                          1887          
+00001FA8  4E75                    1888          RTS
+00001FAA                          1889  
+00001FAA                          1890  ;For the instructions that have a immediate number in the instruction itself, not in a following word/long
+00001FAA                          1891  EA_PRINT_IMMEDIATE_NUMBER
+00001FAA  16FC 0023               1892      MOVE.B #'#', (A3)+
+00001FAE  4EB9 00002472           1893      JSR ITOA
+00001FB4  4E75                    1894      RTS
+00001FB6                          1895  
+00001FB6                          1896  
+00001FB6                          1897  EA_DECODER:
+00001FB6                          1898          ;Add space.
+00001FB6  16FC 0020               1899          MOVE.B #' ', (A3)+
+00001FBA                          1900          ;Jump to the Mode given.
+00001FBA  41F9 00001FC8           1901          LEA EAJUMPTABLE, A0
+00001FC0  CAFC 0006               1902          MULU #6, D5
+00001FC4  4EF0 5000               1903          JMP 0(A0,D5)
+00001FC8                          1904          
+00001FC8                          1905      ;   This is a jump table that will jump to certain sub-functions based on what the mode is.
+00001FC8                          1906  EAJUMPTABLE
+00001FC8  4EF9 00001FF8           1907          JMP MODE0       
+00001FCE  4EF9 0000203A           1908          JMP MODE1      
+00001FD4  4EF9 0000207C           1909          JMP MODE2       
+00001FDA  4EF9 000020C6           1910          JMP MODE3       
+00001FE0  4EF9 00002114           1911          JMP MODE4       
+00001FE6  4EF9 00002162           1912          JMP MODE5       
+00001FEC  4EF9 00002164           1913          JMP MODE6       
+00001FF2  4EF9 00002166           1914          JMP MODE7      
+00001FF8                          1915      
+00001FF8                          1916  MODE0      
+00001FF8                          1917          ; Figure the  that relate to it op codes 
+00001FF8                          1918          
+00001FF8  BC7C 0000               1919          CMP #0, D6
+00001FFC  6700 0234               1920          BEQ APPEND_D0
+00002000                          1921      
+00002000  BC7C 0001               1922          CMP #1, D6
+00002004  6700 024E               1923          BEQ APPEND_D1
+00002008                          1924      
+00002008  BC7C 0002               1925          CMP #2, D6
+0000200C  6700 0268               1926          BEQ APPEND_D2
+00002010                          1927      
+00002010  BC7C 0003               1928          CMP #3, D6
+00002014  6700 0282               1929          BEQ APPEND_D3
+00002018                          1930      
+00002018  BC7C 0004               1931          CMP #4, D6
+0000201C  6700 029C               1932          BEQ APPEND_D4
+00002020                          1933          
+00002020  BC7C 0005               1934          CMP #5, D6
+00002024  6700 02B6               1935          BEQ APPEND_D5
+00002028                          1936      
+00002028  BC7C 0006               1937          CMP #6, D6
+0000202C  6700 02D0               1938          BEQ APPEND_D6
+00002030                          1939      
+00002030  BC7C 0007               1940          CMP #7, D6
+00002034  6700 02EA               1941          BEQ APPEND_D7
+00002038                          1942      
+00002038                          1943          ;Return
+00002038  4E75                    1944          RTS
+0000203A                          1945  
+0000203A                          1946  MODE1
+0000203A  BC7C 0000               1947          CMP #0, D6
+0000203E  6700 0302               1948          BEQ APPEND_A0
+00002042                          1949      
+00002042  BC7C 0001               1950          CMP #1, D6
+00002046  6700 031C               1951          BEQ APPEND_A1
+0000204A                          1952      
+0000204A  BC7C 0002               1953          CMP #2, D6
+0000204E  6700 0336               1954          BEQ APPEND_A2
+00002052                          1955      
+00002052  BC7C 0003               1956          CMP #3, D6
+00002056  6700 0350               1957          BEQ APPEND_A3
+0000205A                          1958      
+0000205A  BC7C 0004               1959          CMP #4, D6
+0000205E  6700 036A               1960          BEQ APPEND_A4
+00002062                          1961      
+00002062  BC7C 0005               1962          CMP #5, D6
+00002066  6700 0384               1963          BEQ APPEND_A5
+0000206A                          1964      
+0000206A  BC7C 0006               1965          CMP #6, D6
+0000206E  6700 039E               1966          BEQ APPEND_A6
+00002072                          1967      
+00002072  BC7C 0007               1968          CMP #7, D6
+00002076  6700 03B8               1969          BEQ APPEND_A7
+0000207A                          1970      
+0000207A                          1971          ;Return
+0000207A  4E75                    1972          RTS
+0000207C                          1973  
+0000207C                          1974  MODE2 
+0000207C  16FC 0028               1975          MOVE.B #'(', (A3)+
+00002080                          1976  
+00002080  BC7C 0000               1977          CMP #0, D6
+00002084  6700 02BC               1978          BEQ APPEND_A0
+00002088                          1979      
+00002088  BC7C 0001               1980          CMP #1, D6
+0000208C  6700 02D6               1981          BEQ APPEND_A1
+00002090                          1982      
+00002090  BC7C 0002               1983          CMP #2, D6
+00002094  6700 02F0               1984          BEQ APPEND_A2
+00002098                          1985      
+00002098  BC7C 0003               1986          CMP #3, D6
+0000209C  6700 030A               1987          BEQ APPEND_A3
+000020A0                          1988      
+000020A0  BC7C 0004               1989          CMP #4, D6
+000020A4  6700 0324               1990          BEQ APPEND_A4
+000020A8                          1991      
+000020A8  BC7C 0005               1992          CMP #5, D6
+000020AC  6700 033E               1993          BEQ APPEND_A5
+000020B0                          1994      
+000020B0  BC7C 0006               1995          CMP #6, D6
+000020B4  6700 0358               1996          BEQ APPEND_A6
+000020B8                          1997      
+000020B8  BC7C 0007               1998          CMP #7, D6
+000020BC  6700 0372               1999          BEQ APPEND_A7
+000020C0                          2000          
+000020C0                          2001  MODE_2_END
+000020C0  16FC 0029               2002          MOVE.B #')', (A3)+
+000020C4                          2003      
+000020C4                          2004          ;Return
+000020C4  4E75                    2005          RTS
+000020C6                          2006  
+000020C6                          2007  MODE3
+000020C6  16FC 0028               2008          MOVE.B #'(', (A3)+
+000020CA                          2009  
+000020CA  BC7C 0000               2010          CMP #0, D6
+000020CE  6700 0272               2011          BEQ APPEND_A0
+000020D2                          2012      
+000020D2  BC7C 0001               2013          CMP #1, D6
+000020D6  6700 028C               2014          BEQ APPEND_A1
+000020DA                          2015      
+000020DA  BC7C 0002               2016          CMP #2, D6
+000020DE  6700 02A6               2017          BEQ APPEND_A2
+000020E2                          2018      
+000020E2  BC7C 0003               2019          CMP #3, D6
+000020E6  6700 02C0               2020          BEQ APPEND_A3
+000020EA                          2021      
+000020EA  BC7C 0004               2022          CMP #4, D6
+000020EE  6700 02DA               2023          BEQ APPEND_A4
+000020F2                          2024      
+000020F2  BC7C 0005               2025          CMP #5, D6
+000020F6  6700 02F4               2026          BEQ APPEND_A5
+000020FA                          2027      
+000020FA  BC7C 0006               2028          CMP #6, D6
+000020FE  6700 030E               2029          BEQ APPEND_A6
+00002102                          2030      
+00002102  BC7C 0007               2031          CMP #7, D6
+00002106  6700 0328               2032          BEQ APPEND_A7
+0000210A                          2033  
+0000210A                          2034  MODE_3_END
+0000210A  16FC 0029               2035          MOVE.B #')', (A3)+
+0000210E  16FC 002B               2036          MOVE.B #'+', (A3)+
+00002112                          2037      
+00002112                          2038          ;Return
+00002112  4E75                    2039          RTS
+00002114                          2040  
+00002114                          2041  MODE4
+00002114  16FC 002D               2042          MOVE.B #'-', (A3)+
+00002118  16FC 0028               2043          MOVE.B #'(', (A3)+
+0000211C                          2044  
+0000211C  BC7C 0000               2045          CMP #0, D6
+00002120  6700 0220               2046          BEQ APPEND_A0
+00002124                          2047      
+00002124  BC7C 0001               2048          CMP #1, D6
+00002128  6700 023A               2049          BEQ APPEND_A1
+0000212C                          2050      
+0000212C  BC7C 0002               2051          CMP #2, D6
+00002130  6700 0254               2052          BEQ APPEND_A2
+00002134                          2053      
+00002134  BC7C 0003               2054          CMP #3, D6
+00002138  6700 026E               2055          BEQ APPEND_A3
+0000213C                          2056      
+0000213C  BC7C 0004               2057          CMP #4, D6
+00002140  6700 0288               2058          BEQ APPEND_A4
+00002144                          2059      
+00002144  BC7C 0005               2060          CMP #5, D6
+00002148  6700 02A2               2061          BEQ APPEND_A5
+0000214C                          2062      
+0000214C  BC7C 0006               2063          CMP #6, D6
+00002150  6700 02BC               2064          BEQ APPEND_A6
+00002154                          2065      
+00002154  BC7C 0007               2066          CMP #7, D6
+00002158  6700 02D6               2067          BEQ APPEND_A7
+0000215C                          2068  
+0000215C                          2069  MODE_4_END
+0000215C  16FC 0029               2070          MOVE.B #')', (A3)+
+00002160                          2071      
+00002160                          2072          ;Return
+00002160  4E75                    2073          RTS
+00002162                          2074  
+00002162                          2075  MODE5
+00002162                          2076          ;Error-handling mode.
+00002162  4E75                    2077          RTS
+00002164                          2078      
+00002164                          2079  MODE6
+00002164                          2080          ;Error-handling mode.
+00002164  4E75                    2081          RTS
+00002166                          2082      
+00002166                          2083  MODE7
+00002166  4287                    2084          CLR.L D7
+00002168  BC7C 0000               2085          CMP #0, D6
+0000216C  6700 0014               2086          BEQ MODE_7_SHORT
+00002170                          2087      
+00002170  BC7C 0001               2088          CMP #1, D6
+00002174  6700 003E               2089          BEQ MODE_7_LONG
+00002178                          2090      
+00002178  BC7C 0004               2091          CMP #4, D6
+0000217C  6700 0068               2092          BEQ MODE_7_IMM_WORD
+00002180                          2093      
+00002180  4E75                    2094          RTS
+00002182                          2095          
+00002182                          2096  ;MODE 7 WHEN IT IS WORD
+00002182                          2097  ;======================
+00002182                          2098  MODE_7_SHORT
+00002182  B87C 0000               2099          CMP #0, D4
+00002186  6700 0006               2100          BEQ MODE_7_SHORT_1
+0000218A                          2101          
+0000218A  16FC 0028               2102          MOVE.B #'(', (A3)+
+0000218E                          2103  
+0000218E                          2104  MODE_7_SHORT_1
+0000218E  16FC 0024               2105          MOVE.B #'$', (A3)+
+00002192  3E1D                    2106          MOVE.W (A5)+, D7
+00002194  363C 0004               2107          MOVE #4, D3
+00002198  4EB9 00002472           2108          JSR ITOA
+0000219E                          2109      
+0000219E  B87C 0000               2110          CMP #0, D4
+000021A2  6700 000E               2111          BEQ MODE_7_SHORT_2
+000021A6                          2112          
+000021A6  16FC 0029               2113          MOVE.B #')', (A3)+
+000021AA  16FC 002E               2114          MOVE.B #'.', (A3)+
+000021AE  16FC 0057               2115          MOVE.B #'W', (A3)+
+000021B2                          2116  MODE_7_SHORT_2        
+000021B2  4E75                    2117          RTS
+000021B4                          2118  
+000021B4                          2119  ;MODE 7 WHEN IT IS LONG
+000021B4                          2120  ;======================    
+000021B4                          2121  MODE_7_LONG
+000021B4  B87C 0000               2122          CMP #0, D4
+000021B8  6700 0006               2123          BEQ MODE_7_LONG_1
+000021BC                          2124          
+000021BC  16FC 0028               2125          MOVE.B #'(', (A3)+
+000021C0                          2126  
+000021C0                          2127  MODE_7_LONG_1
+000021C0  16FC 0024               2128          MOVE.B #'$', (A3)+
+000021C4  2E1D                    2129          MOVE.L (A5)+, D7
+000021C6  363C 0008               2130          MOVE #8, D3
+000021CA  4EB9 00002472           2131          JSR ITOA
+000021D0                          2132          
+000021D0  B87C 0000               2133          CMP #0, D4
+000021D4  6700 000E               2134          BEQ MODE_7_LONG_2
+000021D8                          2135          
+000021D8  16FC 0029               2136          MOVE.B #')', (A3)+
+000021DC  16FC 002E               2137          MOVE.B #'.', (A3)+
+000021E0  16FC 004C               2138          MOVE.B #'L', (A3)+
+000021E4                          2139  MODE_7_LONG_2  
+000021E4  4E75                    2140          RTS
+000021E6                          2141  
+000021E6                          2142  ;MODE 7 WHEN IT IS IMMEDIATE WORD
+000021E6                          2143  ;================================
+000021E6                          2144  MODE_7_IMM_WORD
+000021E6                          2145          ;Immediate data can't be written to.
+000021E6  B87C 0001               2146          CMP #1, D4
+000021EA  6700 0266               2147          BEQ DATA_ERROR
+000021EE                          2148       
+000021EE                          2149          ;If the instruction is a long, we belong in next operation.
+000021EE  B67C 0004               2150          CMP #4, D3
+000021F2  6700 0018               2151          BEQ MODE_7_IMM_LONG   
+000021F6                          2152       
+000021F6  16FC 0023               2153          MOVE.B #'#',(A3)+
+000021FA  16FC 0024               2154          MOVE.B #'$',(A3)+
+000021FE  3E1D                    2155          MOVE.W (A5)+, D7
+00002200  363C 0004               2156          MOVE #4, D3
+00002204  4EB9 00002472           2157          JSR ITOA
+0000220A                          2158          
+0000220A  4E75                    2159          RTS
+0000220C                          2160  
+0000220C                          2161  ;MODE 7 WHEN IT IS IMMEDIATE LONG
+0000220C                          2162  ;================================
+0000220C                          2163  MODE_7_IMM_LONG
+0000220C  16FC 0023               2164          MOVE.B #'#',(A3)+
+00002210  16FC 0024               2165          MOVE.B #'$',(A3)+
+00002214  2E1D                    2166          MOVE.L (A5)+, D7
+00002216  363C 0008               2167          MOVE #8, D3
+0000221A  4EB9 00002472           2168          JSR ITOA
+00002220                          2169          
+00002220  4E75                    2170          RTS
+00002222                          2171  
+00002222                          2172  MODE_7_2NDARG_START
+00002222  16FC 0028               2173          MOVE.B #'(', (A3)+
+00002226  4E75                    2174          RTS
+00002228                          2175  
+00002228                          2176  MODE_7_2NDARG_END
+00002228  16FC 0029               2177          MOVE.B #')', (A3)+
+0000222C  16FC 002E               2178          MOVE.B #'.', (A3)+
+00002230  4E75                    2179          RTS
+00002232                          2180  
+00002232                          2181  APPEND_D0
+00002232  16FC 0044               2182          MOVE.B  #'D', (A3)+
+00002236  16FC 0030               2183          MOVE.B  #'0', (A3)+
+0000223A                          2184          
+0000223A                          2185          ;Return back to Mode 2/3/4 if we need to.
+0000223A  BA7C 000C               2186          CMP #12, D5
+0000223E  6700 FE80               2187          BEQ MODE_2_END
+00002242  BA7C 0012               2188          CMP #18, D5
+00002246  6700 FEC2               2189          BEQ MODE_3_END
+0000224A  BA7C 0018               2190          CMP #24, D5
+0000224E  6700 FF0C               2191          BEQ MODE_4_END
+00002252                          2192          
 00002252  4E75                    2193          RTS
 00002254                          2194  
-00002254                          2195  APPEND_D3
+00002254                          2195  APPEND_D1
 00002254  16FC 0044               2196          MOVE.B  #'D', (A3)+
-00002258  16FC 0033               2197          MOVE.B  #'3', (A3)+
-0000225C  4E75                    2198          RTS
-0000225E                          2199  
-0000225E                          2200  APPEND_D4
-0000225E  16FC 0044               2201          MOVE.B  #'D', (A3)+
-00002262  16FC 0034               2202          MOVE.B  #'4', (A3)+
-00002266  4E75                    2203          RTS
-00002268                          2204  
-00002268                          2205  APPEND_D5
-00002268  16FC 0044               2206          MOVE.B  #'D', (A3)+
-0000226C  16FC 0035               2207          MOVE.B  #'5', (A3)+
-00002270  4E75                    2208          RTS
-00002272                          2209  
-00002272                          2210  APPEND_D6
-00002272  16FC 0044               2211          MOVE.B  #'D', (A3)+
-00002276  16FC 0036               2212          MOVE.B  #'6', (A3)+
-0000227A  4E75                    2213          RTS
-0000227C                          2214  
-0000227C                          2215  APPEND_D7
-0000227C  16FC 0044               2216          MOVE.B  #'D', (A3)+
-00002280  16FC 0037               2217          MOVE.B  #'7', (A3)+
-00002284  4E75                    2218          RTS
-00002286                          2219      
-00002286                          2220  APPEND_A0
-00002286  16FC 0041               2221          MOVE.B  #'A', (A3)+
-0000228A  16FC 0030               2222          MOVE.B  #'0', (A3)+
-0000228E  4E75                    2223          RTS
-00002290                          2224  
-00002290                          2225  APPEND_A1
-00002290  16FC 0041               2226          MOVE.B  #'A', (A3)+
-00002294  16FC 0031               2227          MOVE.B  #'1', (A3)+
-00002298  4E75                    2228          RTS
-0000229A                          2229  
-0000229A                          2230  APPEND_A2
-0000229A  16FC 0041               2231          MOVE.B  #'A', (A3)+
-0000229E  16FC 0032               2232          MOVE.B  #'2', (A3)+
-000022A2  4E75                    2233          RTS
-000022A4                          2234  
-000022A4                          2235  APPEND_A3
-000022A4  16FC 0041               2236          MOVE.B  #'A', (A3)+
-000022A8  16FC 0033               2237          MOVE.B  #'3', (A3)+
-000022AC  4E75                    2238          RTS
-000022AE                          2239  
-000022AE                          2240  APPEND_A4
-000022AE  16FC 0041               2241          MOVE.B  #'A', (A3)+
-000022B2  16FC 0034               2242          MOVE.B  #'4', (A3)+
-000022B6  4E75                    2243          RTS
-000022B8                          2244  
-000022B8                          2245  APPEND_A5
-000022B8  16FC 0041               2246          MOVE.B  #'A', (A3)+
-000022BC  16FC 0035               2247          MOVE.B  #'5', (A3)+
-000022C0  4E75                    2248          RTS
-000022C2                          2249  
-000022C2                          2250  APPEND_A6
-000022C2  16FC 0041               2251          MOVE.B  #'A', (A3)+
-000022C6  16FC 0036               2252          MOVE.B  #'6', (A3)+
-000022CA  4E75                    2253          RTS
-000022CC                          2254      
-000022CC                          2255  APPEND_A7
-000022CC  16FC 0041               2256          MOVE.B  #'A', (A3)+
-000022D0  16FC 0037               2257          MOVE.B  #'7', (A3)+
-000022D4  4E75                    2258          RTS
-000022D6                          2259  
-000022D6                          2260          
-000022D6                          2261  ; -------------------------------------------------------------
-000022D6                          2262  ;   ERROR when Data has incorrect Addressing MODE
-000022D6                          2263  ; -------------------------------------------------------------          
-000022D6                          2264  DATA_ERROR:      
-000022D6  43F9 00002687           2265          LEA     DECODE_OP_ERROR, A1
-000022DC  103C 000E               2266          MOVE.B  #task14,D0
-000022E0  4E4F                    2267          TRAP    #15           Display  Error Message
-000022E2  4EF8 1018               2268          JMP     RESTART_PROGRAM
-000022E6                          2269  
-000022E6                          2270  DATA_UNSUPPORTED:      
-000022E6  43F9 0000271B           2271          LEA     DECODE_EA_UNSUPPORT, A1
-000022EC  103C 000E               2272          MOVE.B  #task14,D0
-000022F0  4E4F                    2273          TRAP    #15           Display  Error Message
-000022F2  4EF8 1018               2274          JMP     RESTART_PROGRAM
-000022F6                          2275   
-000022F6                          2276  *-------------------------------------------------------------------        
-000022F6                          2277      * ITOA CONVERT for IMMEDIATE DATA
-000022F6                          2278      ;Iteration Byte = 2 ITOA Loops, Word = 4 ITOA Loops, Long = 8 Loops 
-000022F6                          2279      *D3 = # of ITOA Loop ITERATION
-000022F6                          2280      *D7 = immediate address 
-000022F6                          2281      *D6 = LSR Moving count
-000022F6                          2282      *D0 = Data that is shifted
-000022F6                          2283  *-------------------------------------------------------------------   
-000022F6                          2284  ITOA:                       ; Converts hex string into int 
-000022F6                          2285          ; D7 has the immediate address
-000022F6  2F00                    2286          MOVE.L D0, -(SP)  
-000022F8  4EB9 00002302           2287          JSR     ITOA_LOOP
-000022FE  201F                    2288          MOVE.L (SP)+, D0
-00002300  4E75                    2289          RTS
-00002302                          2290          
-00002302                          2291  ITOA_LOOP:
-00002302  4280                    2292          CLR.L   D0 
-00002304  4281                    2293          CLR.L   D1
-00002306                          2294          
-00002306  5303                    2295          SUB.B   #1, D3  
-00002308  2007                    2296          MOVE.L  D7, D0
-0000230A  1203                    2297          MOVE.B  D3, D1
-0000230C                          2298  
-0000230C  C2FC 0004               2299          MULU    #4, D1      ; The amount that we shift 
-00002310  E2A8                    2300          LSR.L   D1, D0       ; Shift D0 with iteration Loop * 4
-00002312                          2301          
-00002312  0280 0000000F           2302          ANDI.L  #$F, D0          ; Last 4 bits in hex 
-00002318                          2303          
-00002318                          2304          ; Convert Hex into ASCII 
-00002318  4EB9 00002332           2305          JSR     ITOA_CONVERT
-0000231E                          2306          
-0000231E                          2307          ; ADD to A3 Counter 
-0000231E  4EB9 00002346           2308          JSR     ITOA_ADD_CHAR                  
-00002324                          2309          ; Checks if counter is empty, ITOA is completed 
-00002324  B63C 0000               2310          CMP.B   #0,D3
-00002328  6700 0006               2311          BEQ     ITOA_DONE
-0000232C                          2312          
-0000232C  4EF8 2302               2313          JMP     ITOA_LOOP   ; Continue Reading more bits from immediate data         
-00002330                          2314                         
-00002330                          2315  ITOA_DONE:          
-00002330  4E75                    2316          RTS         ; Returns back to last JSR 
-00002332                          2317  
-00002332                          2318  ITOA_CONVERT: 
-00002332  B03C 0009               2319          CMP.B       #9,D0
-00002336  6300 0008               2320          BLS         ITOA_CONVERT_N
-0000233A                          2321          
-0000233A  0640 0037               2322          ADDI.W      #$37, D0
-0000233E  4E75                    2323          RTS 
-00002340                          2324          
-00002340                          2325  ITOA_CONVERT_N
-00002340  0640 0030               2326          ADDI.W     #$30,D0
-00002344  4E75                    2327          RTS
-00002346                          2328          
-00002346                          2329  ITOA_ADD_CHAR: 
-00002346  B03C 0030               2330          CMP.B   #$30, D0
-0000234A  6700 007A               2331          BEQ     CHAR_0
-0000234E                          2332          
-0000234E  B03C 0031               2333          CMP.B   #$31, D0
-00002352  6700 007C               2334          BEQ     CHAR_1
-00002356                          2335          
-00002356  B03C 0032               2336          CMP.B   #$32, D0
-0000235A  6700 007E               2337          BEQ     CHAR_2
-0000235E                          2338          
-0000235E  B03C 0033               2339          CMP.B   #$33, D0
-00002362  6700 0080               2340          BEQ     CHAR_3
-00002366                          2341          
-00002366  B03C 0034               2342          CMP.B   #$34, D0
-0000236A  6700 0082               2343          BEQ     CHAR_4
-0000236E                          2344          
-0000236E  B03C 0035               2345          CMP.B   #$35, D0
-00002372  6700 0084               2346          BEQ     CHAR_5
-00002376                          2347          
-00002376  B03C 0036               2348          CMP.B   #$36, D0
-0000237A  6700 0086               2349          BEQ     CHAR_6
-0000237E                          2350          
-0000237E  B03C 0037               2351          CMP.B   #$37, D0
-00002382  6700 0088               2352          BEQ     CHAR_7
-00002386                          2353          
-00002386  B03C 0038               2354          CMP.B   #$38, D0
-0000238A  6700 008A               2355          BEQ     CHAR_8
-0000238E                          2356          
-0000238E  B03C 0039               2357          CMP.B   #$39, D0
-00002392  6700 008C               2358          BEQ     CHAR_9
-00002396                          2359          
-00002396  B03C 0041               2360          CMP.B   #$41, D0
-0000239A  6700 008E               2361          BEQ     CHAR_A
-0000239E                          2362          
-0000239E  B03C 0042               2363          CMP.B   #$42, D0
-000023A2  6700 0090               2364          BEQ     CHAR_B        
-000023A6                          2365          
-000023A6  B03C 0043               2366          CMP.B   #$43, D0
-000023AA  6700 0092               2367          BEQ     CHAR_C
-000023AE                          2368          
-000023AE  B03C 0044               2369          CMP.B   #$44, D0
-000023B2  6700 0094               2370          BEQ     CHAR_D
-000023B6                          2371          
-000023B6  B03C 0045               2372          CMP.B   #$45, D0
-000023BA  6700 0096               2373          BEQ     CHAR_E
-000023BE                          2374          
-000023BE  B03C 0046               2375          CMP.B   #$46, D0
-000023C2  6700 0098               2376          BEQ     CHAR_F  
-000023C6                          2377          
-000023C6                          2378  CHAR_0:
-000023C6  16FC 0030               2379          MOVE.B  #'0', (A3)+ 
-000023CA  4EF9 00002466           2380          JMP     ITOA_ADD_CHAR_DONE        
-000023D0                          2381  CHAR_1:
-000023D0  16FC 0031               2382          MOVE.B  #'1', (A3)+ 
-000023D4  4EF9 00002466           2383          JMP     ITOA_ADD_CHAR_DONE
-000023DA                          2384  CHAR_2:
-000023DA  16FC 0032               2385          MOVE.B  #'2', (A3)+ 
-000023DE  4EF9 00002466           2386          JMP     ITOA_ADD_CHAR_DONE
-000023E4                          2387  CHAR_3:
-000023E4  16FC 0033               2388          MOVE.B  #'3', (A3)+ 
-000023E8  4EF9 00002466           2389          JMP     ITOA_ADD_CHAR_DONE
-000023EE                          2390  CHAR_4:
-000023EE  16FC 0034               2391          MOVE.B  #'4', (A3)+ 
-000023F2  4EF9 00002466           2392          JMP     ITOA_ADD_CHAR_DONE
-000023F8                          2393  CHAR_5:
-000023F8  16FC 0035               2394          MOVE.B  #'5', (A3)+ 
-000023FC  4EF9 00002466           2395          JMP     ITOA_ADD_CHAR_DONE
-00002402                          2396  CHAR_6:
-00002402  16FC 0036               2397          MOVE.B  #'6', (A3)+ 
-00002406  4EF9 00002466           2398          JMP     ITOA_ADD_CHAR_DONE
-0000240C                          2399  CHAR_7:
-0000240C  16FC 0037               2400          MOVE.B  #'7', (A3)+ 
-00002410  4EF9 00002466           2401          JMP     ITOA_ADD_CHAR_DONE
-00002416                          2402  CHAR_8:
-00002416  16FC 0038               2403          MOVE.B  #'8', (A3)+ 
-0000241A  4EF9 00002466           2404          JMP     ITOA_ADD_CHAR_DONE
-00002420                          2405  CHAR_9:
-00002420  16FC 0039               2406          MOVE.B  #'9', (A3)+ 
-00002424  4EF9 00002466           2407          JMP     ITOA_ADD_CHAR_DONE
-0000242A                          2408  CHAR_A:
-0000242A  16FC 0041               2409          MOVE.B  #'A', (A3)+ 
-0000242E  4EF9 00002466           2410          JMP     ITOA_ADD_CHAR_DONE
-00002434                          2411  CHAR_B:
-00002434  16FC 0042               2412          MOVE.B  #'B', (A3)+ 
-00002438  4EF9 00002466           2413          JMP     ITOA_ADD_CHAR_DONE
-0000243E                          2414  CHAR_C:
-0000243E  16FC 0043               2415          MOVE.B  #'C', (A3)+ 
-00002442  4EF9 00002466           2416          JMP     ITOA_ADD_CHAR_DONE
-00002448                          2417  CHAR_D:
-00002448  16FC 0044               2418          MOVE.B  #'D', (A3)+ 
-0000244C  4EF9 00002466           2419          JMP     ITOA_ADD_CHAR_DONE
-00002452                          2420  CHAR_E:
-00002452  16FC 0045               2421          MOVE.B  #'E', (A3)+ 
-00002456  4EF9 00002466           2422          JMP     ITOA_ADD_CHAR_DONE
-0000245C                          2423  CHAR_F:
-0000245C  16FC 0046               2424          MOVE.B  #'F', (A3)+ 
-00002460  4EF9 00002466           2425          JMP     ITOA_ADD_CHAR_DONE
-00002466                          2426          
-00002466                          2427  ITOA_ADD_CHAR_DONE:
-00002466  4E75                    2428          RTS                
-00002468                          2429  ; -------------------------------------------------------------
-00002468                          2430  ;   Converts User string input into HEX 
-00002468                          2431  ; -------------------------------------------------------------         
-00002468                          2432  ATOI:                       ; Converts hex string into int 
-00002468  4EB9 00002470           2433          JSR     ATOI_LOOP
-0000246E  4E75                    2434          RTS
-00002470                          2435          
-00002470                          2436  ATOI_LOOP: 
-00002470  1219                    2437          MOVE.B  (A1)+, D1
-00002472                          2438          
-00002472                          2439          ; Checks if it is 00/ NULL, Reading is done
-00002472  B23C 0000               2440          CMP.B   #0,D1
-00002476  6700 004C               2441          BEQ     ATOI_DONE
-0000247A                          2442          
-0000247A  B23C 0030               2443          CMP.B   #$30, D1         ; Error / non valid input
-0000247E  6D34                    2444          BLT.B    ATOI_ERROR
-00002480                          2445          
-00002480  B23C 0040               2446          CMP.B   #$40,D1          ; Checks for value in range of num (0 - 9) 
-00002484  6D16                    2447          BLT.B   ATOI_NUM_VALUE
-00002486                          2448          
-00002486  B23C 0041               2449          CMP.B   #$41, D1         ; Error / non valid input
-0000248A  6D00 0028               2450          BLT     ATOI_ERROR                
-0000248E                          2451          
-0000248E  B23C 0047               2452          CMP.B   #$47, D1          
-00002492  6D00 0014               2453          BLT     ATOI_CAP_LETTR_VALUE   ; Checks for value in range of A-F
-00002496                          2454          
-00002496  4EF9 000024B4           2455          JMP     ATOI_ERROR      ;Error if it reaches all the way to the end
-0000249C                          2456                  
-0000249C                          2457  ATOI_NUM_VALUE: 
-0000249C  E98B                    2458          LSL.L   #$4, D3          ; Shift 4 bits to the left for D3
-0000249E  0401 0030               2459          SUBI.B  #$30, D1        ; ASCI Value subtracts 30 
-000024A2  D681                    2460          ADD.L   D1, D3          ; Add  Hex value into D1 into D3 
-000024A4  4EF8 2470               2461          JMP     ATOI_LOOP
-000024A8                          2462          
-000024A8                          2463  
-000024A8                          2464  ATOI_CAP_LETTR_VALUE: 
-000024A8  E98B                    2465          LSL.L   #$4, D3          ; Shift 4 bits to the left for D3
-000024AA  0401 0037               2466          SUBI.B  #$37, D1        ; ASCI Value subtracts 30 
-000024AE  D681                    2467          ADD.L   D1, D3          ; Add  Hex value into D1 into D3 
-000024B0  4EF8 2470               2468          JMP     ATOI_LOOP
-000024B4                          2469                  
-000024B4                          2470  ATOI_ERROR: 
-000024B4  43F9 00002592           2471          LEA     ATOI_MESS_ERROR, A1
-000024BA  103C 000E               2472          MOVE.B  #task14,D0
-000024BE  4E4F                    2473          TRAP    #15           Display  Error Message
-000024C0  4EF8 1012               2474          JMP     USER_INPUT
-000024C4                          2475          
-000024C4                          2476  ATOI_DONE: 
-000024C4  4E75                    2477          RTS
-000024C6                          2478         
-000024C6                          2479  ERROR_START_ADDR:   
-000024C6  43F9 000025C5           2480          LEA     START_ADDR_ERROR , A1
-000024CC  103C 000E               2481          MOVE.B  #task14,D0
-000024D0  4E4F                    2482          TRAP    #15           Display  Error Message
-000024D2  4EF8 1018               2483          JMP     RESTART_PROGRAM
-000024D6                          2484          
-000024D6                          2485  ERROR_END_ADDR:   
-000024D6  43F9 000025F0           2486          LEA     END_ADDR_ERROR , A1
-000024DC  103C 000E               2487          MOVE.B  #task14,D0
-000024E0  4E4F                    2488          TRAP    #15           Display  Error Message
-000024E2  4EF8 1018               2489          JMP     RESTART_PROGRAM       
-000024E6                          2490                  
-000024E6                          2491  DONE:
-000024E6  103C 0009               2492          MOVE.B  #9, D0
-000024EA  4E4F                    2493          TRAP    #15             Halt Simulator   
-000024EC                          2494          
-000024EC                          2495  * Put variables and constants here
-000024EC  =0000000D               2496  CR      EQU     $0D
-000024EC  =0000000A               2497  LF      EQU     $0A
-000024EC= 0D 0A 00                2498  BLANK                   DC.B    '',CR,LF,0
-000024EF= 57 65 6C 63 6F 6D ...   2499  WELCOME_MESS            DC.B    'Welcome to the disassembler program',CR,LF,0
-00002515= 45 6E 74 65 72 20 ...   2500  START_MESS              DC.B    'Enter a start address',CR,LF,0
-0000252D= 45 6E 74 65 72 20 ...   2501  REPEAT_MESS             DC.B    'Enter Y to disassemble another program, N to quit',CR,LF,0
-00002561= 57 72 6F 6E 67 20 ...   2502  INVALID_MESS            DC.B    'Wrong Input, Try again', CR,LF,0
-0000257A= 45 6E 74 65 72 20 ...   2503  END_MESS                DC.B    'Enter the end address',CR,LF,0
-00002592= 49 6E 76 61 6C 69 ...   2504  ATOI_MESS_ERROR         DC.B    'Invalid inputs for HEX values, Please try again',CR,LF,LF,0
-000025C5= 49 6E 76 61 6C 69 ...   2505  START_ADDR_ERROR        DC.B    'Invalid start address, Please try again',CR,LF,LF,0
-000025F0= 49 6E 76 61 6C 69 ...   2506  END_ADDR_ERROR          DC.B    'Invalid end address, Please try again',CR,LF,LF,0
-00002619                          2507  buffer                  DS.B    bufferSize
-00002659= 50 72 65 73 73 20 ...   2508  MAX_SCREEN_OUTPUT       DC.B    'Press enter any key to continue the program',CR,LF,0
-00002687= 45 72 72 6F 72 20 ...   2509  DECODE_OP_ERROR         DC.B    'Error in reading the instruction. Invalid Op code readings', CR, LF,0
-000026C4= 45 72 72 6F 72 20 ...   2510  DECODE_EA_ERROR         DC.B    'Error in reading the instruction. Invalid EA readings', CR, LF,0
-000026FC= 55 6E 73 75 70 70 ...   2511  DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
-0000271B= 55 6E 73 75 70 70 ...   2512  DECODE_EA_UNSUPPORT     DC.B    'Unsupported EA code readings', CR, LF,0
-0000273A                          2513          END    START        ; last line of source
+00002258  16FC 0031               2197          MOVE.B  #'1', (A3)+
+0000225C                          2198          
+0000225C                          2199          ;Return back to Mode 2/3/4 if we need to.
+0000225C  BA7C 000C               2200          CMP #12, D5
+00002260  6700 FE5E               2201          BEQ MODE_2_END
+00002264  BA7C 0012               2202          CMP #18, D5
+00002268  6700 FEA0               2203          BEQ MODE_3_END
+0000226C  BA7C 0018               2204          CMP #24, D5
+00002270  6700 FEEA               2205          BEQ MODE_4_END
+00002274                          2206          
+00002274  4E75                    2207          RTS
+00002276                          2208  
+00002276                          2209  APPEND_D2
+00002276  16FC 0044               2210          MOVE.B  #'D', (A3)+
+0000227A  16FC 0032               2211          MOVE.B  #'2', (A3)+
+0000227E                          2212          
+0000227E                          2213          ;Return back to Mode 2/3/4 if we need to.
+0000227E  BA7C 000C               2214          CMP #12, D5
+00002282  6700 FE3C               2215          BEQ MODE_2_END
+00002286  BA7C 0012               2216          CMP #18, D5
+0000228A  6700 FE7E               2217          BEQ MODE_3_END
+0000228E  BA7C 0018               2218          CMP #24, D5
+00002292  6700 FEC8               2219          BEQ MODE_4_END
+00002296                          2220          
+00002296  4E75                    2221          RTS
+00002298                          2222  
+00002298                          2223  APPEND_D3
+00002298  16FC 0044               2224          MOVE.B  #'D', (A3)+
+0000229C  16FC 0033               2225          MOVE.B  #'3', (A3)+
+000022A0                          2226          
+000022A0                          2227          ;Return back to Mode 2/3/4 if we need to.
+000022A0  BA7C 000C               2228          CMP #12, D5
+000022A4  6700 FE1A               2229          BEQ MODE_2_END
+000022A8  BA7C 0012               2230          CMP #18, D5
+000022AC  6700 FE5C               2231          BEQ MODE_3_END
+000022B0  BA7C 0018               2232          CMP #24, D5
+000022B4  6700 FEA6               2233          BEQ MODE_4_END
+000022B8                          2234          
+000022B8  4E75                    2235          RTS
+000022BA                          2236  
+000022BA                          2237  APPEND_D4
+000022BA  16FC 0044               2238          MOVE.B  #'D', (A3)+
+000022BE  16FC 0034               2239          MOVE.B  #'4', (A3)+
+000022C2                          2240          
+000022C2                          2241          ;Return back to Mode 2/3/4 if we need to.
+000022C2  BA7C 000C               2242          CMP #12, D5
+000022C6  6700 FDF8               2243          BEQ MODE_2_END
+000022CA  BA7C 0012               2244          CMP #18, D5
+000022CE  6700 FE3A               2245          BEQ MODE_3_END
+000022D2  BA7C 0018               2246          CMP #24, D5
+000022D6  6700 FE84               2247          BEQ MODE_4_END
+000022DA                          2248          
+000022DA  4E75                    2249          RTS
+000022DC                          2250  
+000022DC                          2251  APPEND_D5
+000022DC  16FC 0044               2252          MOVE.B  #'D', (A3)+
+000022E0  16FC 0035               2253          MOVE.B  #'5', (A3)+
+000022E4                          2254          
+000022E4                          2255          ;Return back to Mode 2/3/4 if we need to.
+000022E4  BA7C 000C               2256          CMP #12, D5
+000022E8  6700 FDD6               2257          BEQ MODE_2_END
+000022EC  BA7C 0012               2258          CMP #18, D5
+000022F0  6700 FE18               2259          BEQ MODE_3_END
+000022F4  BA7C 0018               2260          CMP #24, D5
+000022F8  6700 FE62               2261          BEQ MODE_4_END
+000022FC                          2262          
+000022FC  4E75                    2263          RTS
+000022FE                          2264  
+000022FE                          2265  APPEND_D6
+000022FE  16FC 0044               2266          MOVE.B  #'D', (A3)+
+00002302  16FC 0036               2267          MOVE.B  #'6', (A3)+
+00002306                          2268          
+00002306                          2269          ;Return back to Mode 2/3/4 if we need to.
+00002306  BA7C 000C               2270          CMP #12, D5
+0000230A  6700 FDB4               2271          BEQ MODE_2_END
+0000230E  BA7C 0012               2272          CMP #18, D5
+00002312  6700 FDF6               2273          BEQ MODE_3_END
+00002316  BA7C 0018               2274          CMP #24, D5
+0000231A  6700 FE40               2275          BEQ MODE_4_END
+0000231E                          2276          
+0000231E  4E75                    2277          RTS
+00002320                          2278  
+00002320                          2279  APPEND_D7
+00002320  16FC 0044               2280          MOVE.B  #'D', (A3)+
+00002324  16FC 0037               2281          MOVE.B  #'7', (A3)+
+00002328                          2282          
+00002328                          2283          ;Return back to Mode 2/3/4 if we need to.
+00002328  BA7C 000C               2284          CMP #12, D5
+0000232C  6700 FD92               2285          BEQ MODE_2_END
+00002330  BA7C 0012               2286          CMP #18, D5
+00002334  6700 FDD4               2287          BEQ MODE_3_END
+00002338  BA7C 0018               2288          CMP #24, D5
+0000233C  6700 FE1E               2289          BEQ MODE_4_END
+00002340                          2290          
+00002340  4E75                    2291          RTS
+00002342                          2292      
+00002342                          2293  APPEND_A0
+00002342  16FC 0041               2294          MOVE.B  #'A', (A3)+
+00002346  16FC 0030               2295          MOVE.B  #'0', (A3)+
+0000234A                          2296          
+0000234A                          2297          ;Return back to Mode 2/3/4 if we need to.
+0000234A  BA7C 000C               2298          CMP #12, D5
+0000234E  6700 FD70               2299          BEQ MODE_2_END
+00002352  BA7C 0012               2300          CMP #18, D5
+00002356  6700 FDB2               2301          BEQ MODE_3_END
+0000235A  BA7C 0018               2302          CMP #24, D5
+0000235E  6700 FDFC               2303          BEQ MODE_4_END
+00002362                          2304          
+00002362  4E75                    2305          RTS
+00002364                          2306  
+00002364                          2307  APPEND_A1
+00002364  16FC 0041               2308          MOVE.B  #'A', (A3)+
+00002368  16FC 0031               2309          MOVE.B  #'1', (A3)+
+0000236C                          2310          
+0000236C                          2311          ;Return back to Mode 2/3/4 if we need to.
+0000236C  BA7C 000C               2312          CMP #12, D5
+00002370  6700 FD4E               2313          BEQ MODE_2_END
+00002374  BA7C 0012               2314          CMP #18, D5
+00002378  6700 FD90               2315          BEQ MODE_3_END
+0000237C  BA7C 0018               2316          CMP #24, D5
+00002380  6700 FDDA               2317          BEQ MODE_4_END
+00002384                          2318          
+00002384  4E75                    2319          RTS
+00002386                          2320  
+00002386                          2321  APPEND_A2
+00002386  16FC 0041               2322          MOVE.B  #'A', (A3)+
+0000238A  16FC 0032               2323          MOVE.B  #'2', (A3)+
+0000238E                          2324          
+0000238E                          2325          ;Return back to Mode 2/3/4 if we need to.
+0000238E  BA7C 000C               2326          CMP #12, D5
+00002392  6700 FD2C               2327          BEQ MODE_2_END
+00002396  BA7C 0012               2328          CMP #18, D5
+0000239A  6700 FD6E               2329          BEQ MODE_3_END
+0000239E  BA7C 0018               2330          CMP #24, D5
+000023A2  6700 FDB8               2331          BEQ MODE_4_END
+000023A6                          2332          
+000023A6  4E75                    2333          RTS
+000023A8                          2334  
+000023A8                          2335  APPEND_A3
+000023A8  16FC 0041               2336          MOVE.B  #'A', (A3)+
+000023AC  16FC 0033               2337          MOVE.B  #'3', (A3)+
+000023B0                          2338          
+000023B0                          2339          ;Return back to Mode 2/3/4 if we need to.
+000023B0  BA7C 000C               2340          CMP #12, D5
+000023B4  6700 FD0A               2341          BEQ MODE_2_END
+000023B8  BA7C 0012               2342          CMP #18, D5
+000023BC  6700 FD4C               2343          BEQ MODE_3_END
+000023C0  BA7C 0018               2344          CMP #24, D5
+000023C4  6700 FD96               2345          BEQ MODE_4_END
+000023C8                          2346          
+000023C8  4E75                    2347          RTS
+000023CA                          2348  
+000023CA                          2349  APPEND_A4
+000023CA  16FC 0041               2350          MOVE.B  #'A', (A3)+
+000023CE  16FC 0034               2351          MOVE.B  #'4', (A3)+
+000023D2                          2352          
+000023D2                          2353          ;Return back to Mode 2/3/4 if we need to.
+000023D2  BA7C 000C               2354          CMP #12, D5
+000023D6  6700 FCE8               2355          BEQ MODE_2_END
+000023DA  BA7C 0012               2356          CMP #18, D5
+000023DE  6700 FD2A               2357          BEQ MODE_3_END
+000023E2  BA7C 0018               2358          CMP #24, D5
+000023E6  6700 FD74               2359          BEQ MODE_4_END
+000023EA                          2360          
+000023EA  4E75                    2361          RTS
+000023EC                          2362  
+000023EC                          2363  APPEND_A5
+000023EC  16FC 0041               2364          MOVE.B  #'A', (A3)+
+000023F0  16FC 0035               2365          MOVE.B  #'5', (A3)+
+000023F4                          2366          
+000023F4                          2367          ;Return back to Mode 2/3/4 if we need to.
+000023F4  BA7C 000C               2368          CMP #12, D5
+000023F8  6700 FCC6               2369          BEQ MODE_2_END
+000023FC  BA7C 0012               2370          CMP #18, D5
+00002400  6700 FD08               2371          BEQ MODE_3_END
+00002404  BA7C 0018               2372          CMP #24, D5
+00002408  6700 FD52               2373          BEQ MODE_4_END
+0000240C                          2374          
+0000240C  4E75                    2375          RTS
+0000240E                          2376  
+0000240E                          2377  APPEND_A6
+0000240E  16FC 0041               2378          MOVE.B  #'A', (A3)+
+00002412  16FC 0036               2379          MOVE.B  #'6', (A3)+
+00002416                          2380          
+00002416                          2381          ;Return back to Mode 2/3/4 if we need to.
+00002416  BA7C 000C               2382          CMP #12, D5
+0000241A  6700 FCA4               2383          BEQ MODE_2_END
+0000241E  BA7C 0012               2384          CMP #18, D5
+00002422  6700 FCE6               2385          BEQ MODE_3_END
+00002426  BA7C 0018               2386          CMP #24, D5
+0000242A  6700 FD30               2387          BEQ MODE_4_END
+0000242E                          2388          
+0000242E  4E75                    2389          RTS
+00002430                          2390      
+00002430                          2391  APPEND_A7
+00002430  16FC 0041               2392          MOVE.B  #'A', (A3)+
+00002434  16FC 0037               2393          MOVE.B  #'7', (A3)+
+00002438                          2394          
+00002438                          2395          ;Return back to Mode 2/3/4 if we need to.
+00002438  BA7C 000C               2396          CMP #12, D5
+0000243C  6700 FC82               2397          BEQ MODE_2_END
+00002440  BA7C 0012               2398          CMP #18, D5
+00002444  6700 FCC4               2399          BEQ MODE_3_END
+00002448  BA7C 0018               2400          CMP #24, D5
+0000244C  6700 FD0E               2401          BEQ MODE_4_END
+00002450                          2402          
+00002450  4E75                    2403          RTS
+00002452                          2404  
+00002452                          2405          
+00002452                          2406  ; -------------------------------------------------------------
+00002452                          2407  ;   ERROR when Data has incorrect Addressing MODE
+00002452                          2408  ; -------------------------------------------------------------          
+00002452                          2409  DATA_ERROR:      
+00002452  43F9 00002803           2410          LEA     DECODE_OP_ERROR, A1
+00002458  103C 000E               2411          MOVE.B  #task14,D0
+0000245C  4E4F                    2412          TRAP    #15           Display  Error Message
+0000245E  4EF8 1018               2413          JMP     RESTART_PROGRAM
+00002462                          2414  
+00002462                          2415  DATA_UNSUPPORTED:      
+00002462  43F9 00002897           2416          LEA     DECODE_EA_UNSUPPORT, A1
+00002468  103C 000E               2417          MOVE.B  #task14,D0
+0000246C  4E4F                    2418          TRAP    #15           Display  Error Message
+0000246E  4EF8 1018               2419          JMP     RESTART_PROGRAM
+00002472                          2420   
+00002472                          2421  *-------------------------------------------------------------------        
+00002472                          2422      * ITOA CONVERT for IMMEDIATE DATA
+00002472                          2423      ;Iteration Byte = 2 ITOA Loops, Word = 4 ITOA Loops, Long = 8 Loops 
+00002472                          2424      *D3 = # of ITOA Loop ITERATION
+00002472                          2425      *D7 = immediate address 
+00002472                          2426      *D6 = LSR Moving count
+00002472                          2427      *D0 = Data that is shifted
+00002472                          2428  *-------------------------------------------------------------------   
+00002472                          2429  ITOA:                       ; Converts hex string into int 
+00002472                          2430          ; D7 has the immediate address
+00002472  2F00                    2431          MOVE.L D0, -(SP)  
+00002474  4EB9 0000247E           2432          JSR     ITOA_LOOP
+0000247A  201F                    2433          MOVE.L (SP)+, D0
+0000247C  4E75                    2434          RTS
+0000247E                          2435          
+0000247E                          2436  ITOA_LOOP:
+0000247E  4280                    2437          CLR.L   D0 
+00002480  4281                    2438          CLR.L   D1
+00002482                          2439          
+00002482  5303                    2440          SUB.B   #1, D3  
+00002484  2007                    2441          MOVE.L  D7, D0
+00002486  1203                    2442          MOVE.B  D3, D1
+00002488                          2443  
+00002488  C2FC 0004               2444          MULU    #4, D1      ; The amount that we shift 
+0000248C  E2A8                    2445          LSR.L   D1, D0       ; Shift D0 with iteration Loop * 4
+0000248E                          2446          
+0000248E  0280 0000000F           2447          ANDI.L  #$F, D0          ; Last 4 bits in hex 
+00002494                          2448          
+00002494                          2449          ; Convert Hex into ASCII 
+00002494  4EB9 000024AE           2450          JSR     ITOA_CONVERT
+0000249A                          2451          
+0000249A                          2452          ; ADD to A3 Counter 
+0000249A  4EB9 000024C2           2453          JSR     ITOA_ADD_CHAR                  
+000024A0                          2454          ; Checks if counter is empty, ITOA is completed 
+000024A0  B63C 0000               2455          CMP.B   #0,D3
+000024A4  6700 0006               2456          BEQ     ITOA_DONE
+000024A8                          2457          
+000024A8  4EF8 247E               2458          JMP     ITOA_LOOP   ; Continue Reading more bits from immediate data         
+000024AC                          2459                         
+000024AC                          2460  ITOA_DONE:          
+000024AC  4E75                    2461          RTS         ; Returns back to last JSR 
+000024AE                          2462  
+000024AE                          2463  ITOA_CONVERT: 
+000024AE  B03C 0009               2464          CMP.B       #9,D0
+000024B2  6300 0008               2465          BLS         ITOA_CONVERT_N
+000024B6                          2466          
+000024B6  0640 0037               2467          ADDI.W      #$37, D0
+000024BA  4E75                    2468          RTS 
+000024BC                          2469          
+000024BC                          2470  ITOA_CONVERT_N
+000024BC  0640 0030               2471          ADDI.W     #$30,D0
+000024C0  4E75                    2472          RTS
+000024C2                          2473          
+000024C2                          2474  ITOA_ADD_CHAR: 
+000024C2  B03C 0030               2475          CMP.B   #$30, D0
+000024C6  6700 007A               2476          BEQ     CHAR_0
+000024CA                          2477          
+000024CA  B03C 0031               2478          CMP.B   #$31, D0
+000024CE  6700 007C               2479          BEQ     CHAR_1
+000024D2                          2480          
+000024D2  B03C 0032               2481          CMP.B   #$32, D0
+000024D6  6700 007E               2482          BEQ     CHAR_2
+000024DA                          2483          
+000024DA  B03C 0033               2484          CMP.B   #$33, D0
+000024DE  6700 0080               2485          BEQ     CHAR_3
+000024E2                          2486          
+000024E2  B03C 0034               2487          CMP.B   #$34, D0
+000024E6  6700 0082               2488          BEQ     CHAR_4
+000024EA                          2489          
+000024EA  B03C 0035               2490          CMP.B   #$35, D0
+000024EE  6700 0084               2491          BEQ     CHAR_5
+000024F2                          2492          
+000024F2  B03C 0036               2493          CMP.B   #$36, D0
+000024F6  6700 0086               2494          BEQ     CHAR_6
+000024FA                          2495          
+000024FA  B03C 0037               2496          CMP.B   #$37, D0
+000024FE  6700 0088               2497          BEQ     CHAR_7
+00002502                          2498          
+00002502  B03C 0038               2499          CMP.B   #$38, D0
+00002506  6700 008A               2500          BEQ     CHAR_8
+0000250A                          2501          
+0000250A  B03C 0039               2502          CMP.B   #$39, D0
+0000250E  6700 008C               2503          BEQ     CHAR_9
+00002512                          2504          
+00002512  B03C 0041               2505          CMP.B   #$41, D0
+00002516  6700 008E               2506          BEQ     CHAR_A
+0000251A                          2507          
+0000251A  B03C 0042               2508          CMP.B   #$42, D0
+0000251E  6700 0090               2509          BEQ     CHAR_B        
+00002522                          2510          
+00002522  B03C 0043               2511          CMP.B   #$43, D0
+00002526  6700 0092               2512          BEQ     CHAR_C
+0000252A                          2513          
+0000252A  B03C 0044               2514          CMP.B   #$44, D0
+0000252E  6700 0094               2515          BEQ     CHAR_D
+00002532                          2516          
+00002532  B03C 0045               2517          CMP.B   #$45, D0
+00002536  6700 0096               2518          BEQ     CHAR_E
+0000253A                          2519          
+0000253A  B03C 0046               2520          CMP.B   #$46, D0
+0000253E  6700 0098               2521          BEQ     CHAR_F  
+00002542                          2522          
+00002542                          2523  CHAR_0:
+00002542  16FC 0030               2524          MOVE.B  #'0', (A3)+ 
+00002546  4EF9 000025E2           2525          JMP     ITOA_ADD_CHAR_DONE        
+0000254C                          2526  CHAR_1:
+0000254C  16FC 0031               2527          MOVE.B  #'1', (A3)+ 
+00002550  4EF9 000025E2           2528          JMP     ITOA_ADD_CHAR_DONE
+00002556                          2529  CHAR_2:
+00002556  16FC 0032               2530          MOVE.B  #'2', (A3)+ 
+0000255A  4EF9 000025E2           2531          JMP     ITOA_ADD_CHAR_DONE
+00002560                          2532  CHAR_3:
+00002560  16FC 0033               2533          MOVE.B  #'3', (A3)+ 
+00002564  4EF9 000025E2           2534          JMP     ITOA_ADD_CHAR_DONE
+0000256A                          2535  CHAR_4:
+0000256A  16FC 0034               2536          MOVE.B  #'4', (A3)+ 
+0000256E  4EF9 000025E2           2537          JMP     ITOA_ADD_CHAR_DONE
+00002574                          2538  CHAR_5:
+00002574  16FC 0035               2539          MOVE.B  #'5', (A3)+ 
+00002578  4EF9 000025E2           2540          JMP     ITOA_ADD_CHAR_DONE
+0000257E                          2541  CHAR_6:
+0000257E  16FC 0036               2542          MOVE.B  #'6', (A3)+ 
+00002582  4EF9 000025E2           2543          JMP     ITOA_ADD_CHAR_DONE
+00002588                          2544  CHAR_7:
+00002588  16FC 0037               2545          MOVE.B  #'7', (A3)+ 
+0000258C  4EF9 000025E2           2546          JMP     ITOA_ADD_CHAR_DONE
+00002592                          2547  CHAR_8:
+00002592  16FC 0038               2548          MOVE.B  #'8', (A3)+ 
+00002596  4EF9 000025E2           2549          JMP     ITOA_ADD_CHAR_DONE
+0000259C                          2550  CHAR_9:
+0000259C  16FC 0039               2551          MOVE.B  #'9', (A3)+ 
+000025A0  4EF9 000025E2           2552          JMP     ITOA_ADD_CHAR_DONE
+000025A6                          2553  CHAR_A:
+000025A6  16FC 0041               2554          MOVE.B  #'A', (A3)+ 
+000025AA  4EF9 000025E2           2555          JMP     ITOA_ADD_CHAR_DONE
+000025B0                          2556  CHAR_B:
+000025B0  16FC 0042               2557          MOVE.B  #'B', (A3)+ 
+000025B4  4EF9 000025E2           2558          JMP     ITOA_ADD_CHAR_DONE
+000025BA                          2559  CHAR_C:
+000025BA  16FC 0043               2560          MOVE.B  #'C', (A3)+ 
+000025BE  4EF9 000025E2           2561          JMP     ITOA_ADD_CHAR_DONE
+000025C4                          2562  CHAR_D:
+000025C4  16FC 0044               2563          MOVE.B  #'D', (A3)+ 
+000025C8  4EF9 000025E2           2564          JMP     ITOA_ADD_CHAR_DONE
+000025CE                          2565  CHAR_E:
+000025CE  16FC 0045               2566          MOVE.B  #'E', (A3)+ 
+000025D2  4EF9 000025E2           2567          JMP     ITOA_ADD_CHAR_DONE
+000025D8                          2568  CHAR_F:
+000025D8  16FC 0046               2569          MOVE.B  #'F', (A3)+ 
+000025DC  4EF9 000025E2           2570          JMP     ITOA_ADD_CHAR_DONE
+000025E2                          2571          
+000025E2                          2572  ITOA_ADD_CHAR_DONE:
+000025E2  4E75                    2573          RTS                
+000025E4                          2574  ; -------------------------------------------------------------
+000025E4                          2575  ;   Converts User string input into HEX 
+000025E4                          2576  ; -------------------------------------------------------------         
+000025E4                          2577  ATOI:                       ; Converts hex string into int 
+000025E4  4EB9 000025EC           2578          JSR     ATOI_LOOP
+000025EA  4E75                    2579          RTS
+000025EC                          2580          
+000025EC                          2581  ATOI_LOOP: 
+000025EC  1219                    2582          MOVE.B  (A1)+, D1
+000025EE                          2583          
+000025EE                          2584          ; Checks if it is 00/ NULL, Reading is done
+000025EE  B23C 0000               2585          CMP.B   #0,D1
+000025F2  6700 004C               2586          BEQ     ATOI_DONE
+000025F6                          2587          
+000025F6  B23C 0030               2588          CMP.B   #$30, D1         ; Error / non valid input
+000025FA  6D34                    2589          BLT.B    ATOI_ERROR
+000025FC                          2590          
+000025FC  B23C 0040               2591          CMP.B   #$40,D1          ; Checks for value in range of num (0 - 9) 
+00002600  6D16                    2592          BLT.B   ATOI_NUM_VALUE
+00002602                          2593          
+00002602  B23C 0041               2594          CMP.B   #$41, D1         ; Error / non valid input
+00002606  6D00 0028               2595          BLT     ATOI_ERROR                
+0000260A                          2596          
+0000260A  B23C 0047               2597          CMP.B   #$47, D1          
+0000260E  6D00 0014               2598          BLT     ATOI_CAP_LETTR_VALUE   ; Checks for value in range of A-F
+00002612                          2599          
+00002612  4EF9 00002630           2600          JMP     ATOI_ERROR      ;Error if it reaches all the way to the end
+00002618                          2601                  
+00002618                          2602  ATOI_NUM_VALUE: 
+00002618  E98B                    2603          LSL.L   #$4, D3          ; Shift 4 bits to the left for D3
+0000261A  0401 0030               2604          SUBI.B  #$30, D1        ; ASCI Value subtracts 30 
+0000261E  D681                    2605          ADD.L   D1, D3          ; Add  Hex value into D1 into D3 
+00002620  4EF8 25EC               2606          JMP     ATOI_LOOP
+00002624                          2607          
+00002624                          2608  
+00002624                          2609  ATOI_CAP_LETTR_VALUE: 
+00002624  E98B                    2610          LSL.L   #$4, D3          ; Shift 4 bits to the left for D3
+00002626  0401 0037               2611          SUBI.B  #$37, D1        ; ASCI Value subtracts 30 
+0000262A  D681                    2612          ADD.L   D1, D3          ; Add  Hex value into D1 into D3 
+0000262C  4EF8 25EC               2613          JMP     ATOI_LOOP
+00002630                          2614                  
+00002630                          2615  ATOI_ERROR: 
+00002630  43F9 0000270E           2616          LEA     ATOI_MESS_ERROR, A1
+00002636  103C 000E               2617          MOVE.B  #task14,D0
+0000263A  4E4F                    2618          TRAP    #15           Display  Error Message
+0000263C  4EF8 1012               2619          JMP     USER_INPUT
+00002640                          2620          
+00002640                          2621  ATOI_DONE: 
+00002640  4E75                    2622          RTS
+00002642                          2623         
+00002642                          2624  ERROR_START_ADDR:   
+00002642  43F9 00002741           2625          LEA     START_ADDR_ERROR , A1
+00002648  103C 000E               2626          MOVE.B  #task14,D0
+0000264C  4E4F                    2627          TRAP    #15           Display  Error Message
+0000264E  4EF8 1018               2628          JMP     RESTART_PROGRAM
+00002652                          2629          
+00002652                          2630  ERROR_END_ADDR:   
+00002652  43F9 0000276C           2631          LEA     END_ADDR_ERROR , A1
+00002658  103C 000E               2632          MOVE.B  #task14,D0
+0000265C  4E4F                    2633          TRAP    #15           Display  Error Message
+0000265E  4EF8 1018               2634          JMP     RESTART_PROGRAM       
+00002662                          2635                  
+00002662                          2636  DONE:
+00002662  103C 0009               2637          MOVE.B  #9, D0
+00002666  4E4F                    2638          TRAP    #15             Halt Simulator   
+00002668                          2639          
+00002668                          2640  * Put variables and constants here
+00002668  =0000000D               2641  CR      EQU     $0D
+00002668  =0000000A               2642  LF      EQU     $0A
+00002668= 0D 0A 00                2643  BLANK                   DC.B    '',CR,LF,0
+0000266B= 57 65 6C 63 6F 6D ...   2644  WELCOME_MESS            DC.B    'Welcome to the disassembler program',CR,LF,0
+00002691= 45 6E 74 65 72 20 ...   2645  START_MESS              DC.B    'Enter a start address',CR,LF,0
+000026A9= 45 6E 74 65 72 20 ...   2646  REPEAT_MESS             DC.B    'Enter Y to disassemble another program, N to quit',CR,LF,0
+000026DD= 57 72 6F 6E 67 20 ...   2647  INVALID_MESS            DC.B    'Wrong Input, Try again', CR,LF,0
+000026F6= 45 6E 74 65 72 20 ...   2648  END_MESS                DC.B    'Enter the end address',CR,LF,0
+0000270E= 49 6E 76 61 6C 69 ...   2649  ATOI_MESS_ERROR         DC.B    'Invalid inputs for HEX values, Please try again',CR,LF,LF,0
+00002741= 49 6E 76 61 6C 69 ...   2650  START_ADDR_ERROR        DC.B    'Invalid start address, Please try again',CR,LF,LF,0
+0000276C= 49 6E 76 61 6C 69 ...   2651  END_ADDR_ERROR          DC.B    'Invalid end address, Please try again',CR,LF,LF,0
+00002795                          2652  buffer                  DS.B    bufferSize
+000027D5= 50 72 65 73 73 20 ...   2653  MAX_SCREEN_OUTPUT       DC.B    'Press enter any key to continue the program',CR,LF,0
+00002803= 45 72 72 6F 72 20 ...   2654  DECODE_OP_ERROR         DC.B    'Error in reading the instruction. Invalid Op code readings', CR, LF,0
+00002840= 45 72 72 6F 72 20 ...   2655  DECODE_EA_ERROR         DC.B    'Error in reading the instruction. Invalid EA readings', CR, LF,0
+00002878= 55 6E 73 75 70 70 ...   2656  DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
+00002897= 55 6E 73 75 70 70 ...   2657  DECODE_EA_UNSUPPORT     DC.B    'Unsupported EA code readings', CR, LF,0
+000028B6                          2658          END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -2523,85 +2668,85 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-ADDA_EA             1EEA
-ADDQ_EA             1E24
-ADD_EA              1EE4
-APPEND_A0           2286
-APPEND_A1           2290
-APPEND_A2           229A
-APPEND_A3           22A4
-APPEND_A4           22AE
-APPEND_A5           22B8
-APPEND_A6           22C2
-APPEND_A7           22CC
-APPEND_D0           2236
-APPEND_D1           2240
-APPEND_D2           224A
-APPEND_D3           2254
-APPEND_D4           225E
-APPEND_D5           2268
-APPEND_D6           2272
-APPEND_D7           227C
-ASL_EA              1F26
-ASR_EA              1F2C
-ASR_EA_NUM          1F46
-ASR_EA_NUM_1        1F5E
-ASR_EA_REG          1F80
-ATOI                2468
-ATOI_CAP_LETTR_VALUE  24A8
-ATOI_DONE           24C4
-ATOI_ERROR          24B4
-ATOI_LOOP           2470
-ATOI_MESS_ERROR     2592
-ATOI_NUM_VALUE      249C
-BLANK               24EC
-BRA_EA              1D5A
-BSR_EA              1D60
-BSR_EA_16           1D92
-BSR_EA_32           1DA2
-BUFFER              2619
+ADDA_EA             1EE6
+ADDQ_EA             1E20
+ADD_EA              1EE0
+APPEND_A0           2342
+APPEND_A1           2364
+APPEND_A2           2386
+APPEND_A3           23A8
+APPEND_A4           23CA
+APPEND_A5           23EC
+APPEND_A6           240E
+APPEND_A7           2430
+APPEND_D0           2232
+APPEND_D1           2254
+APPEND_D2           2276
+APPEND_D3           2298
+APPEND_D4           22BA
+APPEND_D5           22DC
+APPEND_D6           22FE
+APPEND_D7           2320
+ASL_EA              1F22
+ASR_EA              1F28
+ASR_EA_NUM          1F42
+ASR_EA_NUM_1        1F5A
+ASR_EA_REG          1F7C
+ATOI                25E4
+ATOI_CAP_LETTR_VALUE  2624
+ATOI_DONE           2640
+ATOI_ERROR          2630
+ATOI_LOOP           25EC
+ATOI_MESS_ERROR     270E
+ATOI_NUM_VALUE      2618
+BLANK               2668
+BRA_EA              1D56
+BSR_EA              1D5C
+BSR_EA_16           1D8E
+BSR_EA_32           1D9E
+BUFFER              2795
 BUFFERSIZE          40
-CHAR_0              23C6
-CHAR_1              23D0
-CHAR_2              23DA
-CHAR_3              23E4
-CHAR_4              23EE
-CHAR_5              23F8
-CHAR_6              2402
-CHAR_7              240C
-CHAR_8              2416
-CHAR_9              2420
-CHAR_A              242A
-CHAR_B              2434
-CHAR_C              243E
-CHAR_D              2448
-CHAR_E              2452
-CHAR_F              245C
+CHAR_0              2542
+CHAR_1              254C
+CHAR_2              2556
+CHAR_3              2560
+CHAR_4              256A
+CHAR_5              2574
+CHAR_6              257E
+CHAR_7              2588
+CHAR_8              2592
+CHAR_9              259C
+CHAR_A              25A6
+CHAR_B              25B0
+CHAR_C              25BA
+CHAR_D              25C4
+CHAR_E              25CE
+CHAR_F              25D8
 CLEAR_SCREEN        1102
-CMP_EA              1E70
+CMP_EA              1E6C
 CR                  D
-DATA_ERROR          22D6
-DATA_UNSUPPORTED    22E6
-DECODE_EA_ERROR     26C4
-DECODE_EA_UNSUPPORT  271B
+DATA_ERROR          2452
+DATA_UNSUPPORTED    2462
+DECODE_EA_ERROR     2840
+DECODE_EA_UNSUPPORT  2897
 DECODE_LOOP         10C2
-DECODE_OP_ERROR     2687
-DECODE_OP_UNSUPPORT  26FC
+DECODE_OP_ERROR     2803
+DECODE_OP_UNSUPPORT  2878
 DECODE_PAUSE        10E8
 DECODE_START        10C0
 DESTMODE            1C0
-DIVS_EA             1DB8
-DIVU_EA             1DB2
-DONE                24E6
-EAJUMPTABLE         1FCC
-EA_DECODER          1FBA
-EA_PRINT_IMMEDIATE_NUMBER  1FAE
+DIVS_EA             1DB4
+DIVU_EA             1DAE
+DONE                2662
+EAJUMPTABLE         1FC8
+EA_DECODER          1FB6
+EA_PRINT_IMMEDIATE_NUMBER  1FAA
 END_ADDR            106E
-END_ADDR_ERROR      25F0
-END_MESS            257A
+END_ADDR_ERROR      276C
+END_MESS            26F6
 END_PROGRAM         11BA
-ERROR_END_ADDR      24D6
-ERROR_START_ADDR    24C6
+ERROR_END_ADDR      2652
+ERROR_START_ADDR    2642
 HELPER_ADDA_L       1954
 HELPER_ADDA_W       1968
 HELPER_ADDSUBQ_CONVERT_B  18A6
@@ -2645,37 +2790,40 @@ INPUT_N             4E
 INPUT_NL            4E
 INPUT_Y             59
 INPUT_YL            79
-INVALID_MESS        2561
-ITOA                22F6
-ITOA_ADD_CHAR       2346
-ITOA_ADD_CHAR_DONE  2466
-ITOA_CONVERT        2332
-ITOA_CONVERT_N      2340
-ITOA_DONE           2330
-ITOA_LOOP           2302
+INVALID_MESS        26DD
+ITOA                2472
+ITOA_ADD_CHAR       24C2
+ITOA_ADD_CHAR_DONE  25E2
+ITOA_CONVERT        24AE
+ITOA_CONVERT_N      24BC
+ITOA_DONE           24AC
+ITOA_LOOP           247E
 LEA_EA              1D1E
 LF                  A
 LINESONSCREEN       1D
 MAIN                1000
-MAX_SCREEN_OUTPUT   2659
-MODE0               1FFC
-MODE1               203E
-MODE2               2080
-MODE3               20CA
-MODE4               2118
-MODE5               2166
-MODE6               2168
-MODE7               216A
-MODE_7_2NDARG_END   222C
-MODE_7_2NDARG_START  2226
-MODE_7_IMM_LONG     2210
-MODE_7_IMM_WORD     21EA
-MODE_7_LONG         21B8
-MODE_7_LONG_1       21C4
-MODE_7_LONG_2       21E8
-MODE_7_SHORT        2186
-MODE_7_SHORT_1      2192
-MODE_7_SHORT_2      21B6
+MAX_SCREEN_OUTPUT   27D5
+MODE0               1FF8
+MODE1               203A
+MODE2               207C
+MODE3               20C6
+MODE4               2114
+MODE5               2162
+MODE6               2164
+MODE7               2166
+MODE_2_END          20C0
+MODE_3_END          210A
+MODE_4_END          215C
+MODE_7_2NDARG_END   2228
+MODE_7_2NDARG_START  2222
+MODE_7_IMM_LONG     220C
+MODE_7_IMM_WORD     21E6
+MODE_7_LONG         21B4
+MODE_7_LONG_1       21C0
+MODE_7_LONG_2       21E4
+MODE_7_SHORT        2182
+MODE_7_SHORT_1      218E
+MODE_7_SHORT_2      21B2
 MOVEA_EA            1C4C
 MOVEM_EA            1C8E
 MOVEM_FINISH        1CE4
@@ -2690,8 +2838,8 @@ MOVEQ_EA            1CE6
 MOVE_EA             1C52
 MOVE_IMM_DATA       1C3C
 MOVE_POST_LOOP      1CCE
-MULS_EA             1EA4
-MULU_EA             1EAA
+MULS_EA             1EA0
+MULU_EA             1EA6
 NIBBLE2             F00
 NIBBLE3             F0
 OP_0000_TABLE       144C
@@ -2744,7 +2892,7 @@ OP_SUB              18BA
 OP_SUBI             15FC
 OP_SUBQ             1820
 OP_UNSUPPORTED      1BD0
-REPEAT_MESS         252D
+REPEAT_MESS         26A9
 REPEAT_PROGRAM      1162
 RESTART_PROGRAM     1018
 RESTART_PROGRAM_START  11B2
@@ -2760,11 +2908,11 @@ SRCMODE             38
 STACK               A0000
 START               1000
 START_ADDR          1036
-START_ADDR_ERROR    25C5
-START_MESS          2515
-SUBQ_EA             1E2A
-SUBQ_EA_1           1E46
-SUB_EA              1DF2
+START_ADDR_ERROR    2741
+START_MESS          2691
+SUBQ_EA             1E26
+SUBQ_EA_1           1E42
+SUB_EA              1DEE
 TASK1               1
 TASK13              D
 TASK14              E
@@ -2772,4 +2920,4 @@ TASK2               2
 TASK5               5
 USER_INPUT          1012
 WELCOME             1006
-WELCOME_MESS        24EF
+WELCOME_MESS        266B
