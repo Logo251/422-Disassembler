@@ -1556,9 +1556,9 @@ BSR_EA
         CMP.B  #$FF, D7
         BEQ  BSR_EA_32
         
-        MOVE.B  #0, D6
-        MOVE.B  #0, D4
-        JSR EA_DECODER
+        MOVE.B  #' ', (A3)+
+        MOVE.B  #2, D3
+        JSR EA_PRINT_IMMEDIATE_NUMBER
     
         RTS
 
