@@ -82,6 +82,7 @@ START_ADDR:
         ROL.L   #1, D3
         MOVEA.L D3,A5           ; A5 = start address
         ADDQ    #2,D2        
+        
 END_ADDR:         
         ; Prompt end address
         MOVEQ   #0,D3       ; Reset D3 Register
@@ -205,10 +206,12 @@ OP_MOVECALC:
         
 OP_MOVE32:                  ; #2
         ADD.L   #$4, A5
+        CLR.L   D4
         RTS
-        
+
 OP_MOVE16:                  ; #1
         ADD.L   #$2, A5
+        CLR.L   D4
         RTS
          
 ;-------------------------------------------
@@ -1387,13 +1390,13 @@ MOVE_IMM_DATA:
         MOVE.B  #4, D4
         RTS
         
-SHIFT16: 
+SHIFT16:        ; word 
         LSR.L   #8,D7
         LSR.L   #8,D7
         MOVE.B  #2, D4
         RTS
 
-SHIFT24
+SHIFT24         ; byte
         LSR.L   #8,D7
         LSR.L   #8,D7
         MOVE.B  #4, D4  
@@ -2282,6 +2285,7 @@ DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
 
 *~Font name~Courier New~
 *~Font size~10~
