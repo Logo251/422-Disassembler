@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 3/17/2021 12:41:07 PM
+Created On: 3/17/2021 12:53:52 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : 
@@ -1757,7 +1757,7 @@ Created On: 3/17/2021 12:41:07 PM
 00001EB6                          1753          ;set mode data register
 00001EB6  4285                    1754          CLR.L D5
 00001EB8                          1755          ;and off data for register
-00001EB8  0247 0E00               1756          ANDI #3584, D7
+00001EB8  0246 0E00               1756          ANDI #3584, D6
 00001EBC  E086                    1757          ASR.L #8, D6
 00001EBE  E286                    1758          ASR.L #1, D6
 00001EC0  4EB9 00001FD0           1759          JSR EA_DECODER
