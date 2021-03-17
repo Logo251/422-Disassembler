@@ -171,10 +171,7 @@ OP_START:
         CLR.L    D0
         CLR.L    D1
         MOVE.W   (A5)+,D0       ; Loads current word instruction to D0
-        
-        ; Load long address into D7 
-        MOVE.L   (A5)+,D7
-        
+                
         MOVE.L   D0,D1          ; Move word instruct to D1
         MOVE.B   #right12, D2   
         LSR.W    D2, D1         ; D1 = op code
@@ -1351,27 +1348,16 @@ IMMEDIATE_EA
         RTS
         
 MOVE_IMM_DATA: 
-        CLR.L   D4
         CMP.B   #2, D3
         BEQ     SHIFT16
         
-        CMP.B   #1, D3
-        BEQ     SHIFT24 
-        
-        MOVE.B  #4, D4
+        MOVE.L  (A5)+, D7
         RTS
         
 SHIFT16: 
-        LSR.L   #8,D7
-        LSR.L   #8,D7
-        MOVE.B  #2, D4
+        MOVE.W  (A5)+, D7
         RTS
 
-SHIFT24
-        LSR.L   #8,D7
-        LSR.L   #8,D7
-        MOVE.B  #4, D4  
-        RTS
         
 MOVEA_EA
         ;This is the same as MOVE, just that first operand is for sure an address.
@@ -2398,6 +2384,7 @@ DECODE_OP_UNSUPPORT     DC.B    'Unsupported Op code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
 
 
 *~Font name~Courier New~
