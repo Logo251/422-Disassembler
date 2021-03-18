@@ -377,6 +377,8 @@ INDEX0101:
         LSR.W   D2,D1               ; D1 = 2nd nibble
     
         ANDI.B  #1, D1
+        
+        CMP.B   #1, D1 
         BEQ     OP_SUBQ             ; If last bit = 1 --> SUBQ 
         BNE     OP_ADDQ             ; If lat bit = 0 --> ADDQ
         
@@ -1370,8 +1372,7 @@ MOVE_IMM_DATA:
 SHIFT16: 
         MOVE.W  (A5)+, D7
         RTS
-
-        
+    
 MOVEA_EA
         ;This is the same as MOVE, just that first operand is for sure an address.
         JMP MOVE_EA
@@ -1466,16 +1467,12 @@ MOVEM_SWITCH:
 
         ; Odd num  = data register          
 
-
-
-
 ; Mode 4
 MOVEM_PRE
         MOVE.W  (A5)+, D7
 
 MOVEM_FINISH:
         RTS
-
         
 MOVEQ_EA
         MOVE.L D0, D5
