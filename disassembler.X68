@@ -1413,6 +1413,7 @@ MOVE_EA
         RTS
 
 MOVEM_EA
+        JMP DATA_ERROR
         ; Extract the mode and register
         CLR.L   D5
         CLR.L   D6
@@ -2105,10 +2106,12 @@ MODE_4_END
 
 MODE5
         ;Error-handling mode.
+        JMP DATA_ERROR
         RTS
     
 MODE6
         ;Error-handling mode.
+        JMP DATA_ERROR
         RTS
     
 MODE7
@@ -2701,6 +2704,8 @@ DECODE_EA_UNSUPPORT     DC.B    'Unsupported EA code readings', CR, LF,0
 *~Font size~10~
 *~Tab type~1~
 *~Tab size~4~
+
+
 
 
 
